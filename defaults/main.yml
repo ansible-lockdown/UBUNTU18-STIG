@@ -1,0 +1,62 @@
+---
+# If you would like a report at the end accordin to OpenSCAP as to the report results
+# then you should set ubtu18stig_oscap_scan to true/yes.
+# NOTE: This requires the python_xmltojson package on the control host.
+ubtu18stig_oscap_scan: no
+ubtu18stig_report_dir: /tmp
+
+ubtu18stig_cat1_patch: true
+ubtu18stig_cat2_patch: true
+ubtu18stig_cat3_patch: true
+
+# We've defined complexity-high to mean that we cannot automatically remediate
+# the rule in question.  In the future this might mean that the remediation
+# may fail in some cases.
+ubtu18stig_complexity_high: false
+
+# Show "changed" for complex items not remediated per complexity-high setting
+# to make them stand out.  "changed" items on a second run of the role would
+# indicate items requiring manual review.
+ubtu18stig_audit_complex: true
+
+# We've defined disruption-high to indicate items that are likely to cause
+# disruption in a normal workflow.  These items can be remediated automatically
+# but are disabled by default to avoid disruption.
+ubtu18stig_disruption_high: true
+
+# Show "changed" for disruptive items not remediated per disruption-high
+# setting to make them stand out.
+ubtu18stig_audit_disruptive: yes
+
+ubtu18stig_skip_for_travis: false
+
+ubtu18stig_workaround_for_disa_benchmark: true
+ubtu18stig_workaround_for_ssg_benchmark: true
+
+# tweak role to run in a chroot, such as in kickstart %post script
+ubtu18stig_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
+
+# tweak role to run in a non-privileged container
+ubtu18stig_system_is_container: false
+
+# These variables correspond with the STIG IDs defined in the STIG and allows you to enable/disable specific rules.
+# PLEASE NOTE: These work in coordination with the cat1, cat2, cat3 group variables. You must enable an entire group
+# in order for the variables below to take effect.
+# CAT 1 rules
+ubtu_18_010000: true
+ubtu_18_010001: true
+ubtu_18_010005: true
+ubtu_18_010018: true
+ubtu_18_010019: true
+ubtu_18_010037: true
+ubtu_18_010105: true
+ubtu_18_010150: true
+ubtu_18_010151: true
+ubtu_18_010412: true
+ubtu_18_010417: true
+ubtu_18_010420: true
+ubtu_18_010424: true
+ubtu_18_010426: true
+
+
+# The variables below are related to specific tasks

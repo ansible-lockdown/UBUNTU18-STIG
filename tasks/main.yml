@@ -1,0 +1,48 @@
+---
+- name: Gather distribution info
+  setup:
+      gather_subset: distribution,!all,!min
+  when:
+      - ansible_distribution is not defined
+  tags:
+      - always
+
+- name: Check OS version and family
+  assert:
+      that: ansible_os_family == 'Ubuntu' and ansible_distribution_major_version is version_compare('18', '==')
+      msg: "This role can only be run against Ubuntu 18. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+  tags:
+      - always
+
+- name: Check ansible version
+  assert:
+      that: ansible_version.full is version_compare(ubtu18stig_min_ansible_version, '>=')
+      msg: You must use Ansible {{ ubtu18stig_min_ansible_version }} or greater
+  tags:
+      - always
+
+- import_tasks: prelim.yml
+  become: yes
+  tags:
+      - prelim_tasks
+
+- name: Include CAT I patches
+  import_tasks: fix-cat1.yml
+  when: ubtu18stig_cat1_patch
+  tags:
+      - cat1
+      - high
+
+# - name: Include CAT II patches
+#   import_tasks: fix-cat2.yml
+#   when: ubtu18stig_cat2_patch | bool
+#   tags:
+#       - cat2
+#       - medium
+
+# - name: Include CAT III patches
+#   import_tasks: fix-cat3.yml
+#   when: ubtu18stig_cat3_patch | bool
+#   tags:
+#       - cat3
+#       - low
