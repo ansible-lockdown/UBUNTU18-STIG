@@ -1,1 +1,15 @@
 ---
+- name: "PRELIM | Run apt update"
+  apt:
+      update_cache: yes
+
+- name: "PRELIM | UBTU-18-010000 | Check whether machine is UEFI-based"
+  stat:
+    path: /sys/firmware/efi
+  register: ubtu_18_sys_firmware_efi
+  when:
+  - ubtu_18_010000
+  tags:
+  - cat1
+  - high
+  

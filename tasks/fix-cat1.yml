@@ -1,1 +1,74 @@
 ---
+- name: |
+    "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes."
+    "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance."
+  lineinfile:
+      dest: /etc/grub.d/40_custom
+      insertafter: EOF
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+  notify: update grub
+  with_items:
+      - { regexp: '^\s*set superusers=', line: '    set superusers="root"' }
+      - { regexp: '^password_pbkdf2', line: 'password_pbkdf2 {{ ubtu18stig_boot_superuser }} {{ ubtu18stig_bootloader_password_hash }}' }
+  when:
+      - ubtu_18_010000 or
+        ubtu_18_010001
+  tags:
+      - UBTU-18-010000
+      - UBTU-18-010001
+      - high
+      - patch
+      - pbkd
+      - grub
+      - uefi
+
+- name: "HIGH | UBTU-18-010005 | AUDIT |  The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards"
+  block:
+      - name: "HIGH | UBTU-18-010005 | AUDIT |  The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards | Check for fips-mode"
+        command:  grep -i 1 /proc/sys/crypto/fips_enabled
+        changed_when: false
+        failed_when: false
+        register: ubtustig_18_010005_fips_status
+
+      - name: "HIGH | UBTU-18-010005 | AUDIT |  The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards | Alert no fips-mode"
+        debug:
+            msg:
+                - "Alert! You do not have FIPS-Mode enabled. This is a finding, please enable to conform to STIG standards"
+                - "A subscription to Ubuntu Advantage is required to obtain FSIPs Kernel cryptography"
+        when: "'1' not in ubtustig_18_010005_fips_status.stdout"
+  when:
+      - ubtu_18_010005
+  tags:
+      - UBTU-18-010005
+      - high
+      - audit
+      - FIPS
+
+- name: "HIGH | UBTU-18-010018 | PATCH | The Ubuntu operating system must not have the Network Information Service (NIS) package installed."
+  package:
+      name: nis
+      state: absent
+  when:
+      - ubtu_18_010018
+      - not ubtu18stig_nis_server
+  tags:
+      - UBTU-18-010018
+      - high
+      - patch
+      - nis
+      - package
+
+- name: "HIGH | UBTU-18-010019 | PATCH | The Ubuntu operating system must not have the rsh-server package installed."
+  package:
+      name: rsh-server
+      state: absent
+  when:
+      - ubtu_18_010019
+      - not ubtu18stig_rsh_server
+  tags:
+      - UBTU-18-010019
+      - high
+      - patch
+      - rsh-server
+      - package

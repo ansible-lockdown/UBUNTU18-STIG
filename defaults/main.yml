@@ -59,4 +59,17 @@ ubtu_18_010424: true
 ubtu_18_010426: true
 
 
+# Service configuration variables, set to true to keep service
+ubtu18stig_nis_server: false
+ubtu18stig_rsh_server: false
+
+
 # The variables below are related to specific tasks
+# Cat 1
+
+# UBTU-18-010000
+# Passowrd protect bootloader
+# DO NOT USE PLAIN TEXT PASSWORDS!!!!
+# The has is intended to be used with a PW management tool like Ansible Vault
+ubtu18stig_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
+ubtu18stig_boot_superuser: root

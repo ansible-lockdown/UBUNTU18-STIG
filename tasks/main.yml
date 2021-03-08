@@ -7,22 +7,24 @@
   tags:
       - always
 
-- name: Check OS version and family
-  assert:
-      that: ansible_os_family == 'Ubuntu' and ansible_distribution_major_version is version_compare('18', '==')
-      msg: "This role can only be run against Ubuntu 18. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
-  tags:
-      - always
+# - name: Check OS version and family
+#   assert:
+#       # that: ansible_os_family == 'Ubuntu' and ansible_distribution_major_version is version_compare('18', '==')
+#       msg: "This role can only be run against Ubuntu 18. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+#       that:
+#           - ansible_os_family == 'Ubuntu'
+#           - ansible_distribution_major_version is version_compare('18', '==')
+#   tags:
+#       - always
 
-- name: Check ansible version
-  assert:
-      that: ansible_version.full is version_compare(ubtu18stig_min_ansible_version, '>=')
-      msg: You must use Ansible {{ ubtu18stig_min_ansible_version }} or greater
-  tags:
-      - always
+# - name: Check ansible version
+#   assert:
+#       that: ansible_version.full is version_compare(ubtu18stig_min_ansible_version, '>=')
+#       msg: You must use Ansible {{ ubtu18stig_min_ansible_version }} or greater
+#   tags:
+#       - always
 
 - import_tasks: prelim.yml
-  become: yes
   tags:
       - prelim_tasks
 
