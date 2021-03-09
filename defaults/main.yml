@@ -60,9 +60,9 @@ ubtu_18_010426: true
 
 
 # Service configuration variables, set to true to keep service
-ubtu18stig_nis_server: false
-ubtu18stig_rsh_server: false
-
+ubtu18stig_nis_required: false
+ubtu18stig_rsh_required: false
+ubtu18stig_telnet_required: false
 
 # The variables below are related to specific tasks
 # Cat 1
@@ -73,3 +73,14 @@ ubtu18stig_rsh_server: false
 # The has is intended to be used with a PW management tool like Ansible Vault
 ubtu18stig_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
 ubtu18stig_boot_superuser: root
+
+# UBTU-18-010037
+# ubtu18_allowed_sudoers is the list of users who should be in the sudoers group
+# With this enabled all other users will be removed from the sudoers group
+ubtu18_allowed_sudoers:
+    - test1
+    - rad
+# ubtu18_auto_remove_sudoers is the toggle to let this role remove users from the sudoers
+# group if they do not match the list above.
+# Set this value to false and the task will just message out the list of users in the sudo group
+ubtu18_auto_remove_sudoers: true

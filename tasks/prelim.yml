@@ -12,4 +12,22 @@
   tags:
   - cat1
   - high
-  
+
+- name: "PRELIM | UBTU-18-010150 | dconf setup"
+  block:
+      - name: "PRELIM | dconf setup | UBTU-18-010150 | check for dconf"
+        command: which dconf
+        changed_when: false
+        failed_when: false
+        register: ubtu18stig_dconf_status
+
+      - name: "PRELIM | dconf setup | UBTU-18-010150  | install if missing"
+        package:
+            name: dconf-cli
+            state: present
+        when: ubtu18stig_dconf_status.stdout == ""
+  when:
+      - ubtu_18_010150
+  tags:
+      - cat1
+      - high

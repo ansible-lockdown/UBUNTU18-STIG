@@ -1,27 +1,27 @@
 ---
-- name: |
-    "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes."
-    "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance."
-  lineinfile:
-      dest: /etc/grub.d/40_custom
-      insertafter: EOF
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-  notify: update grub
-  with_items:
-      - { regexp: '^\s*set superusers=', line: '    set superusers="root"' }
-      - { regexp: '^password_pbkdf2', line: 'password_pbkdf2 {{ ubtu18stig_boot_superuser }} {{ ubtu18stig_bootloader_password_hash }}' }
-  when:
-      - ubtu_18_010000 or
-        ubtu_18_010001
-  tags:
-      - UBTU-18-010000
-      - UBTU-18-010001
-      - high
-      - patch
-      - pbkd
-      - grub
-      - uefi
+# - name: |
+#     "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes."
+#     "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance."
+#   lineinfile:
+#       dest: /etc/grub.d/40_custom
+#       insertafter: EOF
+#       regexp: "{{ item.regexp }}"
+#       line: "{{ item.line }}"
+#   notify: update grub
+#   with_items:
+#       - { regexp: '^\s*set superusers=', line: '    set superusers="root"' }
+#       - { regexp: '^password_pbkdf2', line: 'password_pbkdf2 {{ ubtu18stig_boot_superuser }} {{ ubtu18stig_bootloader_password_hash }}' }
+#   when:
+#       - ubtu_18_010000 or
+#         ubtu_18_010001
+#   tags:
+#       - UBTU-18-010000
+#       - UBTU-18-010001
+#       - high
+#       - patch
+#       - pbkd
+#       - grub
+#       - uefi
 
 - name: "HIGH | UBTU-18-010005 | AUDIT |  The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards"
   block:
@@ -51,7 +51,7 @@
       state: absent
   when:
       - ubtu_18_010018
-      - not ubtu18stig_nis_server
+      - not ubtu18stig_nis_required
   tags:
       - UBTU-18-010018
       - high
@@ -65,10 +65,96 @@
       state: absent
   when:
       - ubtu_18_010019
-      - not ubtu18stig_rsh_server
+      - not ubtu18stig_rsh_required
   tags:
       - UBTU-18-010019
       - high
       - patch
       - rsh-server
       - package
+
+- name: "HIGH | UBTU-18-010037 | PATCH | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group"
+  block:
+      - name: "HIGH | UBTU-18-010037 | AUDIT | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group | List of sudo group"
+        shell: 'grep sudo /etc/group | cut -f4 -d:'
+        changed_when: false
+        failed_when: false
+        register: ubtustig_18_010037_sudoers_group
+
+      - name: "HIGH | UBTU-18-010037 | AUDIT | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group | Split list of sudoers"
+        set_fact:
+            sudoers_group_list: "{{ ubtustig_18_010037_sudoers_group.stdout.split(',') }}"
+
+      - name: "HIGH | UBTU-18-010037 | AUDIT | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group | Compare list of authorized sudoers"
+        set_fact:
+            unauthorized_sudoers: "{{ sudoers_group_list | difference(ubtu18_allowed_sudoers) }}"
+        when: ubtu18_auto_remove_sudoers
+
+      - name: "HIGH | UBTU-18-010037 | PATCH | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group | Remove unauthorized_sudoers"
+        command: "gpasswd -d {{ item }} sudo"
+        with_items:
+            - "{{ unauthorized_sudoers }}"
+        when:
+            - ubtu18_auto_remove_sudoers
+            - unauthorized_sudoers != [""]
+
+      - name: "HIGH | UBTU-18-010037 | AUDIT | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group | Alert on users in sudo group"
+        debug:
+            msg:
+                - "Alert! The users below are in the sudoers group. Please make confirm all users are appropriate"
+                - "{{ sudoers_group_list }}"
+        when: not ubtu18_auto_remove_sudoers
+  when:
+      - ubtu_18_010037
+  tags:
+      - UBTU-18-010037
+      - high
+      - patch
+      - sudo
+
+- name: "HIGH | UBTU-18-010105 | PATCH | The Ubuntu operating system must not have the telnet package installed."
+  package:
+      name: telnet
+      state: absent
+  when:
+      - ubtu_18_010105
+      - not ubtu18stig_telnet_required
+  tags:
+      - UBTU-18-010105
+      - high
+      - patch
+      - telnet
+
+- name: "HIGH | UBTU-18-010150 | PATCH | The Ubuntu Operating system must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed"
+  lineinfile:
+      path: /etc/dconf/db/local.d/00-disable-CAD
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      insertafter: EOF
+      create: true
+  notify: dconf update
+  with_items:
+      - { regexp: '^\[org/gnome/settings-daemon/plugins/media-keys\]', line: "[org/gnome/settings-daemon/plugins/media-keys]" }
+      - { regexp: 'logout=', line: "logout=''" }
+  when:
+      - ubtu_18_010150
+  tags:
+      - UBTU-18-010150
+      - high
+      - patch
+      - dconf
+
+- name: "HIGH | UBTU-18-010151 | PATCH | The Ubuntu Operating system must disable the x86 Ctrl-Alt-Delete key sequence."
+  systemd:
+      name: ctrl-alt-del.target
+      state: stopped
+      enabled: false
+      masked: true
+      daemon_reload: true
+  when:
+      - ubtu_18_010151
+  tags:
+      - UBTU-18-010151
+      - high
+      - patch
+      - service

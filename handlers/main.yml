@@ -5,3 +5,6 @@
   when:
       - not ubtu18stig_skip_for_travis
       - not ubtu18stig_system_is_container
+
+- name: dconf update
+  command: dconf update
