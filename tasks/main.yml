@@ -23,10 +23,21 @@
 #       msg: You must use Ansible {{ ubtu18stig_min_ansible_version }} or greater
 #   tags:
 #       - always
+- name: Gather the package facts before prelim
+  package_facts:
+      manager: auto
+  tags:
+      - always
 
 - import_tasks: prelim.yml
   tags:
       - prelim_tasks
+
+- name: Gather the package facts after prelim
+  package_facts:
+      manager: auto
+  tags:
+      - always
 
 - name: Include CAT I patches
   import_tasks: fix-cat1.yml

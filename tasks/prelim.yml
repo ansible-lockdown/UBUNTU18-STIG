@@ -25,7 +25,9 @@
         package:
             name: dconf-cli
             state: present
-        when: ubtu18stig_dconf_status.stdout == ""
+        when: 
+            - ubtu18stig_dconf_status.stdout == ""
+            - "'dconf-cli' not in ansible_facts.packages"
   when:
       - ubtu_18_010150
   tags:

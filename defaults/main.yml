@@ -53,10 +53,11 @@ ubtu_18_010105: true
 ubtu_18_010150: true
 ubtu_18_010151: true
 ubtu_18_010412: true
-ubtu_18_010417: true
 ubtu_18_010420: true
 ubtu_18_010424: true
 ubtu_18_010426: true
+ubtu_18_010522: true
+ubtu_18_010523: true
 
 
 # Service configuration variables, set to true to keep service

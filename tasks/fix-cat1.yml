@@ -1,27 +1,33 @@
 ---
-# - name: |
-#     "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes."
-#     "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance."
-#   lineinfile:
-#       dest: /etc/grub.d/40_custom
-#       insertafter: EOF
-#       regexp: "{{ item.regexp }}"
-#       line: "{{ item.line }}"
-#   notify: update grub
-#   with_items:
-#       - { regexp: '^\s*set superusers=', line: '    set superusers="root"' }
-#       - { regexp: '^password_pbkdf2', line: 'password_pbkdf2 {{ ubtu18stig_boot_superuser }} {{ ubtu18stig_bootloader_password_hash }}' }
-#   when:
-#       - ubtu_18_010000 or
-#         ubtu_18_010001
-#   tags:
-#       - UBTU-18-010000
-#       - UBTU-18-010001
-#       - high
-#       - patch
-#       - pbkd
-#       - grub
-#       - uefi
+
+- name: |
+    "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes."
+    "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance."
+  lineinfile:
+      dest: /etc/grub.d/40_custom
+      insertafter: EOF
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+  notify: update grub
+  with_items:
+      - { regexp: '^\s*set superusers=', line: '    set superusers="root"' }
+      - { regexp: '^password_pbkdf2', line: 'password_pbkdf2 {{ ubtu18stig_boot_superuser }} {{ ubtu18stig_bootloader_password_hash }}' }
+  when:
+      - ubtu_18_010000 or
+        ubtu_18_010001
+  tags:
+      - UBTU-18-010000
+      - UBTU-18-010001
+      - CAT1
+      - CCI-000213
+      - SRG-OS-000080-GPOS-00048
+      - SV-219147r802349_rule
+      - SV-219148r808471_rule
+      - V-219147
+      - V-219148
+      - pbkd
+      - grub
+      - uefi
 
 - name: "HIGH | UBTU-18-010005 | AUDIT |  The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards"
   block:
@@ -41,9 +47,12 @@
       - ubtu_18_010005
   tags:
       - UBTU-18-010005
-      - high
-      - audit
-      - FIPS
+      - CAT1
+      - CCI-002450
+      - SRG-OS-000478-GPOS-00223
+      - SV-219151r610963_rule
+      - V-219151
+      - fips
 
 - name: "HIGH | UBTU-18-010018 | PATCH | The Ubuntu operating system must not have the Network Information Service (NIS) package installed."
   package:
@@ -54,10 +63,12 @@
       - not ubtu18stig_nis_required
   tags:
       - UBTU-18-010018
-      - high
-      - patch
+      - CAT1
+      - CCI-000381
+      - SRG-OS-000095-GPOS-00049
+      - SV-219157r610963_rule
+      - V-219157
       - nis
-      - package
 
 - name: "HIGH | UBTU-18-010019 | PATCH | The Ubuntu operating system must not have the rsh-server package installed."
   package:
@@ -68,10 +79,12 @@
       - not ubtu18stig_rsh_required
   tags:
       - UBTU-18-010019
-      - high
-      - patch
+      - CAT1
+      - CCI-000381
+      - SRG-OS-000095-GPOS-00049
+      - SV-219158r610963_rule
+      - V-219158
       - rsh-server
-      - package
 
 - name: "HIGH | UBTU-18-010037 | PATCH | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group"
   block:
@@ -108,8 +121,11 @@
       - ubtu_18_010037
   tags:
       - UBTU-18-010037
-      - high
-      - patch
+      - CAT1
+      - CCI-001084
+      - SRG-OS-000134-GPOS-00068
+      - SV-219169r610963_rule
+      - V-219169
       - sudo
 
 - name: "HIGH | UBTU-18-010105 | PATCH | The Ubuntu operating system must not have the telnet package installed."
@@ -121,8 +137,11 @@
       - not ubtu18stig_telnet_required
   tags:
       - UBTU-18-010105
-      - high
-      - patch
+      - CAT1
+      - CCI-000197
+      - SRG-OS-000074-GPOS-00042
+      - SV-219177r610963_rule
+      - V-219177
       - telnet
 
 - name: "HIGH | UBTU-18-010150 | PATCH | The Ubuntu Operating system must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed"
@@ -140,8 +159,11 @@
       - ubtu_18_010150
   tags:
       - UBTU-18-010150
-      - high
-      - patch
+      - CAT1
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-219211r610963_rule
+      - V-219211
       - dconf
 
 - name: "HIGH | UBTU-18-010151 | PATCH | The Ubuntu Operating system must disable the x86 Ctrl-Alt-Delete key sequence."
@@ -155,6 +177,167 @@
       - ubtu_18_010151
   tags:
       - UBTU-18-010151
-      - high
-      - patch
+      - CAT1
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-219212r610963_rule
+      - V-219212
       - service
+
+- name: "HIGH | UBTU-18-010412 | PATCH | The Ubuntu operating system must enforce SSHv2 for network access to all accounts."
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^Protocol '
+      line: 'Protocol 2'
+  notify: restart sshd
+  when:
+      - ubtu_18_010412
+  tags:
+      - UBTU-18-010412
+      - CAT1
+      - CCI-001941
+      - CCI-001942
+      - SRG-OS-000112-GPOS-00057
+      - SV-219308r610963_rule
+      - V-219308
+      - ssh
+
+- name: "HIGH | UBTU-18-010420 | PATCH | The Ubuntu operating system must use SSH to protect the confidentiality and integrity of transmitted information unless otherwise protected by alternative physical safeguards, such as, at a minimum, a Protected Distribution System (PDS)."
+  block:
+      - name: "HIGH | UBTU-18-010420 | PATCH | The Ubuntu operating system must use SSH to protect the confidentiality and integrity of transmitted information unless otherwise protected by alternative physical safeguards, such as, at a minimum, a Protected Distribution System (PDS). | Install Packages"
+        package:
+            name: ssh
+            state: present
+
+      - name: "HIGH | UBTU-18-010420 | PATCH | The Ubuntu operating system must use SSH to protect the confidentiality and integrity of transmitted information unless otherwise protected by alternative physical safeguards, such as, at a minimum, a Protected Distribution System (PDS). | Enable SSH"
+        service:
+            name: sshd
+            state: started
+            enabled: yes
+  when:
+      - ubtu_18_010420
+  tags:
+      - UBTU-18-010420
+      - CAT1
+      - CCI-002418
+      - CCI-002420
+      - CCI-00242
+      - CCI-002422
+      - SRG-OS-000423-GPOS-00187
+      - SV-219313r610963_rule
+      - V-219313
+      - ssh
+
+- name: "HIGH | UBTU-18-010424 | PATCH | The Ubuntu operating system must not allow unattended or automatic login via ssh."
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+  notify: restart sshd
+  with_items:
+      - { regexp: '^PermitEmptyPasswords ', line: 'PermitEmptyPasswords no' }
+      - { regexp: '^PermitUserEnvironment ', line: 'PermitUserEnvironment no'}
+  when:
+      - ubtu_18_010424
+  tags:
+      - UBTU-18-010424
+      - CAT1
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00229
+      - V-219314r610963_rule
+      - V-219314
+      - ssh
+
+- name: "HIGH | UBTU-18-010426 | PATCH | The Ubuntu operating system must map the authenticated identity to the user or group account for PKI-based authentication."
+  block:
+      - name: "HIGH | UBTU-18-010426 | PATCH | The Ubuntu operating system must map the authenticated identity to the user or group account for PKI-based authentication. | Install libpam-pkcs11"
+        package:
+            name: libpam-pkcs11
+            state: present
+        when: "'libpam-pkcs11' not in ansible_facts.packages"
+
+      - name: "HIGH | UBTU-18-010426 | AUDIT | The Ubuntu operating system must map the authenticated identity to the user or group account for PKI-based authentication. | Check for pam_pkcs11.conf"
+        stat:
+            path: /etc/pam_pkcs11/pam_pkcs11.conf
+        register: ubtu_18_010426_pam_pkcs11_conf_stat
+
+      - name: "HIGH | UBTU-18-010426 | PATCH | The Ubuntu operating system must map the authenticated identity to the user or group account for PKI-based authentication. | Template pam_pkcs11.conf if does not exist"
+        template:
+            src: pam_pkcs11.conf.j2
+            dest: /etc/pam_pkcs11/pam_pkcs11.conf
+        when:
+            - not ubtu_18_010426_pam_pkcs11_conf_stat.stat.exists
+
+      - name: "HIGH | UBTU-18-010426 | PATCH | The Ubuntu operating system must map the authenticated identity to the user or group account for PKI-based authentication. | Set use_mappers if pam_pkcs11.conf exists"
+        replace:
+            path: /etc/pam_pkcs11/pam_pkcs11.conf
+            regexp: 'use_mappers =.*'
+            replace: 'use_mappers = pwent;'
+        when:
+            - ubtu_18_010426_pam_pkcs11_conf_stat.stat.exists
+  when:
+      - ubtu_18_010426
+  tags:
+      - UBTU-18-010426
+      - CAT1
+      - CCI-000187
+      - SRG-OS-000068-GPOS-00036
+      - SV-219316r610963_rule
+      - V-219316
+      - pam
+      - authentication
+
+- name: "HIGH | UBTU-18-010522 | PATCH | The Ubuntu operating system must not have accounts configured with blank or null passwords."
+  block:
+      - name: "HIGH | UBTU-18-010522 | AUDIT | The Ubuntu operating system must not have accounts configured with blank or null passwords. | Get users with blank passwords"
+        shell: "awk -F: '!$2 {print $1}' /etc/shadow"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu_18_010522_blank_pw_users
+
+      - name: "HIGH | UBTU-18-010522 | AUDIT | The Ubuntu operating system must not have accounts configured with blank or null passwords. | Warn on users with blank passwords"
+        debug:
+            msg:
+                - "Alert! You have users that are not using passwords. Please either set a password, lock, or remove the accounts below:"
+                - "{{ ubtu_18_010522_blank_pw_users.stdout_lines }}"
+        when:
+            - ubtu_18_010522_blank_pw_users.stdout | length > 0
+            - not ubtu18stig_disruption_high
+
+      - name: "HIGH | UBTU-18-010522 | PATCH | The Ubuntu operating system must not have accounts configured with blank or null passwords. | Lock accounts with blank passwords"
+        user:
+            name: "{{ item }}"
+            password_lock: yes
+        with_items:
+            - "{{ ubtu_18_010522_blank_pw_users.stdout_lines }}"
+        when:
+            - ubtu_18_010522_blank_pw_users.stdout | length > 0
+            - ubtu18stig_disruption_high
+  when:
+      - ubtu_18_010522
+  tags:
+      - UBTU-18-010522
+      - CAT1
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-251506r808515_rule
+      - V-251506
+      - users
+      - accounts
+
+- name: "HIGH | UBTU-18-010523 | PATCH | The Ubuntu operating system must not allow accounts configured with blank or null passwords."
+  replace:
+      path: /etc/pam.d/common-password
+      regexp: ' nullok'
+      replace: ''
+  when:
+      - ubtu_18_010523
+  tags:
+      - UBTU-18-010523
+      - CAT1
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-251507r808518_rule
+      - V-251507
+      - pamd

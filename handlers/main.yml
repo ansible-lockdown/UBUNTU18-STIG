@@ -8,3 +8,10 @@
 
 - name: dconf update
   command: dconf update
+
+- name: restart sshd
+  service:
+      name: sshd
+      state: restarted
+  when:
+      - "'openssh-server' in ansible_facts.packages"
