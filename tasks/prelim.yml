@@ -33,3 +33,19 @@
   tags:
       - cat1
       - high
+
+- name: "PRELIM | Install auditd"
+  package:
+      name: auditd
+      state: present
+  when:
+      - "'auditd' not in ansible_facts.packages"
+      - ubtu_18_010006
+
+- name: "PRELIM | Intall audisp-remote plugin"
+  package:
+      name: audispd-plugins
+      state: present
+  when:
+      - ubtu_18_010007 or
+        ubtu_18_010025

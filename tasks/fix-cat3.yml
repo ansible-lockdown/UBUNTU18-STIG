@@ -1,0 +1,84 @@
+---
+
+- name: "LOW | UBTU-18-010006 | PATCH | The Ubuntu operating system must immediately notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity."
+  block:
+      - name: "LOW | UBTU-18-010006 | PATCH | The Ubuntu operating system must immediately notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity. | Set action_mail_acct when set to email"
+        lineinfile:
+            path: /etc/audit/auditd.conf
+            regexp: '(?i)^#?action_mail_acct ='
+            line: 'action_mail_acct = {{ ubtu18stig_auditd_action_mail_acct }}'
+        when: ubtu18stig_auditd_space_left_action == "email"
+
+      - name: "LOW | UBTU-18-010006 | PATCH | The Ubuntu operating system must immediately notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity. | Set spact_left_action and space_left"
+        lineinfile:
+            path: /etc/audit/auditd.conf
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+        with_items:
+            - { regexp: '(?i)^#?space_left_action =', line: 'space_left_action = {{ ubtu18stig_auditd_space_left_action }}' }
+            - { regexp: '(?i)^#?space_left =', line: 'space_left = {{ ubtu18stig_auditd_space_left }}' }
+  when:
+      - ubtu_18_010006
+  tags:
+      - UBTU-18-010006
+      - CAT3
+      - CCI-001855
+      - SRG-OS-000343-GPOS-00134
+      - SV-219152r610963_rule
+      - V-219152
+      - auditd
+
+- name: |
+    "LOW | UBTU-18-010007 | PATCH | The Ubuntu operating system audit event multiplexor must be configured to off-load audit logs onto a different system in real time, if the system is interconnected.
+     LOW | UBTU-18-010025 | PATCH | The Ubuntu operating system audit event multiplexor must be configured to off-load audit logs onto a different system or storage media from the system being audited."
+  lineinfile:
+      path: "{{ item.path }}"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+  notify: restart auditd
+  with_items:
+      - { path: '/etc/audisp/plugins.d/au-remote.conf', regexp: '(?i)^#?active =', line: 'active = yes' }
+      - { path: '/etc/audisp/audisp-remote.conf', regexp: '(?i)^#?remote_server =', line: 'remote_server = {{ ubtu18stig_audispd_remote_servers }}' }
+  when:
+      - ubtu_18_010007 or
+        ubtu_18_010025
+  tags:
+      - UBTU-18-010007
+      - CAT3
+      - CCI-001851
+      - SRG-OS-000479-GPOS-00224
+      - SRG-OS-000342-GPOS-00133
+      - SV-219153r610963_rule
+      - SV-219162r610963_rule
+      - V-219153
+      - V-219162
+      - auditd
+
+- name: "LOW | UBTU-18-010008 | PATCH | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems."
+  shell: /bin/true
+  changed_when: false
+  failed_when: false
+  when:
+      - ubtu_18_010008
+  tags:
+      - UBTU-18-010008
+      - CAT3
+      - CCI-001851
+      - SRG-OS-000479-GPOS-00224
+      - SV-219154r610963_rule
+      - V-219154
+      - cron
+      - not_implemented
+
+- name: "LOW | UBTU-18-010030 | PATCH | The Ubuntu operating system must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day."
+
+  when:
+      - ubtu_18_010030
+  tags:
+      - UBTU-18-010030
+      - CAT3
+      - CCI-002007
+      - SRG-OS-000383-GPOS-00166
+      - SV-219163r610963_rule
+      - V-219163
+      - pam

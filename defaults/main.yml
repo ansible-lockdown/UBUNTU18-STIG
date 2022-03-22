@@ -59,6 +59,12 @@ ubtu_18_010426: true
 ubtu_18_010522: true
 ubtu_18_010523: true
 
+# CAT 2 Rules
+
+# CAT 3 Rules
+ubtu_18_010006: true
+ubtu_18_010007: true
+ubtu_18_010008: true
 
 # Service configuration variables, set to true to keep service
 ubtu18stig_nis_required: false
@@ -66,7 +72,7 @@ ubtu18stig_rsh_required: false
 ubtu18stig_telnet_required: false
 
 # The variables below are related to specific tasks
-# Cat 1
+# CAT 1
 
 # UBTU-18-010000
 # Passowrd protect bootloader
@@ -85,3 +91,23 @@ ubtu18_allowed_sudoers:
 # group if they do not match the list above.
 # Set this value to false and the task will just message out the list of users in the sudo group
 ubtu18_auto_remove_sudoers: true
+
+# Cat 2
+
+# CAT 3
+
+# UBTU-18-010006
+# ubtu18cis_auditd_space_left_action is the setting on which who is notified when audit record storage volume
+# reaches 75% of the repository maximum
+# To conform to STIG standards this value needs to be exec or email
+ubtu18stig_auditd_space_left_action: "email"
+# ubtu18stig_auditd_action_mail_acct is the email account used when ubtu18stig_auditd_space_left_action is set to email
+ubtu18stig_auditd_action_mail_acct: root
+# ubtu18cis_auditd_space_left is the setting for how much space (as a percentage) is left before alerting the space_left_action accounts
+# To conform to STIG standards this value nees to be 25% or less
+ubtu18stig_auditd_space_left: 25
+
+# UBTU-18-010007
+# UBTU-18-010025
+# ubtu18stig_audispd_remote_servers is the address of the remote server recieving the auditd logs
+ubtu18stig_audispd_remote_servers: 10.10.10.10
