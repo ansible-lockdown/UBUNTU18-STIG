@@ -1,17 +1,23 @@
 ---
+
+- name: "PRELIM | Include Parse /etc/passwd"
+  import_tasks: parse_etc_passwd.yml
+  when:
+      - ubtu_18_010447
+
 - name: "PRELIM | Run apt update"
   apt:
       update_cache: yes
 
 - name: "PRELIM | UBTU-18-010000 | Check whether machine is UEFI-based"
   stat:
-    path: /sys/firmware/efi
+      path: /sys/firmware/efi
   register: ubtu_18_sys_firmware_efi
   when:
-  - ubtu_18_010000
+      - ubtu_18_010000
   tags:
-  - cat1
-  - high
+      - cat1
+      - high
 
 - name: "PRELIM | UBTU-18-010150 | dconf setup"
   block:
@@ -42,10 +48,28 @@
       - "'auditd' not in ansible_facts.packages"
       - ubtu_18_010006
 
-- name: "PRELIM | Intall audisp-remote plugin"
+- name: "PRELIM | Install audisp-remote plugin"
   package:
       name: audispd-plugins
       state: present
   when:
       - ubtu_18_010007 or
         ubtu_18_010025
+
+- name: "PRELIM | Install sssd package"
+  package:
+      name: sssd
+      state: present
+  when:
+      - "'sssd' not in ansible_facts.packages"
+      - ubtu18stig_cat3_patch
+      - ubtu_18_010030
+
+- name: "PRELIM | Install Chrony"
+  package:
+      name: chrony
+      state: present
+  when:
+      - "'chrony' not in ansible_facts.packages"
+      - ubtu18stig_cat3_patch
+      - ubtu_18_010502

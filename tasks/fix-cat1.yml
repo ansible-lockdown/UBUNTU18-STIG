@@ -180,7 +180,7 @@
       - CAT1
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-219212r610963_rule
+      - SV-219212r832928_rule
       - V-219212
       - service
 
@@ -208,6 +208,7 @@
         package:
             name: ssh
             state: present
+        when: "'ssh' not in ansible_facts.packages"
 
       - name: "HIGH | UBTU-18-010420 | PATCH | The Ubuntu operating system must use SSH to protect the confidentiality and integrity of transmitted information unless otherwise protected by alternative physical safeguards, such as, at a minimum, a Protected Distribution System (PDS). | Enable SSH"
         service:
@@ -221,7 +222,7 @@
       - CAT1
       - CCI-002418
       - CCI-002420
-      - CCI-00242
+      - CCI-002421
       - CCI-002422
       - SRG-OS-000423-GPOS-00187
       - SV-219313r610963_rule
@@ -338,6 +339,6 @@
       - CAT1
       - CCI-000366
       - SRG-OS-000480-GPOS-00227
-      - SV-251507r808518_rule
+      - SV-251507r832931_rule
       - V-251507
       - pamd

@@ -47,17 +47,17 @@ ubtu_18_010000: true
 ubtu_18_010001: true
 ubtu_18_010005: true
 ubtu_18_010018: true
-ubtu_18_010019: true
-ubtu_18_010037: true
-ubtu_18_010105: true
-ubtu_18_010150: true
-ubtu_18_010151: true
-ubtu_18_010412: true
-ubtu_18_010420: true
-ubtu_18_010424: true
-ubtu_18_010426: true
-ubtu_18_010522: true
-ubtu_18_010523: true
+ubtu_18_010019: false
+ubtu_18_010037: false
+ubtu_18_010105: false
+ubtu_18_010150: false
+ubtu_18_010151: false
+ubtu_18_010412: false
+ubtu_18_010420: false
+ubtu_18_010424: false
+ubtu_18_010426: false
+ubtu_18_010522: false
+ubtu_18_010523: false
 
 # CAT 2 Rules
 
@@ -65,6 +65,24 @@ ubtu_18_010523: true
 ubtu_18_010006: true
 ubtu_18_010007: true
 ubtu_18_010008: true
+ubtu_18_010025: true
+ubtu_18_010030: true
+ubtu_18_010031: true
+ubtu_18_010032: true
+ubtu_18_010100: true
+ubtu_18_010101: true
+ubtu_18_010102: true
+ubtu_18_010103: true
+ubtu_18_010106: true
+ubtu_18_010107: true
+ubtu_18_010108: true
+ubtu_18_010145: true
+ubtu_18_010314: true
+ubtu_18_010400: true
+ubtu_18_010437: true
+ubtu_18_010447: true
+ubtu_18_010502: true
+ubtu_18_010503: true
 
 # Service configuration variables, set to true to keep service
 ubtu18stig_nis_required: false
@@ -104,10 +122,99 @@ ubtu18stig_auditd_space_left_action: "email"
 # ubtu18stig_auditd_action_mail_acct is the email account used when ubtu18stig_auditd_space_left_action is set to email
 ubtu18stig_auditd_action_mail_acct: root
 # ubtu18cis_auditd_space_left is the setting for how much space (as a percentage) is left before alerting the space_left_action accounts
-# To conform to STIG standards this value nees to be 25% or less
+# To conform to STIG standards this value needs to be 25% or less
+# The Admin space left is not part of the STIG, but can't be more than the space_left value
 ubtu18stig_auditd_space_left: 25
+ubtu18stig_auditd_admin_space_left: 20
 
 # UBTU-18-010007
 # UBTU-18-010025
 # ubtu18stig_audispd_remote_servers is the address of the remote server recieving the auditd logs
 ubtu18stig_audispd_remote_servers: 10.10.10.10
+
+# UBTU-18-010031
+# ubtu18stig_pamd_faildelay are the pam.d placement settings and value for the delay
+# The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-auth, which is used
+# as a referrence in adding the auth required pam_faildelay.so delay= value if pam_faildelay does not already exist.
+# The state value determines before or after the stated type/control/module_path.
+# The delay setting is is in microseconds and needs to be a minimum 4 seconds (4000000) to conform to STIG standards
+ubtu18stig_pamd_faildelay:
+    type: auth
+    control: required
+    module_path: pam_permit.so
+    state: after
+    delay: 4000000
+
+# UBTU-18-010032
+# ubtu18stig_pamd_showfailed are the pam.d placement settings and for the showfail setting.
+# The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/login, which is used
+# as a referrence in adding the showfail parameter. 
+ubtu18stig_pamd_showfailed:
+    type: session
+    control: required
+    module_path: pam_limits.so
+    state: before
+
+# UBTU-18-010100
+# ubtu18cis_pwquality_ucredit is the value set to the ucredit parameter in the /etc/security/pwquality.conf file
+# To conform to STIG standards the value can be no larger than -1, so the next incremental value should be -2
+ubtu18stig_pwquality_ucredit: "-1"
+
+# UBTU-18-010101
+# ubtu18stig_pwquality_lcredit is the value set to the lcredit parameter in the /etc/security/pwquality.conf file
+# To conform to STIG standards the value can be no larger than -1, so the next incremental value should be -2
+ubtu18stig_pwquality_lcredit: "-1"
+
+# UBTU-18-010102
+# ubtu18stig_pwquality_dcredit is the value set to the dcredit parameter in the /etc/security/pwquality.conf file
+# To conform to STIG standards the value can be no larger than -1, so the next incremental value should be -2
+ubtu18stig_pwquality_dcredit: "-1"
+
+# UBTU-18-010103
+# ubtu18stig_pwquality_difok is the value set to the difork parameter in the /etc/security/pwquality.conf file
+# To conform to STIG standards the value can be no less than 8. 
+ubtu18stig_pwquality_difok: 8
+
+# UBTU-18-010106
+# ubtu18stig_pass_min_days is the value for PASS_MIN_DAYS, which is the minimum number of days for a PW's lifetime
+# To conform to STIG standards this value can be no smaller than 1 
+ubtu18stig_pass_min_days: 1
+
+# UBTU-18-010107
+# ubtu18stig_pass_max_days is the value for PASS_MAX_DAYS, which is the maximum nubmer of days for a PW's lifetime
+# To conform to STIG standards this value can be no smaller than 60
+ubtu18stig_pass_max_days: 60
+
+# UBTU-18-010108
+# ubtu18stig_pamd_remember are the pam.d placement settings and value for password remember setting
+# The settings, type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
+# as a referrence in adding the password [success default] pam_unix.so remember values if pam_unix.so with success/default do not already exist.
+# new_control is the value for the success and deafult with pam_unix.so
+# remember is the number of generations to remember, this value should be no less than 5. 
+ubtu18stig_pamd_remember:
+        new_control: "[success=1 default=ignore]"
+        type: password
+        control: requisite
+        module_path: pam_pwquality.so
+        state: after
+        remember: 5
+
+# UBTU-18-010145
+# ubtu18stig_pwquality_ocredit is the value for number of special characters
+# To conform to STIG standards this value can be no larger than -1, so the next incremental value should be -2
+ubtu18stig_pwquality_ocredit: "-1"
+
+# UBTU-18-010400
+# ubtu18stig_maxlogins is max number of concurrent sessions
+# To conform to STIG standards this value can be no larger than 10. 
+ubtu18stig_maxlogins: 10
+
+# ubtu18stig_chrony will be all of the settings needed for chrony
+# ubtu18stig_010502
+# makestep is the value for the chrony makestep threshhold limit
+ubtu18stig_chrony:
+        makestep: "1 -1"
+
+# UBTU-18-010503
+# ubtu18cis_timezone is the timezone to configure the host in
+ubtu18cis_timezone: "EST"

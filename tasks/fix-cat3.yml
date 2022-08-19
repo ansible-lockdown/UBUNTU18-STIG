@@ -17,6 +17,7 @@
         with_items:
             - { regexp: '(?i)^#?space_left_action =', line: 'space_left_action = {{ ubtu18stig_auditd_space_left_action }}' }
             - { regexp: '(?i)^#?space_left =', line: 'space_left = {{ ubtu18stig_auditd_space_left }}' }
+            - { regexp: '(?i)^#?admin_space_left =', line: 'admin_space_left = {{ ubtu18stig_auditd_admin_space_left }}' }
   when:
       - ubtu_18_010006
   tags:
@@ -71,7 +72,11 @@
       - not_implemented
 
 - name: "LOW | UBTU-18-010030 | PATCH | The Ubuntu operating system must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day."
-
+  lineinfile:
+      path: /etc/sssd/sssd.conf
+      regexp: '^offline_credentials_expiration =|^#offline_credentials_expiration ='
+      line: "offline_credentials_expiration = 1"
+      create: true
   when:
       - ubtu_18_010030
   tags:
@@ -82,3 +87,375 @@
       - SV-219163r610963_rule
       - V-219163
       - pam
+
+- name: "LOW | UBTU-18-010031 | PATCH | The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt."
+  block:
+      - name: "LOW | UBTU-18-010031 | AUDIT | The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt. | Get current faildelay.so settings"
+        shell: grep 'auth.*required.*pam_faildelay.so delay=' /etc/pam.d/common-auth
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010031_faildelay_state
+
+      - name: "LOW | UBTU-18-010031 | PATCH | The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt. | Set if no faildelay.so settings"
+        pamd:
+            name: common-auth
+            type: auth
+            control: required
+            module_path: pam_faildelay.so
+            module_arguments: delay={{ ubtu18stig_pamd_faildelay.delay }}
+            state: args_present
+        when: ubtu_18_010031_faildelay_state.stdout | length > 0
+
+      - name: "LOW | UBTU-18-010031 | PATCH | The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt. | Set if faildelay.so settings exist"
+        pamd:
+            name: common-auth
+            type: "{{ ubtu18stig_pamd_faildelay.type }}"
+            control: "{{ ubtu18stig_pamd_faildelay.control }}"
+            module_path: "{{ ubtu18stig_pamd_faildelay.module_path }}"
+            new_type: auth
+            new_control: required
+            new_module_path: pam_faildelay.so
+            module_arguments: "delay={{ ubtu18stig_pamd_faildelay.delay }}"
+            state: "{{ ubtu18stig_pamd_faildelay.state }}"
+        when: ubtu_18_010031_faildelay_state.stdout | length == 0
+  when:
+      - ubtu_18_010031
+  tags:
+      - UBTU-18-010031
+      - CAT3
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00226
+      - SV-219164r610963_rule
+      - V-219164
+      - pam
+
+- name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon."
+  block:
+      - name: "LOW | UBTU-18-010032 | AUDIT | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Get pam_lastlog.so showfailed status"
+        shell: grep 'session.*required.*pam_lastlog.so' /etc/pam.d/login
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010031_showfailed_state
+
+      - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Set if no showfail"
+        pamd:
+            name: login
+            type: session
+            control: required
+            module_path: pam_lastlog.so
+            module_arguments: showfailed
+            state: args_present
+        when: ubtu_18_010031_showfailed_state.stdout | length > 0
+
+      - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Set if showfail exists"
+        pamd:
+            name: login
+            type: "{{ ubtu18stig_pamd_showfailed.type }}"
+            control: "{{ ubtu18stig_pamd_showfailed.control }}"
+            module_path: "{{ ubtu18stig_pamd_showfailed.module_path }}"
+            new_type: session
+            new_control: required
+            new_module_path: pam_lastlog.so
+            module_arguments: showfailed
+            state: "{{ ubtu18stig_pamd_showfailed.state }}"
+        when: ubtu_18_010031_showfailed_state.stdout | length == 0
+  when:
+      - ubtu_18_010032
+  tags:
+      - UBTU-18-010032
+      - CAT3
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-219165r610963_rule
+      - V-219165
+      - pamd
+
+- name: "LOW | UBTU-18-010100 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one upper-case character be used."
+  lineinfile:
+      path: /etc/security/pwquality.conf
+      regexp: '^ucredit.*=|^#.*ucredit.*='
+      line: ucredit={{ ubtu18stig_pwquality_ucredit }}
+  when:
+      - ubtu_18_010100
+  tags:
+      - UBTU-18-010100
+      - CAT3
+      - CCI-000192
+      - SRG-OS-000069-GPOS-00037
+      - SV-219172r610963_rule
+      - V-219172
+      - login
+
+- name: "LOW | UBTU-18-010101 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one lower-case character be used."
+  lineinfile:
+      path: /etc/security/pwquality.conf
+      regexp: '^lcredit.*=|^#.*lcredit.*='
+      line: lcredit={{ ubtu18stig_pwquality_lcredit }}
+  when:
+      - ubtu_18_010101
+  tags:
+      - UBTU-18-010101
+      - CAT3
+      - CCI-000193
+      - SRG-OS-000070-GPOS-00038
+      - SV-219173r610963_rule
+      - V-219173
+      - login
+
+- name: "LOW | UBTU-18-010102 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one numeric character be used."
+  lineinfile:
+      path: /etc/security/pwquality.conf
+      regexp: '^dcredit.*=|^#.*dcredit.*='
+      line: dcredit={{ ubtu18stig_pwquality_dcredit }}
+  when:
+      - ubtu_18_010102
+  tags: 
+      - UBTU-18-010102
+      - CAT3
+      - CCI-000194
+      - SRG-OS-000071-GPOS-00039
+      - SV-219174r610963_rule
+      - V-219174
+      - login
+
+- name: "LOW | UBTU-18-010103 | PATCH | The Ubuntu operating system must require the change of at least 8 characters when passwords are changed."
+  lineinfile:
+      path: /etc/security/pwquality.conf
+      regexp: '^difok.*=|^#.*difok.*='
+      line: difok={{ ubtu18stig_pwquality_difok }}
+  when:
+      - ubtu_18_010103
+  tags:
+      - UBTU-18-010103
+      - CAT3
+      - CCI-000195
+      - SRG-OS-000072-GPOS-00040
+      - SV-219175r610963_rule
+      - V-219175
+      - login
+
+- name: "LOW | UBTU-18-010106 | PATCH | The Ubuntu operating system must enforce 24 hours/1 day as the minimum password lifetime. Passwords for new users must have a 24 hours/1 day minimum password lifetime restriction."
+  lineinfile:
+      path: /etc/login.defs
+      regexp: '^PASS_MIN_DAYS|^#.*PASS_MIN_DAYS'
+      line: "PASS_MIN_DAYS   {{ ubtu18stig_pass_min_days }}"
+  when: 
+      - ubtu_18_010106
+  tags: 
+      - UBTU-18-010106
+      - CAT3
+      - CCI-000198
+      - SRG-OS-000075-GPOS-00043
+      - SV-219178r610963_rule
+      - V-219178
+      - login
+
+- name: "LOW | UBTU-18-010107 | PATCH | The Ubuntu operating system must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction."
+  lineinfile:
+      path: /etc/login.defs
+      regexp: '^PASS_MAX_DAYS|^#.*PASS_MAX_DAYS'
+      line: "PASS_MAX_DAYS   {{ ubtu18stig_pass_max_days }}"
+  when:
+      - ubtu_18_010107
+  tags:
+      - UBTU-18-010107
+      - CAT3
+      - CCI-000199
+      - SRG-OS-000076-GPOS-00044
+      - SV-219179r610963_rule
+      - V-219179
+      - login
+
+- name: "LOW | UBTU-18-010108 | PATCH | The Ubuntu operating system must prohibit password reuse for a minimum of five generations."
+  block:
+      - name: "LOW | UBTU-18-010108 | AUDIT | The Ubuntu operating system must prohibit password reuse for a minimum of five generations. | Get password remember status"
+        shell: grep '^password.*[success=2 default=ignore].*pam_unix.so' /etc/pam.d/common-password
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010108_remember
+
+      - name: "LOW | UBTU-18-010108 | PATCH | The Ubuntu operating system must prohibit password reuse for a minimum of five generations. | Add remember if doesn't exist"
+        pamd:
+            name: common-password
+            type: password
+            control: "{{ ubtu18stig_pamd_remember.new_control }}"
+            module_path: pam_unix.so
+            module_arguments: remember={{ ubtu18stig_pamd_remember.remember }}
+            state: args_present
+        when: ubtu_18_010108_remember.stdout | length > 0
+
+      - name: "LOW | UBTU-18-010108 | PATCH | The Ubuntu operating system must prohibit password reuse for a minimum of five generations. | Add remember exists"
+        pamd:
+            name: common-password
+            type: "{{ ubtu18stig_pamd_remember.type }}"
+            control: "{{ ubtu18stig_pamd_remember.control }}"
+            module_path: "{{ ubtu18stig_pamd_remember.module_path }}"
+            new_type: password
+            new_control: "{{ ubtu18stig_pamd_remember.new_control }}"
+            new_module_path: pam_unix.so
+            module_arguments: "remember={{ ubtu18stig_pamd_remember.remember }}"
+            state: "{{ ubtu18stig_pamd_remember.state }}"
+        when: ubtu_18_010108_remember.stdout | length == 0
+  when:
+      - ubtu_18_010108
+  tags:
+      - UBTU-18-010108
+      - CAT3
+      - CCI-000200
+      - SRG-OS-000077-GPOS-00045
+      - SV-219180r610963_rule
+      - V-219180
+      - pamd
+
+- name: "LOW | UBTU-18-010145 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one special character be used."
+  lineinfile:
+      path: /etc/security/pwquality.conf
+      regexp: '^ocredit.*=|^#.*ocredit.*='
+      line: ocredit={{ ubtu18stig_pwquality_ocredit }}
+  when:
+      - ubtu_18_010145
+  tags:
+      - UBTU-18-010145
+      - CAT3
+      - CCI-001619
+      - SRG-OS-000266-GPOS-00101
+      - SV-219210r610963_rule
+      - V-219210
+      - login
+
+- name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
+  block:
+      - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Get audit log partition"
+        shell: grep log_file /etc/audit/auditd.conf | grep -v max | awk '{print $3}' | sed 's|\(.*\)/.*|\1|'
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010314_audit_log_path
+
+      - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Get size of the audit partition"
+        shell: "df -h {{ ubtu_18_010314_audit_log_path.stdout }} | sed 1d"
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010314_audit_log_partition
+
+      - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Message out partition size"
+        debug:
+            msg:
+                - "Warning!! Below is the path and size of the partition for hte audit logs."
+                - "Please make sure there is enough disk space for 1 weeks worth of logs and logs are on their own partition"
+                - "Path: {{ ubtu_18_010314_audit_log_path.stdout }}"
+                - "Disk Space: {{ ubtu_18_010314_audit_log_partition.stdout }}"
+  when:
+      - ubtu_18_010314
+  tags:
+      - UBTU-18-010314
+      - CAT3
+      - CCI-001849
+      - SRG-OS-000341-GPOS-00132
+      - SV-219237r610963_rule
+      - V-219237
+      - logging
+      - mounts
+
+# Control asks for this value to be at the top of the file, but it should go at the end. 
+- name: "LOW | UBTU-18-010400 | PATCH | The Ubuntu operating system must limit the number of concurrent sessions to ten for all accounts and/or account types."
+  lineinfile:
+      path: /etc/security/limits.conf
+      regexp: '^\*               hard    maxlogins'
+      line: '*               hard    maxlogins       {{ ubtu18stig_maxlogins }}'
+      insertbefore: '^# End of file'
+      create: yes
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - ubtu_18_010400
+  tags:
+      - UBTU-18-010400
+      - CAT3
+      - CCI-000054
+      - SRG-OS-000027-GPOS-00008
+      - SV-219301r802366_rule
+      - V-219301
+      - login
+
+- name: "LOW | UBTU-18-010437 | PATCH | Pam_Apparmor must be configured to allow system administrators to pass information to any other Ubuntu operating system administrator or user, change security attributes, and to confine all non-privileged users from executing functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures."
+  block:
+      - name: "LOW | UBTU-18-010437 | PATCH | Pam_Apparmor must be configured to allow system administrators to pass information to any other Ubuntu operating system administrator or user, change security attributes, and to confine all non-privileged users from executing functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures. | Install Apparmor"
+        package:
+            name: libpam-apparmor
+            state: present
+        when: "'libpam-apparmor' not in ansible_facts.packages"
+
+      - name: "LOW | UBTU-18-010437 | PATCH | Pam_Apparmor must be configured to allow system administrators to pass information to any other Ubuntu operating system administrator or user, change security attributes, and to confine all non-privileged users from executing functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures. | Enable/Start Apparmor service"
+        systemd:
+            name: apparmor
+            state: started
+            enabled: true
+  when:
+      - ubtu_18_010437
+  tags:
+      - UBTU-18-010437
+      - CAT3
+      - CCI-002165
+      - CCI-002235
+      - SRG-OS-000312-GPOS-00122
+      - SV-219322r610963_rule
+      - V-219322
+      - pam
+      - apparmor
+
+- name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours."
+  debug:
+      msg:
+          - "Warning!! Below are the system accounts. If any where emergency accounts plese make sure they are removed or disabled after the crisis is resovled or within 72 hours"
+          - "{{ ubtu18stig_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
+  when:
+      - ubtu_18_010447
+  tags:
+      - UBTU-18-010447
+      - CAT3
+      - CCI-001682
+      - SRG-OS-000123-GPOS-00064
+      - SV-219327r610963_rule
+      - V-219327
+      - accounts
+
+- name: "LOW | UBTU-18-010502 | PATCH | The Ubuntu operating system must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second."
+  lineinfile:
+      path: /etc/chrony/chrony.conf
+      regexp: '^makestep|^#makestep'
+      line: makestep {{ ubtu18stig_chrony.makestep }}
+  notify: restart chrony
+  when:
+      - ubtu_18_010502
+  tags:
+      - UBTU-18-010502
+      - CAT3
+      - CCI-002046
+      - SRG-OS-000356-GPOS-00144
+      - SV-219332r610963_rule
+      - V-219332
+      - chrony
+
+- name: "LOW | UBTU-18-010503 | PATCH | The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT)."
+  block:
+      - name: "LOW | UBTU-18-010503 | PATCH | The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT). | Get timezone status"
+        shell: timedatectl status | grep -i "time zone"
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010503_current_timezone
+
+      - name: "LOW | UBTU-18-010503 | PATCH | The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT). | Set timezone"
+        shell: timedatectl set-timezone {{ ubtu18cis_timezone }}
+        changed_when: true
+        when: ubtu18cis_timezone not in ubtu_18_010503_current_timezone.stdout
+  when:
+      - ubtu_18_010503
+  tags:
+      - UBTU-18-010503
+      - CAT3
+      - CCI-001890
+      - SRG-OS-000359-GPOS-00146
+      - SV-219333r610963_rule
+      - V-219333
+      - time

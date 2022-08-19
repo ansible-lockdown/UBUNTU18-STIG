@@ -53,9 +53,9 @@
 #       - cat2
 #       - medium
 
-# - name: Include CAT III patches
-#   import_tasks: fix-cat3.yml
-#   when: ubtu18stig_cat3_patch | bool
-#   tags:
-#       - cat3
-#       - low
+- name: Include CAT III patches
+  import_tasks: fix-cat3.yml
+  when: ubtu18stig_cat3_patch | bool
+  tags:
+      - cat3
+      - low
