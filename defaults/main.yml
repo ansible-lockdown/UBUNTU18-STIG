@@ -47,19 +47,24 @@ ubtu_18_010000: true
 ubtu_18_010001: true
 ubtu_18_010005: true
 ubtu_18_010018: true
-ubtu_18_010019: false
-ubtu_18_010037: false
-ubtu_18_010105: false
-ubtu_18_010150: false
-ubtu_18_010151: false
-ubtu_18_010412: false
-ubtu_18_010420: false
-ubtu_18_010424: false
-ubtu_18_010426: false
-ubtu_18_010522: false
-ubtu_18_010523: false
+ubtu_18_010019: true
+ubtu_18_010037: true
+ubtu_18_010105: true
+ubtu_18_010150: true
+ubtu_18_010151: true
+ubtu_18_010412: true
+ubtu_18_010420: true
+ubtu_18_010424: true
+ubtu_18_010426: true
+ubtu_18_010522: true
+ubtu_18_010523: true
 
 # CAT 2 Rules
+ubtu_18_010002: true
+ubtu_18_010003: true
+ubtu_18_010016: true
+ubtu_18_010017: true
+ubtu_18_010021: true
 
 # CAT 3 Rules
 ubtu_18_010006: true
