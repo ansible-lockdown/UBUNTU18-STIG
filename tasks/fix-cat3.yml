@@ -137,7 +137,7 @@
         failed_when: false
         register: ubtu_18_010031_showfailed_state
 
-      - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Set if no showfail"
+      - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Set if noshowfail exists"
         pamd:
             name: login
             type: session
@@ -147,7 +147,7 @@
             state: args_present
         when: ubtu_18_010031_showfailed_state.stdout | length > 0
 
-      - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Set if showfail exists"
+      - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Set if no noshowfail"
         pamd:
             name: login
             type: "{{ ubtu18stig_pamd_showfailed.type }}"

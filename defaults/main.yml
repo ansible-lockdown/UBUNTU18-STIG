@@ -1,8 +1,5 @@
 ---
-# If you would like a report at the end accordin to OpenSCAP as to the report results
-# then you should set ubtu18stig_oscap_scan to true/yes.
-# NOTE: This requires the python_xmltojson package on the control host.
-ubtu18stig_oscap_scan: no
+
 ubtu18stig_report_dir: /tmp
 
 ubtu18stig_cat1_patch: true
@@ -26,7 +23,7 @@ ubtu18stig_disruption_high: true
 
 # Show "changed" for disruptive items not remediated per disruption-high
 # setting to make them stand out.
-ubtu18stig_audit_disruptive: yes
+ubtu18stig_audit_disruptive: true
 
 ubtu18stig_skip_for_travis: false
 
@@ -65,6 +62,11 @@ ubtu_18_010003: true
 ubtu_18_010016: true
 ubtu_18_010017: true
 ubtu_18_010021: true
+ubtu_18_010022: true
+ubtu_18_010023: true
+ubtu_18_010033: true
+ubtu_18_010035: true
+ubtu_18_010036: true
 
 # CAT 3 Rules
 ubtu_18_010006: true
@@ -88,6 +90,10 @@ ubtu_18_010437: true
 ubtu_18_010447: true
 ubtu_18_010502: true
 ubtu_18_010503: true
+
+# ubtu18cis_desktop_required is the toggle to turn on desktop related controls
+# value of true will run tasks that are intended for the desktop, false will skip desktop related controls
+ubtu18cis_desktop_required: false
 
 # Service configuration variables, set to true to keep service
 ubtu18stig_nis_required: false
@@ -116,6 +122,50 @@ ubtu18_allowed_sudoers:
 ubtu18_auto_remove_sudoers: true
 
 # Cat 2
+# UBTU-18-010033
+# ubtu18stig_pamd_faillock are the settings related to the pam_faillock.so module and controls
+# The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-auth, which is used
+# as a referrence in adding the auth required pam_faillock.so authfail and authsucc settings if pam_faillock.so does not already exist.
+# The state value determines before or after the stated type/control/module_path.
+# deny is the number of failed login attempts before denying access. This value needs to be 3 or lower
+# fail_interval is how long the account is lockedout in seconds. This value needs to be 900 or less
+ubtu18stig_pamd_faillock:
+    type: auth
+    control: "[success=1 default=ignore]"
+    module_path: pam_unix.so
+    state: after
+    deny: 3
+    fail_interval: 900
+
+# UBTU-18-010035
+# ubtu18cis_warning_banner is the banner to be displayed when logging into a system
+ubtu18cis_warning_banner: |
+    You are accessing a U.S. Government (USG) Information System (IS) that is
+    provided for USG-authorized use only.
+
+    By using this IS (which includes any device attached to this IS), you consent
+    to the following conditions:
+
+    -The USG routinely intercepts and monitors communications on this IS for
+    purposes including, but not limited to, penetration testing, COMSEC monitoring,
+    network operations and defense, personnel misconduct (PM), law enforcement
+    (LE), and counterintelligence (CI) investigations.
+
+    -At any time, the USG may inspect and seize data stored on this IS.
+
+    -Communications using, or data stored on, this IS are not private, are subject
+    to routine monitoring, interception, and search, and may be disclosed or used
+    for any USG-authorized purpose.
+
+    -This IS includes security measures (e.g., authentication and access controls)
+    to protect USG interests--not for your personal benefit or privacy.
+
+    -Notwithstanding the above, using this IS does not constitute consent to PM, LE
+    or CI investigative searching or monitoring of the content of privileged
+    communications, or work product, related to personal representation or services
+    by attorneys, psychotherapists, or clergy, and their assistants. Such
+    communications and work product are private and confidential. See User
+    ßAgreement for details.'
 
 # CAT 3
 
@@ -153,7 +203,7 @@ ubtu18stig_pamd_faildelay:
 # UBTU-18-010032
 # ubtu18stig_pamd_showfailed are the pam.d placement settings and for the showfail setting.
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/login, which is used
-# as a referrence in adding the showfail parameter. 
+# as a referrence in adding the showfail parameter.
 ubtu18stig_pamd_showfailed:
     type: session
     control: required
@@ -177,12 +227,12 @@ ubtu18stig_pwquality_dcredit: "-1"
 
 # UBTU-18-010103
 # ubtu18stig_pwquality_difok is the value set to the difork parameter in the /etc/security/pwquality.conf file
-# To conform to STIG standards the value can be no less than 8. 
+# To conform to STIG standards the value can be no less than 8.
 ubtu18stig_pwquality_difok: 8
 
 # UBTU-18-010106
 # ubtu18stig_pass_min_days is the value for PASS_MIN_DAYS, which is the minimum number of days for a PW's lifetime
-# To conform to STIG standards this value can be no smaller than 1 
+# To conform to STIG standards this value can be no smaller than 1
 ubtu18stig_pass_min_days: 1
 
 # UBTU-18-010107
@@ -195,14 +245,14 @@ ubtu18stig_pass_max_days: 60
 # The settings, type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
 # as a referrence in adding the password [success default] pam_unix.so remember values if pam_unix.so with success/default do not already exist.
 # new_control is the value for the success and deafult with pam_unix.so
-# remember is the number of generations to remember, this value should be no less than 5. 
+# remember is the number of generations to remember, this value should be no less than 5.
 ubtu18stig_pamd_remember:
-        new_control: "[success=1 default=ignore]"
-        type: password
-        control: requisite
-        module_path: pam_pwquality.so
-        state: after
-        remember: 5
+    new_control: "[success=1 default=ignore]"
+    type: password
+    control: requisite
+    module_path: pam_pwquality.so
+    state: after
+    remember: 5
 
 # UBTU-18-010145
 # ubtu18stig_pwquality_ocredit is the value for number of special characters
@@ -211,14 +261,14 @@ ubtu18stig_pwquality_ocredit: "-1"
 
 # UBTU-18-010400
 # ubtu18stig_maxlogins is max number of concurrent sessions
-# To conform to STIG standards this value can be no larger than 10. 
+# To conform to STIG standards this value can be no larger than 10.
 ubtu18stig_maxlogins: 10
 
 # ubtu18stig_chrony will be all of the settings needed for chrony
 # ubtu18stig_010502
 # makestep is the value for the chrony makestep threshhold limit
 ubtu18stig_chrony:
-        makestep: "1 -1"
+    makestep: "1 -1"
 
 # UBTU-18-010503
 # ubtu18cis_timezone is the timezone to configure the host in

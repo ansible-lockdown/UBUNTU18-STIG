@@ -31,7 +31,7 @@
         package:
             name: dconf-cli
             state: present
-        when: 
+        when:
             - ubtu18stig_dconf_status.stdout == ""
             - "'dconf-cli' not in ansible_facts.packages"
   when:
@@ -55,6 +55,15 @@
   when:
       - ubtu_18_010007 or
         ubtu_18_010025
+
+- name: "PRELIM | Install rsyslog"
+  package:
+      name: rsyslog
+      state: present
+  when:
+      - "'rsyslog' not in ansible_facts.packages"
+      - ubtu18stig_cat2_patch
+      - ubtu_18_010022
 
 - name: "PRELIM | Install sssd package"
   package:

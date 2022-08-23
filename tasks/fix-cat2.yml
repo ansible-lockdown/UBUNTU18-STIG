@@ -134,18 +134,177 @@
       - V-219156
       - apt
 
-- name: "MEDIUM | UBTU-18-010021 | PATCH | The Ubuntu operating system must deploy Endpoint Security for Linux Threat Prevention (ENSLTP)."
+# There is no mfetp package available. The McAfee instructions have you download the installer from their portal. This package may no longer be available
+# - name: "MEDIUM | UBTU-18-010021 | PATCH | The Ubuntu operating system must deploy Endpoint Security for Linux Threat Prevention (ENSLTP)."
+#   package:
+#       name: mfetp
+#       state: present
+#   when:
+#       - ubtu_18_010021
+#       - '"mfetp" not in ansible_facts.packages'
+#   tags:
+#       - UBTU-18-010021
+#       - CAT2
+#       - CCI-001233
+#       - SRG-OS-000191-GPOS-00080
+#       - SV-219159r610963_rule
+#       - V-219159
+#       - ensltp
+
+- name: "MEDIUM | UBTU-18-010022 | PATCH | The Ubuntu operating system must be configured to preserve log records from failure events."
+  service:
+      name: rsyslog
+      state: started
+      enabled: true
+  when:
+      - ubtu_18_010022
+  tags:
+      - UBTU-18-010022
+      - CAT2
+      - CCI-001665
+      - SRG-OS-000269-GPOS-00103
+      - SV-219160r610963_rule
+      - V-219160
+      - rsyslog
+
+- name: "MEDIUM | UBTU-18-010023 | PATCH | The Ubuntu operating system must have an application firewall installed in order to control remote access methods."
   package:
-      name: mfetp
+      name: ufw
       state: present
   when:
-      - ubtu_18_010021
-      - '"mfetp" not in ansible_facts.packages'
+      - ubtu_18_010023
   tags:
-      - UBTU-18-010021
+      - UBTU-18-010023
       - CAT2
-      - CCI-001233
-      - SRG-OS-000191-GPOS-00080
-      - SV-219159r610963_rule
-      - V-219159
-      - ensltp
+      - CCI-002314
+      - SRG-OS-000297-GPOS-00115
+      - SV-219161r610963_rule
+      - V-219161
+      - ufw
+      - firewall
+
+- name: "MEDIUM | UBTU-18-010033 | PATCH | The Ubuntu operating system must be configured so that three consecutive invalid logon attempts by a user automatically locks the account until released by an administrator."
+  block:
+      - name: "MEDIUM | UBTU-18-010033 | AUDIT | The Ubuntu operating system must be configured so that three consecutive invalid logon attempts by a user automatically locks the account until released by an administrator. | Find pam_faillock.so authfail"
+        shell: 'grep "auth.*\[default=die\].*pam_faillock.so" /etc/pam.d/common-auth'
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010033_authfail_status
+
+      - name: "MEDIUM | UBTU-18-010033 | AUDIT | The Ubuntu operating system must be configured so that three consecutive invalid logon attempts by a user automatically locks the account until released by an administrator. | Find pam_faillock.so authsucc"
+        shell: grep "auth.*sufficient.*pam_faillock.so" /etc/pam.d/common-auth
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010033_authsucc_status
+
+      - name: "MEDIUM | UBTU-18-010033 | PATCH | The Ubuntu operating system must be configured so that three consecutive invalid logon attempts by a user automatically locks the account until released by an administrator. | Set if authsucc doesn't exist"
+        pamd:
+            name: common-auth
+            type: "{{ ubtu18stig_pamd_faillock.type }}"
+            control: "{{ ubtu18stig_pamd_faillock.control }}"
+            module_path: "{{ ubtu18stig_pamd_faillock.module_path }}"
+            new_type: auth
+            new_control: sufficient
+            new_module_path: pam_faillock.so
+            module_arguments: authsucc
+            state: "{{ ubtu18stig_pamd_faillock.state }}"
+        when: ubtu_18_010033_authsucc_status.stdout | length == 0
+
+      - name: "MEDIUM | UBTU-18-010033 | PATCH | The Ubuntu operating system must be configured so that three consecutive invalid logon attempts by a user automatically locks the account until released by an administrator. | Set if authfail doesn't exist"
+        pamd:
+            name: common-auth
+            type: "{{ ubtu18stig_pamd_faillock.type }}"
+            control: "{{ ubtu18stig_pamd_faillock.control }}"
+            module_path: "{{ ubtu18stig_pamd_faillock.module_path }}"
+            new_type: auth
+            new_control: "[default=die]"
+            new_module_path: pam_faillock.so
+            module_arguments: authfail
+            state: "{{ ubtu18stig_pamd_faillock.state }}"
+        when: ubtu_18_010033_authfail_status.stdout | length == 0
+
+      - name: "MEDIUM | UBTU-18-010033 | PATCH | The Ubuntu operating system must be configured so that three consecutive invalid logon attempts by a user automatically locks the account until released by an administrator. | Set authsucc does exist"
+        pamd:
+            name: common-auth
+            type: auth
+            control: sufficient
+            module_path: pam_faillock.so
+            module_arguments: authsucc
+            state: args_present
+        when: ubtu_18_010033_authsucc_status.stdout | length > 0
+
+      - name: "MEDIUM | UBTU-18-010033 | PATCH | The Ubuntu operating system must be configured so that three consecutive invalid logon attempts by a user automatically locks the account until released by an administrator. | Set if authfail does exist"
+        pamd:
+            name: common-auth
+            type: auth
+            control: "[default=die]"
+            module_path: pam_faillock.so
+            module_arguments: authfail
+            state: args_present
+        when: ubtu_18_010033_authfail_status.stdout | length > 0
+
+      - name: "MEDIUM | UBTU-18-010033 | PATCH | The Ubuntu operating system must be configured so that three consecutive invalid logon attempts by a user automatically locks the account until released by an administrator. | Update faillock.conf"
+        lineinfile:
+            path: /etc/security/faillock.conf
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+        with_items:
+            - { regexp: '^#.*audit', line: audit }
+            - { regexp: '^#.*silent', line: silent }
+            - { regexp: '^deny.*=|^#.*deny.*=', line: "deny = {{ ubtu18stig_pamd_faillock.deny }}" }
+            - { regexp: '^fail_interval.*=|^#.*fail_interval.*=', line: "fail_interval = {{ ubtu18stig_pamd_faillock.fail_interval }}" }
+            - { regexp: '^unlock_time.*=|^#.*unlock_time.*=', line: "unlock_time = 0" }
+  when:
+      - ubtu_18_010033
+  tags:
+      - UBTU-18-010033
+      - CAT2
+      - CCI-000044
+      - CCI-002238
+      - SRG-OS-000021-GPOS-00005
+      - SV-219166r802355_rule
+      - V-219166
+      - pamd
+
+- name: "MEDIUM | UBTU-18-010035 | PATCH | The Ubuntu operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting local access to the system via a graphical user logon. | Set banner settings"
+  lineinfile:
+      path: /etc/gdm3/greeter.dconf-defaults
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      insertafter: "{{ item.insertafter }}"
+      create: true
+      owner: root
+      group: root
+      mode: 0644
+  notify:
+      - reload gdm
+      - dconf update
+  with_items:
+      - { regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]', insertafter: EOF }
+      - { regexp: 'banner-message-enable', line: 'banner-message-enable=true', insertafter: '\[org\/gnome\/login-screen\]'}
+      - { regexp: 'banner-message-text', line: 'banner-message-text={{ ubtu18cis_warning_banner }}', insertafter: 'banner-message-enable' }
+  when:
+      - ubtu_18_010035
+      - ubtu18cis_desktop_required
+  tags:
+      - UBTU-18-010035
+      - CAT2
+      - CCI-000050
+      - SRG-OS-000024-GPOS-00007
+      - SV-219167r610963_rule
+      - V-219167
+      - banner
+
+- name: "MEDIUM | UBTU-18-010036 | PATCH | The Ubuntu operating system must prevent direct login into the root account."
+
+  when:
+      - ubtu_18_010036
+  tags:
+      - UBTU-18-010036
+      - CAT2
+      - CCI-000770
+      - SRG-OS-000109-GPOS-00056
+      - SV-219168r610963_rule
+      - V-219168
+      - accounts
+

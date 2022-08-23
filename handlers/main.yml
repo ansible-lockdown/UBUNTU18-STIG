@@ -1,10 +1,13 @@
 ---
 
-- name: update grub
-  command: update-grub
-  when:
-      - not ubtu18stig_skip_for_travis
-      - not ubtu18stig_system_is_container
+# - name: update grub
+#   command: update-grub
+#   when:
+#       - not ubtu18stig_skip_for_travis
+#       - not ubtu18stig_system_is_container
+
+- name: reload gdm
+  command: dpkg-reconfigure gdm3
 
 - name: dconf update
   command: dconf update
