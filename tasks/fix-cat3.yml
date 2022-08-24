@@ -209,7 +209,7 @@
       line: dcredit={{ ubtu18stig_pwquality_dcredit }}
   when:
       - ubtu_18_010102
-  tags: 
+  tags:
       - UBTU-18-010102
       - CAT3
       - CCI-000194
@@ -239,9 +239,9 @@
       path: /etc/login.defs
       regexp: '^PASS_MIN_DAYS|^#.*PASS_MIN_DAYS'
       line: "PASS_MIN_DAYS   {{ ubtu18stig_pass_min_days }}"
-  when: 
+  when:
       - ubtu_18_010106
-  tags: 
+  tags:
       - UBTU-18-010106
       - CAT3
       - CCI-000198
@@ -356,14 +356,14 @@
       - logging
       - mounts
 
-# Control asks for this value to be at the top of the file, but it should go at the end. 
+# Control asks for this value to be at the top of the file, but it should go at the end.
 - name: "LOW | UBTU-18-010400 | PATCH | The Ubuntu operating system must limit the number of concurrent sessions to ten for all accounts and/or account types."
   lineinfile:
       path: /etc/security/limits.conf
       regexp: '^\*               hard    maxlogins'
       line: '*               hard    maxlogins       {{ ubtu18stig_maxlogins }}'
       insertbefore: '^# End of file'
-      create: yes
+      create: true
       owner: root
       group: root
       mode: 0644

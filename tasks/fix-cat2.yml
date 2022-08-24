@@ -283,6 +283,8 @@
       - { regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]', insertafter: EOF }
       - { regexp: 'banner-message-enable', line: 'banner-message-enable=true', insertafter: '\[org\/gnome\/login-screen\]'}
       - { regexp: 'banner-message-text', line: 'banner-message-text={{ ubtu18cis_warning_banner }}', insertafter: 'banner-message-enable' }
+  loop_control:
+      label: "{{ item.regexp }}"
   when:
       - ubtu_18_010035
       - ubtu18cis_desktop_required
@@ -296,7 +298,9 @@
       - banner
 
 - name: "MEDIUM | UBTU-18-010036 | PATCH | The Ubuntu operating system must prevent direct login into the root account."
-
+  user:
+      name: root
+      password_lock: true
   when:
       - ubtu_18_010036
   tags:
@@ -308,3 +312,287 @@
       - V-219168
       - accounts
 
+- name: "MEDIUM | UBTU-18-010038 | PATCH | The Ubuntu operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting any publically accessible connection to the system."
+  block:
+      - name: "MEDIUM | UBTU-18-010038 | PATCH | The Ubuntu operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting any publically accessible connection to the system. | Uncomment banner keyword and set banner path"
+        lineinfile:
+            path: /etc/ssh/sshd_config
+            regexp: '(?i)^#?Banner'
+            line: Banner /etc/issue
+        when:
+            - ubtu18stig_ssh_required
+
+      - name: "MEDIUM | UBTU-18-010038 | PATCH | The Ubuntu operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting any publically accessible connection to the system. | Set banner message"
+        copy:
+            dest: "{{ item }}"
+            content: "{{ ubtu18cis_warning_banner }}"
+            owner: root
+            group: root
+            mode: '0644'
+        notify: restart sshd
+        with_items:
+            - /etc/issue
+            - /etc/issue.net
+  when:
+      - ubtu_18_010038
+      - ubtu18stig_ssh_required
+  tags:
+      - UBTU-18-010038
+      - CAT2
+      - CCI-000048
+      - CCI-001384
+      - CCI-001385
+      - CCI-001386
+      - CCI-001387
+      - CCI-001388
+      - SRG-OS-000228-GPOS-00088
+      - SV-219170r610963_rule
+      - V-219170
+      - banner
+
+- name: "MEDIUM | UBTU-18-010104 | PATCH | The Ubuntu operating system must encrypt all stored passwords with a FIPS 140-2 approved cryptographic hashing algorithm."
+  lineinfile:
+      path: /etc/login.defs
+      regexp: '^ENCRYPT_METHOD.*'
+      line: "ENCRYPT_METHOD {{ ubtu18stig_login_defaults.encrypt_method | default('SHA512') }}"
+  when:
+      - ubtu_18_010104
+  tags:
+      - UBTU-18-010104
+      - CAT2
+      - CCI-000196
+      - SRG-OS-000073-GPOS-00041
+      - SV-219176r610963_rule
+      - V-219176
+      - fips
+      - encryption
+
+- name: "MEDIUM | UBTU-18-010109 | PATCH | The Ubuntu operating system must enforce a minimum 15-character password length."
+  lineinfile:
+      path: /etc/security/pwquality.conf
+      regexp: '^#?\s*minlen'
+      line: "minlen = {{ ubtu18stig_password_complexity.minlen | default('15') }}"
+      create: true
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - ubtu_18_010109
+  tags:
+      - UBTU-18-010109
+      - CAT2
+      - CCI-000205
+      - SRG-OS-000078-GPOS-00046
+      - SV-219181r610963_rule
+      - V-219181
+      - accounts
+
+- name: "MEDIUM | UBTU-18-010110 | PATCH | The Ubuntu operating system must employ a FIPS 140-2 approved cryptographic hashing algorithms for all created and stored passwords."
+  block:
+      - name: "MEDIUM | UBTU-18-010110 | AUDIT | The Ubuntu operating system must employ a FIPS 140-2 approved cryptographic hashing algorithms for all created and stored passwords. | Get status of pam_unix.so"
+        shell: grep 'password.*{{ ubtu18stig_pamd_encryption.new_control }}.*pam_unix.so' /etc/pam.d/common-password
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010110_pam_unix_so
+
+      - name: "MEDIUM | UBTU-18-010110 | PATCH | The Ubuntu operating system must employ a FIPS 140-2 approved cryptographic hashing algorithms for all created and stored passwords. | Add encryption if pam_unix exists"
+        pamd:
+            name: common-password
+            type: password
+            control: "{{ ubtu18stig_pamd_encryption.new_control }}"
+            module_path: pam_unix.so
+            module_arguments: "{{ ubtu18stig_pamd_encryption.encryption }}"
+            state: args_present
+        when: ubtu_18_010110_pam_unix_so.stdout | length > 0
+
+      - name: "MEDIUM | UBTU-18-010110 | PATCH | The Ubuntu operating system must employ a FIPS 140-2 approved cryptographic hashing algorithms for all created and stored passwords. | Add encryption if pam_unix doesn't exists"
+        pamd:
+            name: common-password
+            type: "{{ ubtu18stig_pamd_encryption.type }}"
+            control: "{{ ubtu18stig_pamd_encryption.control }}"
+            module_path: "{{ ubtu18stig_pamd_encryption.module_path }}"
+            new_type: password
+            new_control: "{{ ubtu18stig_pamd_encryption.new_control }}"
+            new_module_path: pam_unix.so
+            module_arguments: "{{ ubtu18stig_pamd_encryption.encryption }}"
+            state: "{{ ubtu18stig_pamd_encryption.state }}"
+        when: ubtu_18_010110_pam_unix_so.stdout | length == 0
+
+      - name: "MEDIUM | UBTU-18-010110 | PATCH | The Ubuntu operating system must employ a FIPS 140-2 approved cryptographic hashing algorithms for all created and stored passwords. | Add ENCRYPT_METHOD"
+        lineinfile:
+            path: /etc/login.defs
+            regexp: '^ENCRYPT_METHOD'
+            line: "ENCRYPT_METHOD {{ ubtu18stig_login_defaults.encrypt_method }}"
+  when:
+      - ubtu_18_010110
+  tags:
+      - UBTU-18-010110
+      - CAT2
+      - CCI-000803
+      - SRG-OS-000120-GPOS-00061
+      - SV-219182r610963_rule
+      - V-219182
+      - pamd
+      - encryption
+
+- name: "MEDIUM | UBTU-18-010112 | AUDIT | The Ubuntu operating system must allow the use of a temporary password for system logons with an immediate change to a permanent password."
+  debug:
+      msg:
+          - "Warning!! Please create a policy that ensures when a user is created, it is created using a method that forces a user to change their password upon their next login."
+          - 'For example: "chage -d 0 [UserName]" or "passwd -e [UserName]"'
+  when:
+      - ubtu_18_010112
+  tags:
+      - UBTU-18-010112
+      - CAT2
+      - CCI-002041
+      - SRG-OS-000380-GPOS-00165
+      - SV-219183r610963_rule
+      - V-219183
+      - passwords
+      - accounts
+
+- name: "MEDIUM | UBTU-18-010113 | PATCH | The Ubuntu operating system must prevent the use of dictionary words for passwords."
+  lineinfile:
+      path: /etc/security/pwquality.conf
+      regexp: '^dictcheck='
+      line: 'dictcheck={{ ubtu18stig_password_complexity.dictcheck }}'
+      create: true
+      owner: root
+      group: root
+      mode: 0644
+  when:
+      - ubtu_18_010113
+  tags:
+      - UBTU-18-010113
+      - CAT2
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00225
+      - SV-219184r610963_rule
+      - V-219184
+      - passwords
+
+- name: "MEDIUM | UBTU-18-010114 | PATCH | The Ubuntu operating system must require users to re-authenticate for privilege escalation and changing roles."
+  replace:
+      path: /etc/sudoers
+      regexp: "{{ item.regexp }}"
+      replace: "{{ item.replace }}"
+  with_items:
+      - { regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)', replace: '\1PASSWD\2' }
+      - { regexp: '^([^#].*)!authenticate(.*)', replace: '\1authenticate\2' }
+  loop_control:
+      label: "{{ item.replace }}"
+  when:
+      - ubtu_18_010114
+  tags:
+      - UBTU-18-010114
+      - CAT2
+      - CCI-002038
+      - SRG-OS-000373-GPOS-00156
+      - SV-219185r610963_rule
+      - V-219185
+      - sudo
+
+- name: "MEDIUM | UBTU-18-010116 | PATCH | The Ubuntu Operating system must be configured so that when passwords are changed or new passwords are established, pwquality must be used."
+  block:
+      - name: "MEDIUM | UBTU-18-010116 | AUDIT | The Ubuntu Operating system must be configured so that when passwords are changed or new passwords are established, pwquality must be used. | Find the pamd settings"
+        shell: grep 'password.*requisite.*pam_pwquality.so' /etc/pam.d/common-password
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010116_pam_pwquality_so
+
+      - name: "MEDIUM | UBTU-18-010116 | PATCH | The Ubuntu Operating system must be configured so that when passwords are changed or new passwords are established, pwquality must be used. | Add retry setting if exists"
+        pamd:
+            name: common-password
+            type: password
+            control: requisite
+            module_path: pam_pwquality.so
+            module_arguments: "retry={{ ubtu18stig_pam_pwquality_retry }}"
+            state: args_present
+        when: ubtu_18_010116_pam_pwquality_so.stdout | length > 0
+
+      - name: "MEDIUM | UBTU-18-010116 | PATCH | The Ubuntu Operating system must be configured so that when passwords are changed or new passwords are established, pwquality must be used. | Add retry setting if doesn't exists"
+        pamd:
+            name: common-password
+            type: "{{ ubtu18stig_pamd_retry.type }}"
+            control: "{{ ubtu18stig_pamd_retry.control }}"
+            module_path: "{{ ubtu18stig_pamd_retry.module_path }}"
+            new_type: password
+            new_control: requisite
+            new_module_path: pam_pwquality.so
+            module_arguments: "retry={{ ubtu18stig_pam_pwquality_retry }}"
+            state: "{{ ubtu18stig_pamd_retry.state }}"
+        when: ubtu_18_010116_pam_pwquality_so.stdout | length == 0
+
+      - name: "MEDIUM | UBTU-18-010116 | PATCH | The Ubuntu Operating system must be configured so that when passwords are changed or new passwords are established, pwquality must be used. | Install libpam-pwquality"
+        package:
+            name: libpam-pwquality
+            state: present
+        when: "'libpam-pwquality' not in ansible_facts.packages"
+
+      - name: "MEDIUM | UBTU-18-010116 | PATCH | The Ubuntu Operating system must be configured so that when passwords are changed or new passwords are established, pwquality must be used. | Set the enforcing setting"
+        lineinfile:
+            path: /etc/security/pwquality.conf
+            regexp: '^enforcing =|^#.*enforcing ='
+            line: 'enforcing ='
+  when:
+      - ubtu_18_010116
+  tags:
+      - UBTU-18-010116
+      - CAT2
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00225
+      - SV-219186r610963_rule
+      - V-219186
+      - pamd
+      - pwquality
+      - login
+
+- name: "MEDIUM | UBTU-18-010120 | PATCH | The Ubuntu operating system must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources."
+  block:
+      - name: "MEDIUM | UBTU-18-010120 | PATCH | The Ubuntu operating system must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources. | Find world-writable directories"
+        shell: "find / -type d \\( -perm -002 ! -perm -1000 \\) -print 2>/dev/null | sed 's/.* //'"
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010120_world_writable_directories
+
+      - name: "MEDIUM | UBTU-18-010120 | PATCH | The Ubuntu operating system must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources. | Add sticky bit to world-writable directories"
+        file:
+            path: "{{ item }}"
+            mode: '1777'
+        with_items:
+            - "{{ ubtu_18_010120_world_writable_directories.stdout_lines }}"
+        when: ubtu_18_010120_world_writable_directories.stdout | length > 0
+  when:
+      - ubtu_18_010120
+  tags:
+      - UBTU-18-010120
+      - CAT2
+      - CCI-001090
+      - SRG-OS-000138-GPOS-00069
+      - SV-219187r610963_rule
+      - V-219187
+      - permissions
+
+- name: "MEDIUM | UBTU-18-010121 | PATCH | The Ubuntu operating system must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries."
+  block:
+      - name: "MEDIUM | UBTU-18-010121 | AUDIT | The Ubuntu operating system must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries. | Find if files exist"
+        shell: find /var/log -perm /137 -type f -exec stat -c "%n %a" {} \;
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010121_var_log_permissions
+
+      - name: "MEDIUM | UBTU-18-010121 | PATCH | The Ubuntu operating system must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries. | Fix files"
+        shell: find /var/log -perm /137 -type f -exec chmod 640 '{}' \;
+        changed_when: true
+        when: ubtu_18_010121_var_log_permissions.stdout | length > 0
+  when:
+      - ubtu_18_010121
+  tags:
+      - UBTU-18-010121
+      - CAT2
+      - CCI-001312
+      - SRG-OS-000205-GPOS-00083
+      - SV-219188r610963_rule
+      - V-219188
+      - permissions

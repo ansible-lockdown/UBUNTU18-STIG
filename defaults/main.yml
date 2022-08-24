@@ -67,6 +67,16 @@ ubtu_18_010023: true
 ubtu_18_010033: true
 ubtu_18_010035: true
 ubtu_18_010036: true
+ubtu_18_010038: true
+ubtu_18_010104: true
+ubtu_18_010109: true
+ubtu_18_010110: true
+ubtu_18_010112: true
+ubtu_18_010113: true
+ubtu_18_010114: true
+ubtu_18_010116: true
+ubtu_18_010120: true
+ubtu_18_010121: true
 
 # CAT 3 Rules
 ubtu_18_010006: true
@@ -94,6 +104,9 @@ ubtu_18_010503: true
 # ubtu18cis_desktop_required is the toggle to turn on desktop related controls
 # value of true will run tasks that are intended for the desktop, false will skip desktop related controls
 ubtu18cis_desktop_required: false
+
+# Install and enable ssh on networked systems
+ubtu18stig_ssh_required: true
 
 # Service configuration variables, set to true to keep service
 ubtu18stig_nis_required: false
@@ -140,7 +153,7 @@ ubtu18stig_pamd_faillock:
 # UBTU-18-010035
 # ubtu18cis_warning_banner is the banner to be displayed when logging into a system
 ubtu18cis_warning_banner: |
-    You are accessing a U.S. Government (USG) Information System (IS) that is
+    'You are accessing a U.S. Government (USG) Information System (IS) that is
     provided for USG-authorized use only.
 
     By using this IS (which includes any device attached to this IS), you consent
@@ -165,7 +178,59 @@ ubtu18cis_warning_banner: |
     communications, or work product, related to personal representation or services
     by attorneys, psychotherapists, or clergy, and their assistants. Such
     communications and work product are private and confidential. See User
-    ßAgreement for details.'
+    Agreement for details.'
+
+# UBTU-18-010104
+# UBTU-18-010110
+# encrypt_method is the encryption method and to conform to STIG standards needs to be SHA512
+ubtu18stig_login_defaults:
+    encrypt_method: SHA512
+    # pass_min_days: 1
+    # pass_max_days: 60
+    # fail_delay_secs: 4
+    # umask: '077'
+    # create_home: 'yes'
+
+# UBTU-18-010109
+# Password complexity settings
+ubtu18stig_password_complexity:
+    # ucredit: -1
+    # lcredit: -1
+    # dcredit: -1
+    # ocredit: -1
+    # difok: 8
+    # minclass: 4
+    # maxrepeat: 3
+    # maxclassrepeat: 4
+    minlen: 15
+    dictcheck: 1
+
+# UBTU-18-010110
+# ubtu18stig_pamd_encryption are the pam_unix settings related to setting the encryption schema for logins.
+# The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
+# as a referrence in adding the pam_unix.so entry and encryption parameter.
+# new_control is the control settings for the pam_unix.so settings, by default we have the default value entered here. It can be
+# modified 
+ubtu18stig_pamd_encryption:
+    new_control: "[success=1 default=ignore]"
+    type: password
+    control: requisite
+    module_path: pam_deny.so
+    state: before
+    encryption: sha512
+
+# UBTU-18-010116
+# ubtu18cis_pam_pwquality_retry is the number of times a password entry fails before warning with an error
+# To conform with STIG standards this value needs to be higher than 0 but no more than 3
+ubtu18stig_pam_pwquality_retry: 3
+# ubtu18stig_pamd_retry are the settings related to adding the pam_pwquality.so retry value.
+# The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
+# as a referrence in adding the pam_pwquality.so entry and retry parameter.
+ubtu18stig_pamd_retry:
+  type: password
+  control: requisite
+  module_path: pam_deny.so
+  state: after
 
 # CAT 3
 
