@@ -36,6 +36,8 @@ ubtu18stig_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
 # tweak role to run in a non-privileged container
 ubtu18stig_system_is_container: false
 
+system_is_ec2: false
+
 # These variables correspond with the STIG IDs defined in the STIG and allows you to enable/disable specific rules.
 # PLEASE NOTE: These work in coordination with the cat1, cat2, cat3 group variables. You must enable an entire group
 # in order for the variables below to take effect.
@@ -77,6 +79,27 @@ ubtu_18_010114: true
 ubtu_18_010116: true
 ubtu_18_010120: true
 ubtu_18_010121: true
+ubtu_18_010122: true
+ubtu_18_010123: true
+ubtu_18_010124: true
+ubtu_18_010125: true
+ubtu_18_010126: true
+ubtu_18_010127: true
+ubtu_18_010128: true
+ubtu_18_010129: true
+ubtu_18_010130: true
+ubtu_18_010133: true
+ubtu_18_010134: true
+ubtu_18_010135: true
+ubtu_18_010136: true
+ubtu_18_010137: true
+ubtu_18_010138: true
+ubtu_18_010139: true
+ubtu_18_010140: true
+ubtu_18_010141: true
+ubtu_18_010142: true
+ubtu_18_010143: true
+ubtu_18_010144: true
 
 # CAT 3 Rules
 ubtu_18_010006: true
@@ -231,6 +254,40 @@ ubtu18stig_pamd_retry:
   control: requisite
   module_path: pam_deny.so
   state: after
+
+# UBTU-18-010124
+# ubtu18cis_var_log_perms is the permissions on the /var/log directory
+# To conform to STIG starndards this needs to be 0750 or more restrictive
+ubtu18cis_var_log_perms: 750
+
+# UBTU-18-010127
+# ubtu18cis_var_log_syslog_perms is the permissions on the /var/log/syslog file
+# To conform to STIG standards this needs to be 0640 or more restrictive
+ubtu18cis_var_log_syslog_perms: 640
+
+# ubtu18cis_tool_perms is the permissions set to the /sbin/auditctl, /sbin/aureport,
+# /sbin/ausearch, /sbin/autrace, /sbin/auditd, /sbin/audispd, /sbin/augenrules tools
+# To conform to STIG standards this needs to be 0755 or more restrictive
+ubtu18cis_tool_perms: 755
+
+# UBTU-18-010133
+# ubtu18stig_lib_file_perms are the perms to put on all library files if they are found be less restricive than 755
+# To conform to STIG standards this value needs to be 755 or more restricive
+ubtu18stig_lib_file_perms: 755
+
+# UBTU-18-010134
+# ubtu18stig_lib_dir_perms are the perms to put on the library directories if they are found to be less restricive than 755
+# To conform to STIG standards this value needs to be 755 or more restricive
+ubtu18stig_lib_dir_perms: 755
+
+# UBTU-18-010129
+# ubtu18stig_sys_commands_perms are the permissions to put on the OS system command files if they are found to be less restricive than 755
+# To conform to STIG standards this value needs to be 755 or more restricive
+ubtu18stig_sys_commands_perms: 755
+
+# ubtu18stig_sys_comm_dir_perms are the permissions to put on the OS system commands directories if they are found to be less restricive than 755
+# To conform to STIG standards this value needs to be 755 or more restricive
+ubtu18stig_sys_comm_dir_perms: 755
 
 # CAT 3
 

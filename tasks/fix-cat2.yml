@@ -596,3 +596,612 @@
       - SV-219188r610963_rule
       - V-219188
       - permissions
+
+- name: |
+    "MEDIUM | UBTU-18-010122 | PATCH | The Ubuntu operating system must configure the /var/log directory to be group-owned by syslog."
+    "MEDIUM | UBTU-18-010123 | PATCH | The Ubuntu operating system must configure the /var/log directory to be owned by root."
+    "MEDIUM | UBTU-18-010124 | PATCH | The Ubuntu operating system must configure the /var/log directory to have mode 0750 or less permissive."
+  file:
+      path: /var/log
+      owner: "{{ ubtu_18_010123 | ternary('root',omit) }}"
+      group: "{{ ubtu_18_010122 | ternary('syslog',omit) }}"
+      mode: "{{ ubtu_18_010124 | ternary(ubtu18cis_var_log_perms,omit) }}"
+      state: directory
+  when:
+      - ubtu_18_010122 or
+        ubtu_18_010123 or
+        ubtu_18_010124
+  tags:
+      - UBTU-18-010122
+      - UBTU-18-010123
+      - UBTU-18-010124
+      - CAT2
+      - CCI-001314
+      - SRG-OS-000206-GPOS-00084
+      - SV-219189r610963_rule
+      - SV-219190r610963_rule
+      - SV-219191r610963_rule
+      - V-219189
+      - V-219190
+      - V-219191
+      - permissions
+
+- name: |
+    "MEDIUM | UBTU-18-010125 | PATCH | The Ubuntu operating system must configure the /var/log/syslog file to be group-owned by adm."
+    "MEDIUM | UBTU-18-010126 | PATCH | he Ubuntu operating system must configure /var/log/syslog file to be owned by syslog."
+    "MEDIUM | UBTU-18-010127 | PATCH | The Ubuntu operating system must configure /var/log/syslog file with mode 0640 or less permissive."
+  file:
+      path: /var/log/syslog
+      owner: "{{ ubtu_18_010126 | ternary('syslog',omit) }}"
+      group: "{{ ubtu_18_010125 | ternary('adm',omit) }}"
+      mode: "{{ ubtu_18_010127 | ternary(ubtu18cis_var_log_syslog_perms,omit) }}"
+      state: directory
+  when:
+      - ubtu_18_010125 or
+        ubtu_18_010126 or
+        ubtu_18_010127
+  tags:
+      - UBTU-18-010125
+      - UBTU-18-010126
+      - UBTU-18-010127
+      - CAT2
+      - CCI-001314
+      - SRG-OS-000206-GPOS-00084
+      - SV-219192r610963_rule
+      - SV-219193r610963_rule
+      - SV-219194r610963_rule
+      - V-219192
+      - V-219193
+      - V-219194
+      - permissions
+
+- name: |
+    "MEDIUM | UBTU-18-010128 | PATCH | The Ubuntu operating system must configure audit tools with a mode of 0755 or less permissive."
+    "MEDIUM | UBTU-18-010129 | PATCH | The Ubuntu operating system must configure audit tools to be owned by root."
+    "MEDIUM | UBTU-18-010130 | PATCH | The Ubuntu operating system must configure the audit tools to be group-owned by root."
+  block:
+      - name: |
+          "MEDIUM | UBTU-18-010128 | PATCH | The Ubuntu operating system must configure audit tools with a mode of 0755 or less permissive. | Find tools with less than 755 perms"
+          "MEDIUM | UBTU-18-010129 | PATCH | The Ubuntu operating system must configure audit tools to be owned by root."
+          "MEDIUM | UBTU-18-010130 | PATCH | The Ubuntu operating system must configure the audit tools to be group-owned by root."
+        shell: stat -c "%a %n" /sbin/auditctl, /sbin/aureport, /sbin/ausearch, /sbin/autrace, /sbin/auditd, /sbin/audispd, /sbin/augenrules | cut -f2 -d" "
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010129_tools
+
+      - name: |
+          "MEDIUM | UBTU-18-010128 | PATCH | The Ubuntu operating system must configure audit tools with a mode of 0755 or less permissive. | Set permissions to 755 on tools"
+          "MEDIUM | UBTU-18-010129 | PATCH | The Ubuntu operating system must configure audit tools to be owned by root."
+          "MEDIUM | UBTU-18-010130 | PATCH | The Ubuntu operating system must configure the audit tools to be group-owned by root."
+        file:
+            path: "{{ item }}"
+            owner: "{{ ubtu_18_010129 | ternary('root',omit) }}"
+            group: "{{ ubtu_18_010130 | ternary('root',omit) }}"
+            mode: "{{ ubtu_18_010128 | ternary(ubtu18cis_tool_perms,omit) }}"
+        with_items:
+            - "{{ ubtu_18_010129_tools.stdout_lines }}"
+        when: ubtu_18_010129_tools.stdout | length > 0
+  when:
+      - ubtu_18_010128 or
+        ubtu_18_010129 or
+        ubtu_18_010130
+  tags:
+      - UBTU-18-010128
+      - UBTU-18-010129
+      - CAT2
+      - CCI-001493
+      - CCI-001494
+      - CCI-001495
+      - SRG-OS-000256-GPOS-00097
+      - SV-219195r610963_rule
+      - SV-219196r610963_rule
+      - SV-219197r610963_rule
+      - V-219195
+      - V-219196
+      - V-219197
+      - permissions
+
+- name: |
+    "MEDIUM | UBTU-18-010133 | PATCH | The Ubuntu operating system library files must have mode 0755 or less permissive."
+    "MEDIUM | UBTU-18-010135 | PATCH | The Ubuntu operating system library files must be owned by root."
+    "MEDIUM | UBTU-18-010137 | PATCH | The Ubuntu operating system library files must be group-owned by root."
+  block:
+      - name: |
+          "MEDIUM | UBTU-18-010133 | AUDIT | The Ubuntu operating system library files must have mode 0755 or less permissive. | Get library files with mode 0755 or less"
+          "MEDIUM | UBTU-18-010135 | AUDIT | The Ubuntu operating system library files must be owned by root. | Get library files not owned by root"
+          "MEDIUM | UBTU-18-010137 | AUDIT | The Ubuntu operating system library files must be group-owned by root. | Get library files not group-owned by root"
+        shell: find /lib /lib64 /usr/lib \( ! -group root -o ! -user root -o -perm /022 \) -type f -exec stat -c "%n" '{}' \;
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010133_lib_files
+
+      - name: |
+          "MEDIUM | UBTU-18-010133 | PATCH | The Ubuntu operating system library files must have mode 0755 or less permissive. | Set library files with mode 0755 or more restrictive"
+          "MEDIUM | UBTU-18-010135 | PATCH | The Ubuntu operating system library files must be owned by root. | Set library files to be owned by root"
+          "MEDIUM | UBTU-18-010137 | PATCH | The Ubuntu operating system library files must be group-owned by root. | Set library files not group-owned by root"
+        file:
+            path: "{{ item }}"
+            owner: "{{ ubtu_18_010135 | ternary('root',omit) }}"
+            group: "{{ ubtu_18_010137 | ternary('root',omit) }}"
+            mode: "{{ ubtu_18_010133 | ternary(ubtu18stig_lib_file_perms,omit) }}"
+        with_items:
+            "{{ ubtu_18_010133_lib_files.stdout_lines }}"
+        when: ubtu_18_010133_lib_files.stdout | length > 0
+  when:
+      - ubtu_18_010133 or
+        ubtu_18_010135 or
+        ubtu_18_010137
+  tags:
+      - UBTU-18-010133
+      - UBTU-18-010135
+      - UBTU-18-010137
+      - CAT2
+      - CCI-001499
+      - SRG-OS-000259-GPOS-00100
+      - SV-219198r802358_rule
+      - SV-219200r610963_rule
+      - SV-219202r802361_rule
+      - V-219198
+      - V-219200
+      - V-219202
+      - permissions
+
+# - name: "MEDIUM | UBTU-18-010133 | PATCH | The Ubuntu operating system library files must have mode 0755 or less permissive."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010133 | AUDIT | The Ubuntu operating system library files must have mode 0755 or less permissive. | Get library files with mode 0755 or less"
+#         shell: find /lib /lib64 /usr/lib -perm /022 -type f -exec stat -c "%n %a" '{}' \; | cut -d" " -f1
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010133_lib_files
+
+#       - name: "MEDIUM | UBTU-18-010133 | PATCH | The Ubuntu operating system library files must have mode 0755 or less permissive. | Set library files with mode 0755 or more restrictive"
+#         file:
+#             path: "{{ item }}"
+#             mode: "{{ ubtu18stig_lib_file_perms }}"
+#         with_items:
+#             "{{ ubtu_18_010133_lib_files.stdout_lines }}"
+#         when: ubtu_18_010133_lib_files.stdout | length > 0
+#   when:
+#       - ubtu_18_010133
+#   tags:
+#       - UBTU-18-010133
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219198r802358_rule
+#       - V-219198
+#       - permissions
+- name: |
+    "MEDIUM | UBTU-18-010134 | PATCH | The Ubuntu operating system library directories must have mode 0755 or less permissive."
+    "MEDIUM | UBTU-18-010136 | PATCH | The Ubuntu operating system library directories must be owned by root."
+    "MEDIUM | UBTU-18-010138 | PATCH | The Ubuntu operating system library directories must be group-owned by root."
+  block:
+      - name: |
+          "MEDIUM | UBTU-18-010134 | AUDIT | The Ubuntu operating system library directories must have mode 0755 or less permissive. | Get library directories with 750 or less"
+          "MEDIUM | UBTU-18-010136 | AUDIT | The Ubuntu operating system library directories must be owned by root. | Get OS library directories not owned by root"
+          "MEDIUM | UBTU-18-010138 | AUDIT | The Ubuntu operating system library directories must be group-owned by root. | Get OS library directories not group-owned by root"
+        shell: find /lib /lib64 /usr/lib \( ! -group root -o ! -user root -o -perm /022 \) -type d -exec stat -c "%n" '{}' \;
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010134_lib_dirs
+
+      - name: |
+          "MEDIUM | UBTU-18-010134 | PATCH | The Ubuntu operating system library directories must have mode 0755 or less permissive. | Set library directories with 755 or more restrictive"
+          "MEDIUM | UBTU-18-010136 | PATCH | The Ubuntu operating system library directories must be owned by root. | Set OS library directories not owned by root"
+          "MEDIUM | UBTU-18-010138 | PATCH | The Ubuntu operating system library directories must be group-owned by root. | Set OS library directories not group-owned by root"
+        file:
+            path: "{{ item }}"
+            owner: "{{ ubtu_18_010136 | ternary('root',omit) }}"
+            group: "{{ ubtu_18_010138 | ternary('root',omit) }}"
+            mode: "{{ ubtu_18_010134 | ternary(ubtu18stig_lib_dir_perms,omit) }}"
+            state: directory
+        with_items:
+            - "{{ ubtu_18_010134_lib_dirs.stdout_lines }}"
+        when: ubtu_18_010134_lib_dirs.stdout | length > 0
+  when:
+      - ubtu_18_010134 or
+        ubtu_18_010136 or
+        ubtu_18_010138
+  tags:
+      - UBTU-18-010134
+      - UBTU-18-010136
+      - UBTU-18-010138
+      - CAT2
+      - CCI-001499
+      - SRG-OS-000259-GPOS-00100
+      - SV-219199r610963_rule
+      - SV-219201r610963_rule
+      - SV-219203r610963_rule
+      - V-219199
+      - V-219201
+      - V-219203
+      - permissions
+
+# - name: "MEDIUM | UBTU-18-010134 | PATCH | The Ubuntu operating system library directories must have mode 0755 or less permissive."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010134 | AUDIT | The Ubuntu operating system library directories must have mode 0755 or less permissive. | Get library directories with 750 or less"
+#         shell: find /lib /lib64 /usr/lib -perm /022 -type d -exec stat -c "%n %a" '{}' \; | cut -d" " -f1
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010134_lib_dirs
+
+#       - debug: var=ubtu_18_010134_lib_dirs
+
+#       - name: "MEDIUM | UBTU-18-010134 | PATCH | The Ubuntu operating system library directories must have mode 0755 or less permissive. | Set library directories with 755 or more restrictive"
+#         file:
+#             path: "{{ item }}"
+#             mode: "{{ ubtu18stig_lib_dir_perms }}"
+#             state: directory
+#         loop:
+#             - "{{ ubtu_18_010134_lib_dirs.stdout_lines }}"
+#         when: ubtu_18_010134_lib_dirs.stdout | length > 0
+#   when:
+#       - ubtu_18_010134
+#   tags:
+#       - UBTU-18-010134
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219199r610963_rule
+#       - V-219199
+#       - permissions
+
+# - name: "MEDIUM | UBTU-18-010135 | PATCH | The Ubuntu operating system library files must be owned by root."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010135 | AUDIT | The Ubuntu operating system library files must be owned by root. | Get OS files not owned by root"
+#         shell: find /lib /usr/lib /lib64 ! -user root -type f -exec stat -c "%n %U" '{}' \; | cut -d" " -f1
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010135_lib_files_owner
+
+#       - name: "MEDIUM | UBTU-18-010135 | PATCH | The Ubuntu operating system library files must be owned by root. | Set OS files to be owned by root"
+#         file:
+#             path: "{{ item }}"
+#             owner: root
+#         with_items:
+#             - "{{ ubtu_18_010135_lib_files_owner.stdout_lines }}"
+#         when: ubtu_18_010135_lib_files_owner.stdout | length > 0
+#   when:
+#       - ubtu_18_010135
+#   tags:
+#       - UBTU-18-010135
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219200r610963_rule
+#       - V-219200
+#       - permissions
+
+# - name: "MEDIUM | UBTU-18-010136 | PATCH | The Ubuntu operating system library directories must be owned by root."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010136 | AUDIT | The Ubuntu operating system library directories must be owned by root. | Get OS library directories not owned by root"
+#         shell: find /lib /usr/lib /lib64 ! -user root -type d -exec stat -c "%n %U" '{}' \; | cut -d" " -f1
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010136_lib_files_owner
+
+#       - name: "MEDIUM | UBTU-18-010136 | PATCH | The Ubuntu operating system library directories must be owned by root. | Set OS library directories not owned by root"
+#         file:
+#             path: "{{ item }}"
+#             owner: root
+#             state: directory
+#         with_items:
+#             - "{{ ubtu_18_010136_lib_files_owner.stdout_lines }}"
+#         when: ubtu_18_010136_lib_files_owner.stdout | length > 0
+#   when:
+#       - ubtu_18_010136
+#   tags:
+#       - UBTU-18-010136
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219201r610963_rule
+#       - V-219201
+#       - permissions
+
+# - name: "MEDIUM | UBTU-18-010137 | PATCH | The Ubuntu operating system library files must be group-owned by root."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010137 | AUDIT | The Ubuntu operating system library files must be group-owned by root. | Get OS library files not group-owned by root"
+#         shell: find /lib /usr/lib /lib64 ! -group root -type f -exec stat -c "%n %G" '{}' \; | cut -d" " -f1
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010137_lib_files_group
+
+#       - name: "MEDIUM | UBTU-18-010137 | PATCH | The Ubuntu operating system library files must be group-owned by root. | Set OS library files not group-owned by root"
+#         file:
+#             path: "{{ item }}"
+#             group: root
+#         with_items:
+#             - "{{ ubtu_18_010137_lib_files_group.stdout_lines }}"
+#         when: ubtu_18_010137_lib_files_group.stdout | length > 0
+#   when:
+#       - ubtu_18_010137
+#   tags:
+#       - UBTU-18-010137
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219202r802361_rule
+#       - V-219202
+#       - permissions
+
+# - name: "MEDIUM | UBTU-18-010138 | PATCH | The Ubuntu operating system library directories must be group-owned by root."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010138 | AUDIT | The Ubuntu operating system library directories must be group-owned by root. | Get OS library directories not group-owned by root"
+#         shell: find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c "%n %G" '{}' \; | cut -d" " -f1
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010138_lib_dirs_group
+#       - debug: var=ubtu_18_010138_lib_dirs_group
+#       - name: "MEDIUM | UBTU-18-010138 | PATCH | The Ubuntu operating system library directories must be group-owned by root. | Set OS library directories not group-owned by root"
+#         file:
+#             name: "{{ item }}"
+#             group: root
+#             state: directory
+#         with_items:
+#             - "{{ ubtu_18_010138_lib_dirs_group.stdout_lines }}"
+#         when: ubtu_18_010138_lib_dirs_group.stdout | length > 0
+#   when:
+#       - ubtu_18_010138
+#   tags:
+#       - UBTU-18-010138
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219203r610963_rule
+#       - V-219203
+#       - permissions
+
+- name: |
+    "MEDIUM | UBTU-18-010139 | PATCH | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive."
+    "MEDIUM | UBTU-18-010141 | PATCH | The Ubuntu operating system must have system commands owned by root."
+    "MEDIUM | UBTU-18-010143 | PATCH | The Ubuntu operating system must have system commands group-owned by root or a system account."
+  block:
+      - name: |
+          "MEDIUM | UBTU-18-010139 | AUDIT | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive. | Get OS commands with mode less than 755"
+          "MEDIUM | UBTU-18-010141 | AUDIT | The Ubuntu operating system must have system commands owned by root. | Get OS commands not owned by root"
+          "MEDIUM | UBTU-18-010143 | PATCH | The Ubuntu operating system must have system commands group-owned by root or a system account. | Get OS commands not group-owned by root"
+        shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \( ! -group root -o ! -user root -o -perm /022 \) -type f -exec stat -c "%n" '{}' \;
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010139_commands_perms
+
+      - name: |
+          "MEDIUM | UBTU-18-010139 | PATCH | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive. | Set OS commands with mode 755 or more restricive"
+          "MEDIUM | UBTU-18-010141 | PATCH | The Ubuntu operating system must have system commands owned by root. | Set OS commands not owned by root to owned by root"
+          "MEDIUM | UBTU-18-010143 | PATCH | The Ubuntu operating system must have system commands group-owned by root or a system account. | Set OS commands not group-owned by root to root"
+        file:
+            path: "{{ item }}"
+            owner: "{{ ubtu_18_010141 | ternary('root',omit) }}"
+            group: "{{ ubtu_18_010143 | ternary('root',omit) }}"
+            mode: "{{ ubtu_18_010139 | ternary(ubtu18stig_sys_commands_perms,omit) }}"
+        with_items:
+            - "{{ ubtu_18_010139_commands_perms.stdout_lines }}"
+        when:  ubtu_18_010139_commands_perms.stdout | length > 0
+  when:
+      - ubtu_18_010139 or
+        ubtu_18_010141 or
+        ubtu_18_010143
+  tags:
+      - UBTU-18-010139
+      - UBTU-18-010141
+      - UBTU-18-010143
+      - CAT2
+      - CCI-001499
+      - SRG-OS-000259-GPOS-00100
+      - SV-219204r610963_rule
+      - SV-219206r610963_rule
+      - SV-219208r832925_rule
+      - V-219204
+      - V-219206
+      - V-219208
+      - permissions
+
+# - name: "MEDIUM | UBTU-18-010139 | PATCH | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010139 | AUDIT | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive. | Get OS commands with mode less than 755"
+#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type f -exec stat -c "%n %a" '{}' \; | cut -d" " -f1
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010139_commands_perms
+
+#       - name: "MEDIUM | UBTU-18-010139 | PATCH | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive. | Set OS commands with mode 755 or more restricive"
+#         file:
+#             path: "{{ item }}"
+#             mode: "{{ ubtu18stig_sys_commands_perms }}"
+#         with_items:
+#             - "{{ ubtu_18_010139_commands_perms.stdout_lines }}"
+#         when:  ubtu_18_010139_commands_perms.stdout | length > 0
+#   when:
+#       - ubtu_18_010139
+#   tags:
+#       - UBTU-18-010139
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219204r610963_rule
+#       - V-219204
+#       - permissions
+
+- name: |
+    "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive."
+    "MEDIUM | UBTU-18-010142 | PATCH | The Ubuntu operating system must have directories that contain system commands owned by root."
+    "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root."
+  block:
+      - name: |
+          "MEDIUM | UBTU-18-010140 | AUDIT | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive. | Get OS command directories with mode less than 755"
+          "MEDIUM | UBTU-18-010142 | AUDIT | The Ubuntu operating system must have directories that contain system commands owned by root. | Get OS command dirs not owned by root"
+          "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root. | Get OS command dirs not group-owned by root"
+        shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \( ! -group root -o ! -user root -o -perm /022 \) -type d -exec stat -c "%n" '{}' \;
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010140_command_dir_perms
+
+      - name: |
+          "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive. | Set OS command directories with mode 755 or more restricive"
+          "MEDIUM | UBTU-18-010142 | PATCH | The Ubuntu operating system must have directories that contain system commands owned by root. | Set OS command dirs not owned by root to root"
+          "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root. | Set OS command dirs not group-owned by root to root"
+        file:
+            path: "{{ item }}"
+            owner: "{{ ubtu_18_010142 | ternary('root',omit) }}"
+            group: "{{ ubtu_18_010144 | ternary('root',omit) }}"
+            mode: "{{ ubtu_18_010140 | ternary(ubtu18stig_sys_comm_dir_perms,omit) }}"
+            state: directory
+        with_items:
+            - "{{ ubtu_18_010140_command_dir_perms.stdout_lines }}"
+        when: ubtu_18_010140_command_dir_perms.stdout | length > 0
+  when:
+      - ubtu_18_010140 or
+        ubtu_18_010142 or
+        ubtu_18_010144
+  tags:
+      - UBTU-18-010140
+      - UBTU-18-010142
+      - UBTU-18-010144
+      - CAT2
+      - CCI-001499
+      - SRG-OS-000259-GPOS-00100
+      - SV-219205r610963_rule
+      - SV-219207r610963_rule
+      - SV-219209r610963_rule
+      - V-219205
+      - V-219207
+      - V-219209
+      - permissions
+
+
+# - name: "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010140 | AUDIT | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive. | Get OS command directories with mode less than 755"
+#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c "%n %a" '{}' \; | cut -d" " -f1
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010140_command_dir_perms
+
+#       - name: "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive. | Set OS command directories with mode 755 or more restricive"
+#         file:
+#             path: "{{ item }}"
+#             mode: "{{ ubtu18stig_sys_comm_dir_perms }}"
+#             state: directory
+#         with_items:
+#             - "{{ ubtu_18_010140_command_dir_perms.stdout_lines }}"
+#         when: ubtu_18_010140_command_dir_perms.stdout | length > 0
+#   when:
+#       - ubtu_18_010140
+#   tags:
+#       - UBTU-18-010140
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219205r610963_rule
+#       - V-219205
+#       - permissions
+
+# - name: "MEDIUM | UBTU-18-010141 | PATCH | The Ubuntu operating system must have system commands owned by root."
+#   block:
+#         - name: "MEDIUM | UBTU-18-010141 | AUDIT | The Ubuntu operating system must have system commands owned by root. | Get OS commands not owned by root"
+#           shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c "%n %U" '{}' \; | cut -d" " -f1
+#           changed_when: false
+#           failed_when: false
+#           register: ubtu_18_010141_sys_comm_files_owner
+
+#         - name: "MEDIUM | UBTU-18-010141 | PATCH | The Ubuntu operating system must have system commands owned by root. | Set OS commands not owned by root to owned by root"
+#           file:
+#               path: "{{ item }}"
+#               owner: root
+#           with_items:
+#               - "{{ ubtu_18_010141_sys_comm_files_owner.stdout_lines }}"
+#           when: ubtu_18_010141_sys_comm_files_owner.stdout | length > 0
+#   when:
+#       - ubtu_18_010141
+#   tags:
+#       - UBTU-18-010141
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219206r610963_rule
+#       - V-219206
+#       - permissions
+
+# - name: "MEDIUM | UBTU-18-010142 | PATCH | The Ubuntu operating system must have directories that contain system commands owned by root."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010142 | AUDIT | The Ubuntu operating system must have directories that contain system commands owned by root. | Get OS command dirs not owned by root"
+#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type d -exec stat -c "%n %U" '{}' \; | cut -d" " -f1
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010142_sys_comm_dir_owner
+
+#       - debug: var=ubtu_18_010142_sys_comm_dir_owner
+#       - name: "MEDIUM | UBTU-18-010142 | PATCH | The Ubuntu operating system must have directories that contain system commands owned by root. | Set OS command dirs not owned by root to root"
+#         file:
+#             path: "{{ item }}"
+#             owner: root
+#             state: directory
+#         with_items:
+#             - "{{ ubtu_18_010142_sys_comm_dir_owner.stdout_lines }}"
+#         when: ubtu_18_010142_sys_comm_dir_owner.stdout | length > 0
+#   when:
+#       - ubtu_18_010142
+#   tags:
+#       - UBTU-18-010142
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219207r610963_rule
+#       - V-219207
+#       - permissions
+
+# - name: "MEDIUM | UBTU-18-010143 | PATCH | The Ubuntu operating system must have system commands group-owned by root or a system account."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010143 | PATCH | The Ubuntu operating system must have system commands group-owned by root or a system account. | Get OS commands not group-owned by root"
+#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f -exec stat -c "%n" '{}' \;
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010143_sys_comm_files_group
+
+#       - debug: var=ubtu_18_010143_sys_comm_files_group
+
+#       - name: "MEDIUM | UBTU-18-010143 | PATCH | The Ubuntu operating system must have system commands group-owned by root or a system account. | Set OS commands not group-owned by root to root"
+#         file:
+#             path: "{{ item }}"
+#             group: root
+#         with_items:
+#             - "{{ ubtu_18_010143_sys_comm_files_group.stdout_lines }}"
+#         when: ubtu_18_010143_sys_comm_files_group.stdout | length > 0
+#   when:
+#       - ubtu_18_010143
+#   tags:
+#       - UBTU-18-010143
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219208r832925_rule
+#       - V-219208
+#       - permessions
+
+# - name: "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root."
+#   block:
+#       - name: "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root. | Get OS command dirs not group-owned by root"
+#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c "%n" '{}' \;
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu_18_010144_sys_comm_dirs_group
+
+#       - name: "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root."
+#         file:
+#             path: "{{ item }}"
+#             group: root
+#             state: directory
+#         with_items:
+#             - "{{ ubtu_18_010144_sys_comm_dirs_group.stdout_lines }}"
+#         when: ubtu_18_010144_sys_comm_dirs_group.stdout | length > 0
+#   when:
+#       - ubtu_18_010144
+#   tags:
+#       - UBTU-18-010144
+#       - CAT2
+#       - CCI-001499
+#       - SRG-OS-000259-GPOS-00100
+#       - SV-219209r610963_rule
+#       - V-219209
+#       - permissions
