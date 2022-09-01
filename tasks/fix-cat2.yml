@@ -1205,3 +1205,1168 @@
 #       - SV-219209r610963_rule
 #       - V-219209
 #       - permissions
+
+- name: "MEDIUM | UBTU-18-010201 | PATCH | The Ubuntu operating system must generate audit records for the use and modification of the tallylog file."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /var/log/tallylog'
+  #     line: "-w /var/log/tallylog -p wa -k logins"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010201
+  tags:
+      - UBTU-18-010201
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219213r610963_rule
+      - V-219213
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010202 | PATCH | The Ubuntu operating system must generate audit records for the use and modification of faillog file."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /var/log/faillog'
+  #     line: "-w /var/log/faillog -p wa -k logins"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010202
+  tags:
+      - UBTU-18-010202
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219214r610963_rule
+      - V-219214
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010203 | PATCH | The Ubuntu operating system must generate audit records for the use and modification of the lastlog file."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /var/log/lastlog'
+  #     line: "-w /var/log/lastlog -p wa -k logins"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010203
+  tags:
+      - UBTU-18-010203
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219215r610963_rule
+      - V-219215
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010237 | PATCH | The Ubuntu operating system must generate audit records for privileged activities or other system-level access."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /var/log/sudo.log'
+  #     line: "-w /var/log/sudo.log -p wa -k actions"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010237
+  tags:
+      - UBTU-18-010237
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000471-GPOS-00215
+      - SV-219216r610963_rule
+      - V-219216
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010238 | PATCH | The Ubuntu operating system must generate audit records for the /var/log/wtmp file."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /var/log/wtmp'
+  #     line: "-w /var/log/wtmp -p wa -k logins"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010238
+  tags:
+      - UBTU-18-010238
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000472-GPOS-00217
+      - SV-219217r610963_rule
+      - V-219217
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010239 | PATCH | The Ubuntu operating system must generate audit records for the /var/run/utmp file."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /var/run/utmp'
+  #     line: "-w /var/run/utmp -p wa -k logins"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010239
+  tags:
+      - UBTU-18-010239
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000472-GPOS-00217
+      - SV-219218r802364_rule
+      - V-219218
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010240 | PATCH | The Ubuntu operating system must generate audit records for the /var/log/btmp file."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /var/log/btmp'
+  #     line: "-w /var/log/btmp -p wa -k logins"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010240
+  tags:
+      - UBTU-18-010240
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000472-GPOS-00217
+      - SV-219219r610963_rule
+      - V-219219
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010244 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /etc/passwd'
+  #     line: "-w /etc/passwd -p wa -k usergroup_modification"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010244
+  tags:
+      - UBTU-18-010244
+      - CAT2
+      - CCI-000018
+      - CCI-000172
+      - CCI-001403
+      - CCI-001404
+      - CCI-001405
+      - CCI-002130
+      - SRG-OS-000476-GPOS-00221
+      - SV-219220r610963_rule
+      - V-219220
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010245 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /etc/group -p wa -k'
+  #     line: "-w /etc/group -p wa -k usergroup_modification"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010245
+  tags:
+      - UBTU-18-010245
+      - CAT2
+      - CCI-000172
+      - CCI-001403
+      - CCI-001404
+      - CCI-001405
+      - CCI-002130
+      - SRG-OS-000476-GPOS-00221
+      - SV-219221r610963_rule
+      - V-219221
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010246 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /etc/gshadow -p wa -k'
+  #     line: "-w /etc/gshadow -p wa -k usergroup_modification"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010246
+  tags:
+      - UBTU-18-010246
+      - CAT2
+      - CCI-000172
+      - CCI-001403
+      - CCI-001404
+      - CCI-001405
+      - CCI-002130
+      - SRG-OS-000476-GPOS-00221
+      - SV-219222r610963_rule
+      - V-219222
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010247 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /etc/shadow'
+  #     line: "-w /etc/shadow -p wa -k usergroup_modification"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010247
+  tags:
+      - UBTU-18-010247
+      - CAT2
+      - CCI-000172
+      - CCI-001403
+      - CCI-001404
+      - CCI-001405
+      - CCI-002130
+      - SRG-OS-000476-GPOS-00221
+      - SV-219223r610963_rule
+      - V-219223
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010248 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/security/opasswd."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-w /etc/security/opasswd'
+  #     line: "-w /etc/security/opasswd -p wa -k usergroup_modification"
+  #     create: true
+  #     owner: root
+  #     group: root
+  #     mode: 0600
+  # notify: reload auditd
+  when:
+      - ubtu_18_010248
+  tags:
+      - UBTU-18-010248
+      - CAT2
+      - CCI-000172
+      - CCI-001403
+      - CCI-001404
+      - CCI-001405
+      - CCI-002130
+      - SRG-OS-000476-GPOS-00221
+      - SV-219224r610963_rule
+      - V-219224
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010250 | PATCH | The Ubuntu operating system must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DoD-defined auditable events and actions in near real time."
+  systemd:
+      name: auditd
+      state: started
+      enabled: true
+  when:
+      - ubtu_18_010250
+  tags:
+      - UBTU-18-010250
+      - CAT2
+      - CCI-000131
+      - CCI-000132
+      - CCI-000133
+      - CCI-000134
+      - CCI-000135
+      - CCI-000154
+      - CCI-000158
+      - CCI-000169
+      - CCI-000172
+      - CCI-001814
+      - CCI-001875
+      - CCI-001876
+      - CCI-001877
+      - CCI-001878
+      - CCI-001879
+      - CCI-001880
+      - CCI-001914
+      - CCI-002884
+      - SRG-OS-000038-GPOS-00016
+      - SV-219225r610963_rule
+      - V-219225
+      - auditd
+      - services
+
+- name: "MEDIUM | UBTU-18-010300 | PATCH | The Ubuntu operating system must alert the ISSO and SA (at a minimum) in the event of an audit processing failure."
+  lineinfile:
+      path: /etc/audit/auditd.conf
+      regexp: '^action_mail_acct ='
+      line: "action_mail_acct = {{ ubtu18stig_auditd_mail_acct }}"
+  register: ubtu_18_010300_action_mail_acct_result
+  failed_when:
+      - ubtu_18_010300_action_mail_acct_result is failed
+      - ubtu_18_010300_action_mail_acct_result.rc != 257
+  when:
+      - ubtu_18_010300
+  tags:
+      - UBTU-18-010300
+      - CAT2
+      - CCI-000139
+      - SRG-OS-000046-GPOS-00022
+      - SV-219226r610963_rule
+      - V-219226
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010301 | PATCH | The Ubuntu operating system must shut down by default upon audit failure (unless availability is an overriding concern)."
+  lineinfile:
+      path: /etc/audit/auditd.conf
+      regexp: '^disk_full_action ='
+      line: "disk_full_action = {{ ubtu18stig_auditd_disk_full_action }}"
+  when:
+      - ubtu_18_010301
+  tags:
+      - UBTU-18-010301
+      - CAT2
+      - CCI-000140
+      - SRG-OS-000047-GPOS-00023
+      - SV-219227r610963_rule
+      - V-219227
+      - auditd
+
+- name: |
+    "MEDIUM | UBTU-18-010305 | PATCH | The Ubuntu operating system must be configured so that audit log files cannot be read or write-accessible by unauthorized users."
+    "MEDIUM | UBTU-18-010306 | PATCH | The Ubuntu operating system must permit only authorized accounts ownership of the audit log files."
+    "MEDIUM | UBTU-18-010307 | PATCH | The Ubuntu operating system must permit only authorized groups to own the audit log files."
+  file:
+      path: "{{ ubtu_18_audit_log_path.stdout }}"
+      owner: "{{ ubtu_18_010306 | ternary('root',omit) }}"
+      group: "{{ ubtu_18_010307 | ternary('root',omit) }}"
+      mode: "{{ ubtu_18_010305 | ternary(ubtu18stig_audit_log_files,omit) }}"
+      recurse: true
+  when:
+      - ubtu_18_010305 or
+        ubtu_18_010306 or
+        ubtu_18_010307
+  tags:
+      - UBTU-18-010305
+      - UBTU-18-010306
+      - CAT2
+      - CCI-000162
+      - CCI-000163
+      - SRG-OS-000058-GPOS-00028
+      - SV-219228r610963_rule
+      - SV-219229r610963_rule
+      - V-219228
+      - V-219229
+      - auditd
+
+- name: |
+    "MEDIUM | UBTU-18-010308 | PATCH | The Ubuntu operating system must be configured so that the audit log directory is not write-accessible by unauthorized users."
+    "MEDIUM | UBTU-18-010309 | PATCH | The Ubuntu operating system must allow only authorized accounts to own the audit log directory."
+    "MEDIUM | UBTU-18-010310 | PATCH | The Ubuntu operating system must ensure only authorized groups can own the audit log directory and its underlying files."
+  file:
+      path: "{{ ubtu_18_audit_log_path.stdout }}"
+      owner: "{{ ubtu_18_010309 | ternary('root',omit) }}"
+      group: "{{ ubtu_18_010310 | ternary('root',omit) }}"
+      mode: "{{ ubtu_18_010308 | ternary(ubtu18stig_audit_log_dirs,omit) }}"
+      state: directory
+  when:
+      - ubtu_18_010308 or
+        ubtu_18_010309 or
+        ubtu_18_010310
+  tags:
+      - UBTU-18-010308
+      - UBTU-18-010309
+      - UBTU-18-010310
+      - CAT2
+      - CCI-000164
+      - SRG-OS-000059-GPOS-00029
+      - SV-219231r610963_rule
+      - SV-219232r610963_rule
+      - SV-219233r610963_rul
+      - V-219231
+      - V-219232
+      - V-219233
+      - auditd
+
+- name: |
+    "MEDIUM | UBTU-18-010311 | PATCH | The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users."
+    "MEDIUM | UBTU-18-010312 | PATCH | The Ubuntu operating system must permit only authorized accounts to own the audit configuration files."
+    "MEDIUM | UBTU-18-010313 | PATCH | The Ubuntu operating system must permit only authorized groups to own the audit configuration files."
+  block:
+      - name: |
+          "MEDIUM | UBTU-18-010311 | PATCH | The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users. | Set permissions for audit.rule and auditd.conf"
+          "MEDIUM | UBTU-18-010312 | PATCH | The Ubuntu operating system must permit only authorized accounts to own the audit configuration files. | Set owner for audit.rule and auditd.conf"
+          "MEDIUM | UBTU-18-010313 | PATCH | The Ubuntu operating system must permit only authorized groups to own the audit configuration files. | Set group for audit.rule and auditd.conf"
+        file:
+            path: "{{ item }}"
+            mode: "{{ ubtu_18_010311 | ternary(ubtu18stig_audit_rules_conf_perms,omit) }}"
+        with_items:
+            - /etc/audit/audit.rule
+            - /etc/audit/auditd.conf
+
+      - name: |
+          "MEDIUM | UBTU-18-010311 | PATCH | The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users. | Set permissions for audit/rules.d files"
+          "MEDIUM | UBTU-18-010312 | PATCH | The Ubuntu operating system must permit only authorized accounts to own the audit configuration files. | Set owner for audit/rules.d files"
+          "MEDIUM | UBTU-18-010313 | PATCH | The Ubuntu operating system must permit only authorized groups to own the audit configuration files. | Set group for audit/rules.d files"
+        file:
+            path: /etc/audit/rules.d
+            owner: "{{ ubtu_18_010312 | ternary('root',omit) }}"
+            group: "{{ ubtu_18_010313 | ternary('root',omit) }}"
+            mode: "{{ ubtu_18_010311 | ternary(ubtu18stig_audit_rules_conf_perms,omit) }}"
+            recurse: true
+  when:
+      - ubtu_18_010311 or
+        ubtu_18_010312 or
+        ubtu_18_010313
+  tags:
+      - UBTU-18-010311
+      - UBTU-18-010312
+      - UBTU-18-010313
+      - CAT2
+      - CCI-000171
+      - SRG-OS-000063-GPOS-00032
+      - SV-219234r610963_rule
+      - SV-219235r610963_rule
+      - SV-219236r610963_rule
+      - V-219234
+      - V-219235
+      - V-219236
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010315 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the su command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-a always,exit -F path=/bin/su'
+  #     line: "-a always,exit -F path=/bin/su -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-priv_change"
+  # notify: reload auditd
+  when:
+      - ubtu_18_010315
+  tags:
+      - UBTU-18-010315
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219238r610963_rule
+      - V-219238
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010316 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chfn command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-a always,exit -F path=/usr/bin/chfn'
+  #     line: "-a always,exit -F path=/usr/bin/chfn -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-chfn"
+  # notify: reload auditd
+  when:
+      - ubtu_18_010316
+  tags:
+      - UBTU-18-010316
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219239r610963_rule
+      - V-219239
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010317 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the mount command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-a always,exit -F path=/bin/mount'
+  #     line: "-a always,exit -F path=/bin/mount -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-mount"
+  # notify: reload auditd
+  when:
+      - ubtu_18_010317
+  tags:
+      - UBTU-18-010317
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219240r610963_rule
+      - V-219240
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010318 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the umount command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-a always,exit -F path=/bin/umount'
+  #     line: "-a always,exit -F path=/bin/umount -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-umount"
+  # notify: reload auditd
+  when:
+      - ubtu_18_010318
+  tags:
+      - UBTU-18-010318
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219241r610963_rule
+      - V-219241
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010319 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the ssh-agent command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-a always,exit -F path=/usr/bin/ssh-agent'
+  #     line: "-a always,exit -F path=/usr/bin/ssh-agent -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-ssh"
+  # notify: reload auditd
+  when:
+      - ubtu_18_010319
+  tags:
+      - UBTU-18-010319
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219242r610963_rule
+      - V-219242
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010320 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the ssh-keysign command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-a always,exit -F path=/usr/lib/openssh/ssh-keysign'
+  #     line: "-a always,exit -F path=/usr/lib/openssh/ssh-keysign -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-ssh"
+  # notify: reload auditd
+  when:
+      - ubtu_18_010320
+  tags:
+      - UBTU-18-010320
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219243r610963_rule
+      - V-219243
+      - aduitd
+
+- name: "MEDIUM | UBTU-18-010321 | PATCH | The Ubuntu operating system must generate audit records for any usage of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # block:
+  #     - name: "MEDIUM | UBTU-18-010321 | PATCH | The Ubuntu operating system must generate audit records for any usage of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls."
+  #       lineinfile:
+  #           path: /etc/audit/rules.d/99_stig_auditd.rules
+  #           regexp: "{{ item.regexp }}"
+  #           line: "{{ item.line }}"
+  #       notify: reload auditd
+  #       with_items:
+  #           - { regexp: '^-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_mod" }
+  #           - { regexp: '^-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 ', line: "-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod" }
+  #           - { regexp: '^-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_mod" }
+  #           - { regexp: '^-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0', line: "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod" }
+  #       when: "'x86_64' in ansible_facts.userspace_architecture"
+
+  #     - name: "MEDIUM | UBTU-18-010321 | PATCH | The Ubuntu operating system must generate audit records for any usage of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls."
+  #       lineinfile:
+  #           path: /etc/audit/rules.d/99_stig_auditd.rules
+  #           regexp: "{{ item.regexp }}"
+  #           line: "{{ item.line }}"
+  #       notify: reload auditd
+  #       with_items:
+  #           - { regexp: '^-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_mod" }
+  #           - { regexp: '^-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0', line: "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod " }
+  #       when: "'x86_64' not in ansible_facts.userspace_architecture"
+  when:
+      - ubtu_18_010321
+  tags:
+      - UBTU-18-010321
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219244r809514_rule
+      - V-219244
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010327 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # block:
+  #     - name: "MEDIUM | UBTU-18-010327 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls."
+  #       lineinfile:
+  #           path: /etc/audit/rules.d/99_stig_auditd.rules
+  #           regexp: "{{ item.regexp }}"
+  #           line: "{{ item.line }}"
+  #       notify: reload auditd
+  #       with_items:
+  #           - { regexp: '^-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng" }
+  #           - { regexp: '^-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng"}
+  #       when: "'x86_64' in ansible_facts.userspace_architecture"
+
+  #     - name: "MEDIUM | UBTU-18-010327 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls."
+  #       lineinfile:
+  #           path: /etc/audit/rules.d/99_stig_auditd.rules
+  #           regexp: '^-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }}'
+  #           line: "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng"
+  #       notify: reload auditd
+  #       when: "'x86_64' not in ansible_facts.userspace_architecture"
+  when:
+      - ubtu_18_010327
+  tags:
+      - UBTU-18-010327
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219250r809517_rule
+      - V-219250
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010331 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # block:
+  #     - name: "MEDIUM | UBTU-18-010331 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls."
+  #       lineinfile:
+  #           path: /etc/audit/rules.d/99_stig_auditd.rules
+  #           regexp: '^-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }}'
+  #           line: "-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng"
+  #       notify: reload auditd
+  #       when: "'x86_64' in ansible_facts.userspace_architecture"
+  #       with_items:
+  #           - { regexp: '^-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng" }
+  #           - { regexp: '^-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng" }
+
+  #     - name: "MEDIUM | UBTU-18-010331 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls."
+  #       lineinfile:
+  #           path: /etc/audit/rules.d/99_stig_auditd.rules
+  #           regexp: '^-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }}'
+  #           line: "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng"
+  #       notify: reload auditd
+  #       when: "'x86_64' in ansible_facts.userspace_architecture"
+  when:
+      - ubtu_18_010331
+  tags:
+      - UBTU-18-010331
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219254r809520_rule
+      - V-219254
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010334 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # block:
+  #     - name: "MEDIUM | UBTU-18-010334 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls."
+  #       lineinfile:
+  #           path: /etc/audit/rules.d/99_stig_auditd.rules
+  #           regexp: "{{ item.regexp }}"
+  #           line: "{{ item.line }}"
+  #       notify: reload auditd
+  #       with_items:
+  #           - { regexp: '^-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
+  #           - { regexp: '^-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
+  #           - { regexp: '^-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
+  #           - { regexp: '^-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access"}
+  #       when: "'x86_64' in ansible_facts.userspace_architecture"
+
+  #     - name: "MEDIUM | UBTU-18-010334 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls."
+  #       lineinfile:
+  #           path: /etc/audit/rules.d/99_stig_auditd.rules
+  #           regexp: "{{ item.regexp }}"
+  #           line: "{{ item.line }}"
+  #       notify: reload auditd
+  #       with_items:
+  #           - { regexp: '^-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
+  #           - { regexp: '^-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
+  #       when: "'x86_64' not in ansible_facts.userspace_architecture"
+  when:
+      - ubtu_18_010334
+  tags:
+      - UBTU-18-010334
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219257r809523_rule
+      - V-219257
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010340 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudo command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regex: '^-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>={{ ubtu18stig_int_gid }}'
+  #     line: "-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k priv_cmd"
+  # notify: reload auditd
+  when:
+      - ubtu_18_010340
+  tags:
+      - UBTU-18-010340
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219263r610963_rule
+      - V-219263
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010341 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudoedit command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>={{ ubtu18stig_int_gid }}'
+  #     line: "-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k priv_cmd"
+  # notify: reload auditd
+  when:
+      - ubtu_18_010341
+  tags:
+      - UBTU-18-010341
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219264r610963_rule
+      - V-219264
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010342 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chsh command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  # lineinfile:
+  #     path: /etc/audit/rules.d/99_stig_auditd.rules
+  #     regexp: '^-a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>={{ ubtu18stig_int_gid }}'
+  #     line: "-a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k priv_cmd"
+  # notify: reload auditd
+  when:
+      - ubtu_18_010342
+  tags:
+      - UBTU-18-010342
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219265r610963_rule
+      - V-219265
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010343 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the newgrp command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010343
+  tags:
+      - UBTU-18-010343
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219266r610963_rule
+      - V-219266
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010344 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chcon command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010344
+  tags:
+      - UBTU-18-010344
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219267r610963_rule
+      - V-219267
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010345 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the apparmor_parser command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010345
+  tags:
+      - UBTU-18-010345
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219268r610963_rule
+      - V-219268
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010346 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the setfacl command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010346
+  tags:
+      - UBTU-18-010346
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219269r610963_rule
+      - V-219269
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010347 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chacl command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010347
+  tags:
+      - UBTU-18-010347
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219270r610963_rule
+      - V-219270
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010348 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the passwd command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010348
+  tags:
+      - UBTU-18-010348
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219271r755156_rule
+      - V-219271
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010349 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the unix_update command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010349
+  tags:
+      - UBTU-18-010349
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219272r610963_rule
+      - V-219272
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010350 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the gpasswd command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010350
+  tags:
+      - UBTU-18-010350
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219273r610963_rule
+      - V-219273
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010351 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chage command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010351
+  tags:
+      - UBTU-18-010351
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219274r610963_rule
+      - V-219274
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010352 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the usermod command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010352
+  tags:
+      - UBTU-18-010352
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219275r610963_rule
+      - V-219275
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010353 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the crontab command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010353
+  tags:
+      - UBTU-18-010353
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219276r610963_rule
+      - V-219276
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010354 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the pam_timestamp_check command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010354
+  tags:
+      - UBTU-18-010354
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219277r610963_rule
+      - V-219277
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010356 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the finit_module syscall."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010356
+  tags:
+      - UBTU-18-010356
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000064-GPOS-00033
+      - SV-219279r610963_rule
+      - V-219279
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010358 | PATCH | The Ubuntu operating system must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010358
+  tags:
+      - UBTU-18-010358
+      - CAT2
+      - CCI-002233
+      - CCI-002234
+      - SRG-OS-000326-GPOS-00126
+      - SV-219281r610963_rule
+      - V-219281
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010375 | PATCH | The Ubuntu operating system must generate audit records upon successful/unsuccessful use of unlink, unlinkat, rename, renameat, and rmdir system calls."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010375
+  tags:
+      - UBTU-18-010375
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000468-GPOS-00212
+      - SV-219287r809526_rule
+      - V-219287
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010379 | PATCH | The Ubuntu operating system must generate audit records when loading dynamic kernel modules."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010379
+  tags:
+      - UBTU-18-010379
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000471-GPOS-00216
+      - SV-219291r610963_rule
+      - V-219291
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010387 | PATCH | The Ubuntu operating system must generate records for successful/unsuccessful uses of init_module or finit_module syscalls."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010387
+  tags:
+      - UBTU-18-010387
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000477-GPOS-00222
+      - SV-219296r648693_rule
+      - V-219296
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010388 | PATCH | The Ubuntu operating system must generate records for successful/unsuccessful uses of delete_module syscall and when unloading dynamic kernel modules."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010388
+  tags:
+      - UBTU-18-010388
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000477-GPOS-00222
+      - SV-219297r648694_rule
+      - V-219297
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010389 | PATCH | The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use modprobe command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010389
+  tags:
+      - UBTU-18-010389
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000477-GPOS-00222
+      - SV-219298r610963_rule
+      - V-219298
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010391 | PATCH | The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use the kmod command."
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
+  when:
+      - ubtu_18_010391
+  tags:
+      - UBTU-18-010391
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000477-GPOS-00222
+      - SV-219299r610963_rule
+      - V-219299
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010392 | PATCH | The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use the fdisk command."
+
+  when:
+      - ubtu_18_010392
+  tags:
+      - UBTU-18-010392
+      - CAT2
+      - CCI-000172
+      - SRG-OS-000477-GPOS-00222
+      - SV-219300r610963_rule
+      - V-219300
+      - auditd

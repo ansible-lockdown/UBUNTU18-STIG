@@ -46,7 +46,66 @@
       state: present
   when:
       - "'auditd' not in ansible_facts.packages"
-      - ubtu_18_010006
+      - ubtu_18_010006 or
+        ubtu_18_010250 or
+        ubtu_18_010201 or
+        ubtu_18_010202 or
+        ubtu_18_010203 or
+        ubtu_18_010237 or
+        ubtu_18_010238 or
+        ubtu_18_010239 or
+        ubtu_18_010240 or
+        ubtu_18_010244 or
+        ubtu_18_010245 or
+        ubtu_18_010246 or
+        ubtu_18_010247 or
+        ubtu_18_010248 or
+        ubtu_18_010250 or
+        ubtu_18_010300 or
+        ubtu_18_010301 or
+        ubtu_18_010305 or
+        ubtu_18_010306 or
+        ubtu_18_010307 or
+        ubtu_18_010308 or
+        ubtu_18_010309 or
+        ubtu_18_010310 or
+        ubtu_18_010311 or
+        ubtu_18_010312 or
+        ubtu_18_010313 or
+        ubtu_18_010315 or
+        ubtu_18_010316 or
+        ubtu_18_010317 or
+        ubtu_18_010318 or
+        ubtu_18_010319 or
+        ubtu_18_010320 or
+        ubtu_18_010321 or
+        ubtu_18_010327 or
+        ubtu_18_010331 or
+        ubtu_18_010334 or
+        ubtu_18_010340 or
+        ubtu_18_010341 or
+        ubtu_18_010342 or
+        ubtu_18_010343 or
+        ubtu_18_010344 or
+        ubtu_18_010345 or
+        ubtu_18_010346 or
+        ubtu_18_010347 or
+        ubtu_18_010348 or
+        ubtu_18_010349 or
+        ubtu_18_010350 or
+        ubtu_18_010351 or
+        ubtu_18_010352 or
+        ubtu_18_010353 or
+        ubtu_18_010354 or
+        ubtu_18_010356 or
+        ubtu_18_010358 or
+        ubtu_18_010375 or
+        ubtu_18_010379 or
+        ubtu_18_010387 or
+        ubtu_18_010388 or
+        ubtu_18_010391 or
+        ubtu_18_010392 or
+
 
 - name: "PRELIM | Install audisp-remote plugin"
   package:
@@ -82,3 +141,14 @@
       - "'chrony' not in ansible_facts.packages"
       - ubtu18stig_cat3_patch
       - ubtu_18_010502
+
+- name: "PRELIM | Get audit log path"
+  shell: "grep -iw log_file /etc/audit/auditd.conf | cut -d' ' -f3 | sed 's:[^/]*$::'"
+  changed_when: false
+  failed_when: false
+  register: ubtu_18_audit_log_path
+  when:
+      - ubtu_18_010305 or
+        ubtu_18_010306 or
+        ubtu_18_010307 or
+        ubtu_18_010308

@@ -28,3 +28,38 @@
   service:
       name: chrony
       state: restarted
+
+- name: auditd_immutable_check
+  shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
+  changed_when: false
+  register: auditd_immutable_check
+
+- name: audit_immutable_fact
+  debug:
+      msg: "Reboot required for auditd to apply new rules as immutable set"
+  notify: change_requires_reboot
+  when:
+      - auditd_immutable_check.stdout == '1'
+
+- name: update auditd
+  template:
+      src: audit/99_stig_auditd.rules.j2
+      dest: /etc/audit/rules.d/99_stig_uditd.rules
+      owner: root
+      group: root
+      mode: 0600
+  notify: 
+      - reload auditd
+      - restart auditd
+
+- name: reload auditd
+  shell: augenrules --load
+
+- name: restart auditd
+  command: /usr/sbin/service auditd restart
+  args:
+      warn: false
+  when:
+      - not ubtu18stig_skip_for_travis
+      - not ubtu18stig_system_is_chroot
+      - not system_is_container

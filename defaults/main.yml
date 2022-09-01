@@ -100,6 +100,62 @@ ubtu_18_010141: true
 ubtu_18_010142: true
 ubtu_18_010143: true
 ubtu_18_010144: true
+ubtu_18_010201: true
+ubtu_18_010202: true
+ubtu_18_010203: true
+ubtu_18_010237: true
+ubtu_18_010238: true
+ubtu_18_010239: true
+ubtu_18_010240: true
+ubtu_18_010244: true
+ubtu_18_010245: true
+ubtu_18_010246: true
+ubtu_18_010247: true
+ubtu_18_010248: true
+ubtu_18_010250: true
+ubtu_18_010300: true
+ubtu_18_010301: true
+ubtu_18_010305: true
+ubtu_18_010306: true
+ubtu_18_010307: true
+ubtu_18_010308: true
+ubtu_18_010309: true
+ubtu_18_010310: true
+ubtu_18_010311: true
+ubtu_18_010312: true
+ubtu_18_010313: true
+ubtu_18_010316: true
+ubtu_18_010317: true
+ubtu_18_010318: true
+ubtu_18_010319: true
+ubtu_18_010320: true
+ubtu_18_010321: true
+ubtu_18_010327: true
+ubtu_18_010331: true
+ubtu_18_010334: true
+ubtu_18_010340: true
+ubtu_18_010341: true
+ubtu_18_010342: true
+ubtu_18_010343: true
+ubtu_18_010344: true
+ubtu_18_010345: true
+ubtu_18_010346: true
+ubtu_18_010347: true
+ubtu_18_010348: true
+ubtu_18_010349: true
+ubtu_18_010350: true
+ubtu_18_010351: true
+ubtu_18_010352: true
+ubtu_18_010353: true
+ubtu_18_010354: true
+ubtu_18_010356: true
+ubtu_18_010358: true
+ubtu_18_010375: true
+ubtu_18_010379: true
+ubtu_18_010387: true
+ubtu_18_010388: true
+ubtu_18_010391: true
+ubtu_18_010392: true
 
 # CAT 3 Rules
 ubtu_18_010006: true
@@ -135,6 +191,9 @@ ubtu18stig_ssh_required: true
 ubtu18stig_nis_required: false
 ubtu18stig_rsh_required: false
 ubtu18stig_telnet_required: false
+
+# ubtu18stig_int_gid is the interactive user gid
+ubtu18stig_int_gid: 1000
 
 # The variables below are related to specific tasks
 # CAT 1
@@ -288,6 +347,31 @@ ubtu18stig_sys_commands_perms: 755
 # ubtu18stig_sys_comm_dir_perms are the permissions to put on the OS system commands directories if they are found to be less restricive than 755
 # To conform to STIG standards this value needs to be 755 or more restricive
 ubtu18stig_sys_comm_dir_perms: 755
+
+# UBTU-18-010300
+# ubtu18stig_auditd_mail_acct is the account that will be alerted via auditd my email
+# To conform to STIG standards this needs to be an account the ISSO and SA at a minimum gets alerts to
+ubtu18stig_auditd_mail_acct: root
+
+# UBTU-18-010301
+# ubtu18stig_auditd_disk_full_action is the action for the OS on audit failure
+# To conform to STIG standards this value needs to be SYSLOG, SINGLE, or HALT
+ubtu18stig_auditd_disk_full_action: HALT
+
+# UBTU-18-010305
+# ubtu18stig_audit_log is the permissions value on all files in the audit logs folder, /var/logs/audit by default
+# To conform to STIG standards this needs to be 0600 or more restricive
+ubtu18stig_audit_log: 0600
+
+# UBTU-18-010308
+# ubtu18stig_audit_log_dirs is the permissions value on the audit logs folder, var/logs/audit by default
+# To conform to STIG standards this needs to be 0750 or more restricive
+ubtu18stig_audit_log_dirs: 0750
+
+# UBTU-18-010311
+# ubtu18stig_audit_rules_conf_perms is the permissions value on the audit.rules and audit.conf files in /etc/audit and files in /etc/audit/rules.d/
+# To conform to STIG standards this needs to be 0640 or more restricive
+ubtu18stig_audit_rules_conf_perms: 0640
 
 # CAT 3
 
