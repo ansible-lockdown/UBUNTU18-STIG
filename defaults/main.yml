@@ -124,6 +124,7 @@ ubtu_18_010310: true
 ubtu_18_010311: true
 ubtu_18_010312: true
 ubtu_18_010313: true
+ubtu_18_010315: true
 ubtu_18_010316: true
 ubtu_18_010317: true
 ubtu_18_010318: true
@@ -154,8 +155,39 @@ ubtu_18_010375: true
 ubtu_18_010379: true
 ubtu_18_010387: true
 ubtu_18_010388: true
+ubtu_18_010389: true
 ubtu_18_010391: true
 ubtu_18_010392: true
+ubtu_18_010401: true
+ubtu_18_010402: true
+ubtu_18_010403: true
+ubtu_18_010410: true
+ubtu_18_010411: true
+ubtu_18_010414: true
+ubtu_18_010415: true
+ubtu_18_010416: true
+ubtu_18_010417: true
+ubtu_18_010425: true
+ubtu_18_010427: true
+ubtu_18_010431: true
+ubtu_18_010432: true
+ubtu_18_010434: true
+ubtu_18_010436: true
+ubtu_18_010441: true
+ubtu_18_010442: true
+ubtu_18_010444: true
+ubtu_18_010445: true
+ubtu_18_010448: true
+ubtu_18_010449: true
+ubtu_18_010500: true
+ubtu_18_010501: true
+ubtu_18_010504: true
+ubtu_18_010505: true
+ubtu_18_010506: true
+ubtu_18_010507: true
+ubtu_18_010508: true
+ubtu_18_010509: true
+ubtu_18_010512: true
 
 # CAT 3 Rules
 ubtu_18_010006: true
@@ -292,7 +324,7 @@ ubtu18stig_password_complexity:
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
 # as a referrence in adding the pam_unix.so entry and encryption parameter.
 # new_control is the control settings for the pam_unix.so settings, by default we have the default value entered here. It can be
-# modified 
+# modified
 ubtu18stig_pamd_encryption:
     new_control: "[success=1 default=ignore]"
     type: password
@@ -309,10 +341,10 @@ ubtu18stig_pam_pwquality_retry: 3
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
 # as a referrence in adding the pam_pwquality.so entry and retry parameter.
 ubtu18stig_pamd_retry:
-  type: password
-  control: requisite
-  module_path: pam_deny.so
-  state: after
+    type: password
+    control: requisite
+    module_path: pam_deny.so
+    state: after
 
 # UBTU-18-010124
 # ubtu18cis_var_log_perms is the permissions on the /var/log directory
@@ -361,17 +393,73 @@ ubtu18stig_auditd_disk_full_action: HALT
 # UBTU-18-010305
 # ubtu18stig_audit_log is the permissions value on all files in the audit logs folder, /var/logs/audit by default
 # To conform to STIG standards this needs to be 0600 or more restricive
-ubtu18stig_audit_log: 0600
+ubtu18stig_audit_log_files: 600
 
 # UBTU-18-010308
 # ubtu18stig_audit_log_dirs is the permissions value on the audit logs folder, var/logs/audit by default
 # To conform to STIG standards this needs to be 0750 or more restricive
-ubtu18stig_audit_log_dirs: 0750
+ubtu18stig_audit_log_dirs: 750
 
 # UBTU-18-010311
 # ubtu18stig_audit_rules_conf_perms is the permissions value on the audit.rules and audit.conf files in /etc/audit and files in /etc/audit/rules.d/
 # To conform to STIG standards this needs to be 0640 or more restricive
-ubtu18stig_audit_rules_conf_perms: 0640
+ubtu18stig_audit_rules_conf_perms: 640
+
+# UBTU-18-010402
+# ubtu18cis_shell_session_timeout is the session timeout value in seconds
+# To conform to STIG standards the value needs to be 900 or less
+ubtu18cis_shell_session_timeout: 900
+
+# ubtu18stig_sshd will contain all sshd variables. The task association and variable descriptions for each section are listed below
+# UBTU-18-010411
+# ciphers are the ciphers to be used in yoru sshd_config. Set to aes256-ctr,aes192-ctr,and aes128-ctr ciphers can be used to conform to STIG standards
+# UBTU-18-010416
+# client_alive_interval is the amount of time idle before ssh session terminated. Set to 600 or less to conform to STIG standards
+# UBTU-18-010417
+# macs are the mac ciphers to be used so to hmac-sha2-512,hmac-sha2-256 only and in that order to conform to STIG standards
+ubtu18stig_sshd:
+    ciphers: "aes256-ctr,aes192-ctr,aes128-ctr"
+    client_alive_interval: 600
+    macs: "hmac-sha2-512,hmac-sha2-256"
+
+# UBTU-18-010427
+# ubtu18cis_pkcs11 are the settings related to the pkcs11 pam module
+# The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
+# as a referrence in adding the pam_pkcs11.so entry
+ubtu18cis_pkcs11:
+    new_control: "[success=2 default=ignore]"
+    type: auth
+    control: "[success=1 default=ignore]"
+    module_path: pam_unix.so
+    state: after
+
+# UBTU-18-010445
+# ubtu18stig_useradd_active is the default INTERACTIVE setting for the useradd command
+# To conform to STIG standards this needs to be 35 or less, but greater than 0
+ubtu18stig_useradd_active: 35
+
+# ubtu18stig_iburst_maxpoll_value is the maximum interval between requests sent to the server
+# in seconds
+# To conform to STGI standards this value needs to be 16 or less
+ubtu18stig_iburst_maxpoll_value: 16
+# ubtu18stig_dod_timesource is the list of the time servers
+# To conform to STIG standards these need to be authoritative DoD sources
+# Please always enter these values as a list, even if it's just one
+ubtu18stig_dod_timesource:
+    - tick.usno.navy.mil
+    - tock.usno.navy.mil
+    - ntp2.usno.navy.mil
+
+# UBTU-18-010512
+# ubtu18stig_limit_method is how you want manage your UFW limits
+# This value needs to be service to manage via service names or eth_port to limit all on a network port
+ubtu18stig_limit_method: service
+# ubtu18stig_limit_services is the list of services to limit
+ubtu18stig_limit_services:
+    - OpenSSH
+# ubtu18stig_limit_eth_port is the list of ports to limit
+ubtu18stig_limit_eth_port:
+    - eth0
 
 # CAT 3
 

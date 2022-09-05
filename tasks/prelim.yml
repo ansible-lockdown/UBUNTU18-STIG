@@ -104,7 +104,7 @@
         ubtu_18_010387 or
         ubtu_18_010388 or
         ubtu_18_010391 or
-        ubtu_18_010392 or
+        ubtu_18_010392
 
 
 - name: "PRELIM | Install audisp-remote plugin"

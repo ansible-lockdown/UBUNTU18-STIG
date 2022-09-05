@@ -1,4 +1,6 @@
 ## This file is managed by Ansible, YOUR CHANGES WILL BE LOST!!
+
+# This template will set all of the auditd configurations via a handler in the role in one task instead of individually
 {% if ubtu_18_010201 %}
 -w /var/log/tallylog -p wa -k logins
 {% endif %}
@@ -100,7 +102,7 @@
 {% if ubtu_18_010348 %}
 -a always,exit -F path=/usr/bin/passwd -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-passwd
 {% endif %}
-{% if ubtu_18_010349 $}
+{% if ubtu_18_010349 %}
 -a always,exit -F path=/sbin/unix_update -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-unix-update
 {% endif %}
 {% if ubtu_18_010350 %}
@@ -153,4 +155,3 @@
 {% if ubtu_18_010392 %}
 -w /bin/fdisk -p x -k fdisk
 {% endif %}
-

@@ -44,11 +44,11 @@
 - name: update auditd
   template:
       src: audit/99_stig_auditd.rules.j2
-      dest: /etc/audit/rules.d/99_stig_uditd.rules
+      dest: /etc/audit/rules.d/99_stig_audit.rules
       owner: root
       group: root
       mode: 0600
-  notify: 
+  notify:
       - reload auditd
       - restart auditd
 
@@ -63,3 +63,15 @@
       - not ubtu18stig_skip_for_travis
       - not ubtu18stig_system_is_chroot
       - not system_is_container
+
+- name: restart rsyslog
+  service:
+      name: rsyslog
+      state: restarted
+
+- name: sysctl flush ipv4 route table
+  sysctl:
+      name: net.ipv4.route.flush
+      value: '1'
+      sysctl_set: yes
+  when: ansible_virtualization_type != "docker"

@@ -635,7 +635,6 @@
       owner: "{{ ubtu_18_010126 | ternary('syslog',omit) }}"
       group: "{{ ubtu_18_010125 | ternary('adm',omit) }}"
       mode: "{{ ubtu_18_010127 | ternary(ubtu18cis_var_log_syslog_perms,omit) }}"
-      state: directory
   when:
       - ubtu_18_010125 or
         ubtu_18_010126 or
@@ -977,7 +976,7 @@
             mode: "{{ ubtu_18_010139 | ternary(ubtu18stig_sys_commands_perms,omit) }}"
         with_items:
             - "{{ ubtu_18_010139_commands_perms.stdout_lines }}"
-        when:  ubtu_18_010139_commands_perms.stdout | length > 0
+        when: ubtu_18_010139_commands_perms.stdout | length > 0
   when:
       - ubtu_18_010139 or
         ubtu_18_010141 or
@@ -1666,7 +1665,7 @@
             path: "{{ item }}"
             mode: "{{ ubtu_18_010311 | ternary(ubtu18stig_audit_rules_conf_perms,omit) }}"
         with_items:
-            - /etc/audit/audit.rule
+            - /etc/audit/audit.rules
             - /etc/audit/auditd.conf
 
       - name: |
@@ -2359,7 +2358,10 @@
       - auditd
 
 - name: "MEDIUM | UBTU-18-010392 | PATCH | The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use the fdisk command."
-
+  debug:
+      msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
+  changed_when: true
+  notify: update auditd
   when:
       - ubtu_18_010392
   tags:
@@ -2370,3 +2372,648 @@
       - SV-219300r610963_rule
       - V-219300
       - auditd
+
+- name: "MEDIUM | UBTU-18-010401 | PATCH | The Ubuntu operating system must retain a users session lock until that user reestablishes access using established identification and authentication procedures."
+  block:
+      - name: "MEDIUM | UBTU-18-010401 | PATCH | The Ubuntu operating system must retain a users session lock until that user reestablishes access using established identification and authentication procedures. | Get screensaver lock status"
+        shell: gsettings get org.gnome.desktop.screensaver lock-enabled
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010401_screen_saver_lock
+
+      - name: "MEDIUM | UBTU-18-010401 | PATCH | The Ubuntu operating system must retain a users session lock until that user reestablishes access using established identification and authentication procedures. | Set screensaver lock"
+        shell: gsettings set org.gnome.desktop.screensaver lock-enabled true
+        changed_when: true
+        when: "'true' not in ubtu_18_010401_screen_saver_lock.stdout"
+  when:
+      - ubtu_18_010401
+      - ubtu18cis_desktop_required
+  tags:
+      - UBTU-18-010401
+      - CAT2
+      - CCI-000056
+      - SRG-OS-000028-GPOS-00009
+      - SV-219302r610963_rule
+      - V-219302
+      - auditd
+
+- name: "MEDIUM | UBTU-18-010402 | PATCH | The Ubuntu operating system must initiate a session lock after a 15-minute period of inactivity for all connection types."
+  blockinfile:
+      path: /etc/profile.d/autologout.sh
+      create: true
+      mode: 0644
+      state: present
+      marker: "# {mark} ANSIBLE MANAGED"
+      block: |
+          # Set session timeout - STIG ID UBTU-18-010402
+          TMOUT={{ ubtu18cis_shell_session_timeout }}
+          readonly TMOUT
+          export TMOUT
+  when:
+      - ubtu_18_010402
+  tags:
+      - UBTU-18-010402
+      - CAT2
+      - CCI-000057
+      - SRG-OS-000029-GPOS-00010
+      - SV-219303r610963_rule
+      - V-219303
+      - user
+
+- name: "MEDIUM | UBTU-18-010403 | PATCH | The Ubuntu operating system must be configured for users to directly initiate a session lock for all connection types."
+  package:
+      name: vlock
+      state: present
+  when:
+      - ubtu_18_010403
+      - "'vlock' not in ansible_facts.packages"
+  tags:
+      - UBTU-18-010403
+      - CAT2
+      - CCI-000058
+      - CCI-000060
+      - SRG-OS-000030-GPOS-00011
+      - SV-219304r610963_rule
+      - V-219304
+      - user
+
+- name: "MEDIUM | UBTU-18-010410 | PATCH | The Ubuntu operating system must monitor remote access methods."
+  block:
+      - name: "MEDIUM | UBTU-18-010410 | PATCH | The Ubuntu operating system must monitor remote access methods. | Get existing files"
+        shell: grep -E -r '^(auth,authpriv\.\*|daemon\.\*)' /etc/rsyslog.* | cut -d':' -f1
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010410_existing_files
+
+      - name: "MEDIUM | UBTU-18-010410 | PATCH | The Ubuntu operating system must monitor remote access methods. | Set settings"
+        lineinfile:
+            path: "{{ (ubtu_18_010410_existing_files.stdout | length > 0) | ternary(ubtu_18_010410_existing_files.stdout,'/etc/rsyslog.d/50-default.conf') }}"
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+            create: true
+            mode: 0644
+            owner: root
+            group: root
+        notify: restart rsyslog
+        with_items:
+            - {regexp: '^auth.*,authpriv.*', line: "auth.*,authpriv.*               /var/log/secure"}
+            - {regexp: '^daemon.*|#daemon.*', line: "daemon.*                        /var/log/messages"}
+  when:
+      - ubtu_18_010410
+  tags:
+      - UBTU-18-010410
+      - CAT2
+      - CCI-000067
+      - SRG-OS-000032-GPOS-00013
+      - SV-219306r832922_rule
+      - V-219306
+      - rsyslog
+
+- name: "MEDIUM | UBTU-18-010411 | PATCH | The Ubuntu operating system must implement DoD-approved encryption to protect the confidentiality of remote access sessions."
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^Ciphers|^#Ciphers'
+      line: "Ciphers {{ ubtu18stig_sshd.ciphers }}"
+      insertafter: '^# Ciphers and keying'
+  notify: restart sshd
+  when:
+      - ubtu_18_010411
+  tags:
+      - UBTU-18-010411
+      - CAT2
+      - CCI-000068
+      - SRG-OS-000033-GPOS-00014
+      - SV-219307r610963_rule
+      - V-219307
+      - sshd
+      - encryption
+
+- name: "MEDIUM | UBTU-18-010414 | PATCH | The Ubuntu operating system must use strong authenticators in establishing nonlocal maintenance and diagnostic sessions."
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^UsePAM |^#UsePAM '
+      line: "UsePAM yes"
+  notify: restart sshd
+  when:
+      - ubtu_18_010414
+  tags:
+      - UBTU-18-010414
+      - CAT2
+      - CCI-000877
+      - SRG-OS-000125-GPOS-00065
+      - SV-219309r610963_rule
+      - V-219309
+      - sshd
+
+- name: "MEDIUM | UBTU-18-010415 | PATCH | The Ubuntu operating system must immediately terminate all network connections associated with SSH traffic after a period of inactivity."
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^ClientAliveCountMax |^#ClientAliveCountMax '
+      line: "ClientAliveCountMax 1"
+  notify: restart sshd
+  when:
+      - ubtu_18_010415
+  tags:
+      - UBTU-18-010415
+      - CAT2
+      - CCI-000879
+      - SRG-OS-000126-GPOS-00066
+      - SV-219310r610963_rule
+      - V-219310
+      - sshd
+
+- name: "MEDIUM | UBTU-18-010416 | PATCH | The Ubuntu operating system must automatically terminate all network connections associated with SSH traffic at the end of the session or after 10 minutes of inactivity."
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^ClientAliveInterval |^#ClientAliveInterval '
+      line: "ClientAliveInterval {{ ubtu18stig_sshd.client_alive_interval }}"
+  notify: restart sshd
+  when:
+      - ubtu_18_010416
+  tags:
+      - UBTU-18-010416
+      - CAT2
+      - CCI-001133
+      - CCI-002361
+      - SRG-OS-000163-GPOS-00072
+      - SV-219311r610963_rule
+      - V-219311
+      - sshd
+
+- name: "MEDIUM | UBTU-18-010417 | PATCH | The Ubuntu operating system must configure the SSH daemon to only use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hash algorithms to protect the integrity of nonlocal maintenance and diagnostic communications."
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regex: '^MACs '
+      line: "MACs {{ ubtu18stig_sshd.macs }}"
+  notify: restart sshd
+  when:
+      - ubtu_18_010417
+  tags:
+      - UBTU-18-010417
+      - CAT2
+      - CCI-001453
+      - CCI-002890
+      - CCI-003123
+      - SRG-OS-000250-GPOS-00093
+      - SV-219312r610963_rule
+      - V-219312
+      - sshd
+
+# this is out of order due to it installing needed packages for the next couple of tasks
+- name: "MEDIUM | UBTU-18-010431 | PATCH | The Ubuntu operating system must implement multifactor authentication for remote access to privileged accounts in such a way that one of the factors is provided by a device separate from the system gaining access."
+  package:
+      name: libpam-pkcs11
+      state: present
+  when:
+      - ubtu_18_010431
+      - "'libpam-pkcs11' not in ansible_facts.packages"
+  tags:
+      - UBTU-18-010431
+      - CAT2
+      - CCI-001948
+      - SRG-OS-000375-GPOS-00160
+      - SV-219318r610963_rule
+      - V-219318
+      - pamd
+      - pkcs11
+
+# this is out of order due to it installing needed packages for the next couple of tasks
+- name: "MEDIUM | UBTU-18-010432 | PATCH |  The Ubuntu operating system must accept Personal Identity Verification (PIV) credentials."
+  package:
+      name: opensc-pkcs11
+      state: present
+  when:
+      - ubtu_18_010432
+      - "'opensc-pkcs11' not in ansible_facts.packages"
+  tags:
+      - UBTU-18-010432
+      - CAT2
+      - CCI-001953
+      - SRG-OS-000376-GPOS-00161
+      - SV-219319r610963_rule
+      - V-219319
+      - certificates
+
+- name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor."
+  block:
+      - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor."
+        shell: /bin/true
+        changed_when: false
+        failed_when: false
+      # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Get current certs"
+      #   stat:
+      #       path: /etc/pam_pkcs11/pam_pkcs11.conf
+      #   register: ubtu_18_010425_pam_pkcs11_conf
+
+      # - debug: var=ubtu_18_010425_pam_pkcs11_conf
+
+      # - debug: var=ubtu_18_010425_pam_pkcs11_conf.stat.exists
+
+      # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Create file if doens't exit"
+      #   shell:  gunzip -c /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz > /etc/pam_pkcs11/pam_pkcs11.conf
+      #   changed_when: true
+      #   when: not ubtu_18_010425_pam_pkcs11_conf.stat.exists
+
+      # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Set cert_policy"
+      #   lineinfile:
+      #       path: /etc/pam_pkcs11/pam_pkcs11.conf
+      #       regexp: 'cert_policy ='
+      #       line: "    cert_policy = {{ ubtu18stig_cert_policy }};"
+  when:
+      - ubtu_18_010425
+  tags:
+      - UBTU-18-010425
+      - CAT2
+      - CCI-00018
+      - CCI-001991
+      - SRG-OS-000066-GPOS-00034
+      - SV-219315r610963_rule
+      - V-219315
+      - certificates
+      - not_implemented
+
+- name: "MEDIUM | UBTU-18-010427 | PATCH | The Ubuntu operating system must implement smart card logins for multifactor authentication for access to accounts."
+  block:
+      - name: "MEDIUM | UBTU-18-010427 | AUDIT | The Ubuntu operating system must implement smart card logins for multifactor authentication for access to accounts. | Get pkcs11 pamd status"
+        shell: grep '^auth.*{{ ubtu18cis_pkcs11.new_control }}.*pam_pkcs11.so' /etc/pam.d/common-auth
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010427_pam_pkcs11_status
+
+      - name: "MEDIUM | UBTU-18-010427 | PATCH | The Ubuntu operating system must implement smart card logins for multifactor authentication for access to accounts. | Set pkcs11 if doesn't exist"
+        pamd:
+            name: common-auth
+            type: "{{ ubtu18cis_pkcs11.type }}"
+            control: "{{ ubtu18cis_pkcs11.control }}"
+            module_path: "{{ ubtu18cis_pkcs11.module_path }}"
+            new_type: auth
+            new_control: "{{ ubtu18cis_pkcs11.new_control }}"
+            new_module_path: pam_pkcs11.so
+            state: "{{ ubtu18cis_pkcs11.state }}"
+        when: ubtu_18_010427_pam_pkcs11_status.stdout | length == 0
+  when:
+      - ubtu_18_010427
+  tags:
+      - UBTU-18-010427
+      - CAT2
+      - CCI-000765
+      - CCI-000766
+      - CCI-000767
+      - CCI-000768
+      - CCI-001954
+      - SRG-OS-000105-GPOS-00052
+      - SV-219317r610963_rule
+      - V-219317
+      - pamd
+      - certificates
+
+- name: "MEDIUM | UBTU-18-010434 | PATCH | The Ubuntu operating system must implement certificate status checking for multifactor authentication."
+  shell: /bin/true
+  changed_when: false
+  failed_when: false
+  when:
+      - ubtu_18_010434
+  tags:
+      - UBTU-18-010434
+      - CAT2
+      - CCI-001954
+      - SRG-OS-000377-GPOS-00162
+      - SV-219320r610963_rule
+      - V-219320
+      - certificates
+      - not_implemented
+
+- name: "MEDIUM | UBTU-18-010436 | AUDIT | The Ubuntu operating system must only allow the use of DoD PKI-established certificate authorities for verification of the establishment of protected sessions."
+  debug:
+      msg:
+          - "Warning!! This control is a manual control"
+          - "Please use at least one DoD certificate authority to the '/usr/local/share/ca-certificates' directory"
+  when:
+      - ubtu_18_010436
+  tags:
+      - UBTU-18-010436
+      - CAT2
+      - CCI-002470
+      - SRG-OS-000403-GPOS-00182
+      - SV-219321r610963_rule
+      - V-219321
+
+- name: |
+    "MEDIUM | UBTU-18-010441 | PATCH | The Ubuntu operating system must be configured to use AppArmor."
+    "MEDIUM | UBTU-18-010442 | PATCH | The Apparmor module must be configured to employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs and limit the ability of non-privileged users to grant other users direct access to the contents of their home directories/folders."
+  block:
+      - name: |
+          "MEDIUM | UBTU-18-010441 | PATCH | The Ubuntu operating system must be configured to use AppArmor. | Install apparmor"
+          "MEDIUM | UBTU-18-010442 | PATCH | The Apparmor module must be configured to employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs and limit the ability of non-privileged users to grant other users direct access to the contents of their home directories/folders. | Install apparmor"
+        package:
+            name: apparmor
+            state: present
+        when: "'apparmor' not in ansible_facts.packages"
+
+      - name: |
+          "MEDIUM | UBTU-18-010441 | PATCH | The Ubuntu operating system must be configured to use AppArmor. | Enable and start apparmor service"
+          "MEDIUM | UBTU-18-010442 | PATCH | The Apparmor module must be configured to employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs and limit the ability of non-privileged users to grant other users direct access to the contents of their home directories/folders. | Enable and start apparmor service"
+        systemd:
+            name: apparmor
+            state: started
+            enabled: true
+  when:
+      - ubtu_18_010441 or
+        ubtu_18_010442
+  tags:
+      - UBTU-18-010441
+      - UBTU-18-010442
+      - CAT2
+      - CCI-001764
+      - CCI-001774
+      - SRG-OS-000368-GPOS-00154
+      - SRG-OS-000370-GPOS-00155
+      - SV-219323r610963_rule
+      - SV-219324r610963_rule
+      - V-219323
+      - V-219324
+      - apparmor
+      - firewall
+
+- name: "MEDIUM | UBTU-18-010444 | AUDIT | The Ubuntu operating system must uniquely identify interactive users."
+  block:
+      - name: "MEDIUM | UBTU-18-010444 | AUDIT | The Ubuntu operating system must uniquely identify interactive users. | Get duplicate UID users"
+        shell: "awk -F \":\" 'list[$3]++{print $1}' /etc/passwd"
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010444_duplicate_uid_users
+
+      - name: "MEDIUM | UBTU-18-010444 | AUDIT | The Ubuntu operating system must uniquely identify interactive users. | Message about duplicate UID users"
+        debug:
+            msg:
+                - "Warning!! You have users with duplicate UID's"
+                - "Please resolve to make all users have unique UID's"
+                - "{{ ubtu_18_010444_duplicate_uid_users.stdout_lines }}"
+        when: ubtu_18_010444_duplicate_uid_users.stdout | length > 0
+  when:
+      - ubtu_18_010444
+  tags:
+      - UBTU-18-010444
+      - CAT2
+      - CCI-000764
+      - CCI-000804
+      - SRG-OS-000104-GPOS-00051
+      - SV-219325r610963_rule
+      - V-219325
+      - users
+
+- name: "MEDIUM | UBTU-18-010445 | PATCH | The Ubuntu operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity."
+  block:
+      - name: "MEDIUM | UBTU-18-010445 | AUDIT | The Ubuntu operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.  | Get useradd inactive value"
+        shell: grep '^INACTIVE' /etc/default/useradd | cut -d"=" -f2
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010445_useradd_inactive
+
+      - name: "MEDIUM | UBTU-18-010445 | PATCH | The Ubuntu operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity. | Set INACTIVE"
+        shell: useradd -D -f {{ ubtu18stig_useradd_active }}
+        changed_when: true
+        when:
+            - ubtu_18_010445_useradd_inactive.stdout | length == 0 or
+              ubtu_18_010445_useradd_inactive.stdout == "-1" or
+              ubtu18stig_useradd_active | string not in ubtu_18_010445_useradd_inactive.stdout
+  when:
+      - ubtu_18_010445
+  tags:
+      - UBTU-18-010445
+      - CAT2
+      - CCI-000795
+      - SRG-OS-000118-GPOS-00060
+      - SV-219326r610963_rule
+      - V-219326
+      - logins
+
+- name: "MEDIUM | UBTU-18-010448 | PATCH | The Ubuntu operating system default filesystem permissions must be defined in such a way that all authenticated users can only read and modify their own files."
+  lineinfile:
+      path: /etc/login.defs
+      regexp: '^UMASK.*'
+      line: "UMASK           077"
+  when:
+      - ubtu_18_010448
+  tags:
+      - UBTU-18-010448
+      - CAT2
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00228
+      - SV-219328r610963_rule
+      - V-219328
+      - logins
+
+- name: "MEDIUM | UBTU-18-010449 | AUDIT | The Ubuntu operating system must provision temporary user accounts with an expiration time of 72 hours or less."
+  debug:
+      msg:
+          - "Warning!! This task is a manual check for temporary accounts having an expire date"
+          - "To conform to STIG standards please set all temporary accounts to expire 72 hours"
+          - "after creation date"
+  when:
+      - ubtu_18_010449
+  tags:
+      - UBTU-18-010449
+      - CAT2
+      - CCI-000016
+      - SRG-OS-000002-GPOS-00002
+      - SV-219329r610963_rule
+      - V-219329
+      - accounts
+
+- name: "MEDIUM | UBTU-18-010500 | PATCH | The Ubuntu operating system must be configured to use TCP syncookies."
+  block:
+      - name: "MEDIUM | UBTU-18-010500 | PATCH | The Ubuntu operating system must be configured to use TCP syncookies. | Set syncookies current"
+        sysctl:
+            name: net.ipv4.tcp_syncookies
+            value: '1'
+            sysctl_set: yes
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify: sysctl flush ipv4 route table
+
+      - name: "MEDIUM | UBTU-18-010500 | PATCH | The Ubuntu operating system must be configured to use TCP syncookies."
+        lineinfile:
+            path: /etc/sysctl.conf
+            regexp: '^net.ipv4.tcp_syncookies =|^#net.ipv4.tcp_syncookies'
+            line: "net.ipv4.tcp_syncookies = 1"
+  when:
+      - ubtu_18_010500
+  tags:
+      - UBTU-18-010500
+      - CAT2
+      - CCI-001095
+      - SRG-OS-000142-GPOS-00071
+      - SV-219330r610963_rule
+      - V-219330
+      - tcp
+
+- name: "MEDIUM | UBTU-18-010501 | PATCH | The Ubuntu operating system must, for networked systems, compare internal information system clocks at least every 24 hours with a server which is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
+  lineinfile:
+      path: /etc/chrony/chrony.conf
+      regexp: '^server {{ item }} iburst'
+      line: "server {{ item }} iburst maxpoll = {{ ubtu18stig_iburst_maxpoll_value }}"
+  with_items:
+      - "{{ ubtu18stig_dod_timesource }}"
+  when:
+      - ubtu_18_010501
+  tags:
+      - UBTU-18-010501
+      - CAT2
+      - CCI-001891
+      - SRG-OS-000355-GPOS-00143
+      - SV-219331r808468_rule
+      - V-219331
+      - chrony
+
+- name: "MEDIUM | UBTU-18-010504 | AUDIT | The Ubuntu operating system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments."
+  debug:
+      msg: "Warning!! Please make sure your UFW allow/deny settings conform to PPSM CAL vulnerability assessments"
+  when:
+      - ubtu_18_010504
+  tags:
+      - UBTU-18-010504
+      - CAT2
+      - CCI-000382
+      - SRG-OS-000096-GPOS-00050
+      - SV-219334r802369_rule
+      - V-219334
+      - firewall
+      - ufw
+
+- name: "MEDIUM | UBTU-18-010505 | PATCH | Kernel core dumps must be disabled unless needed."
+  systemd:
+      name: kdump
+      state: stopped
+      enabled: false
+  when:
+      - ubtu_18_010505
+  tags:
+      - UBTU-18-010505
+      - CAT2
+      - CCI-001190
+      - SRG-OS-000184-GPOS-00078
+      - SV-219335r610963_rule
+      - V-219335
+      - kernel_dump
+      - logging
+
+- name: "MEDIUM | UBTU-18-010506 | PATCH | The Ubuntu operating system must use cryptographic mechanisms to protect the integrity of audit tools."
+  lineinfile:
+      path: /etc/aide/aide.conf
+      line: "{{ item }}"
+      owner: root
+      group: root
+      mode: 0600
+  with_items:
+      - "# Audit Tools"
+      - "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512"
+      - "/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512"
+      - "/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512"
+      - "/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512"
+      - "/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512"
+      - "/sbin/audispd p+i+n+u+g+s+b+acl+xattrs+sha512"
+      - "/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512"
+  when:
+      - ubtu_18_010506
+  tags:
+      - UBTU-18-010506
+      - CAT2
+      - CCI-001496
+      - SRG-OS-000278-GPOS-00108
+      - SV-219336r610963_rule
+      - V-219336
+      - aide
+
+- name: "MEDIUM | UBTU-18-010507 | PATCH | The Ubuntu operating system must enable and run the uncomplicated firewall(ufw)."
+  systemd:
+      name: ufw
+      state: started
+      enabled: true
+  when:
+      - ubtu_18_010507
+  tags:
+      - UBTU-18-010507
+      - CAT2
+      - CCI-000366
+      - CCI-002314
+      - SRG-OS-000297-GPOS-00115
+      - SV-219337r610963_rule
+      - V-219337
+      - firewall
+      - ufw
+
+- name: "MEDIUM | UBTU-18-010508 | PATCH | The Ubuntu operating system must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the system administrator when changes to the baseline configuration or anomalies in the operation of any security functions are discovered."
+  lineinfile:
+      path: /etc/default/aide
+      regexp: '^SILENTREPORTS='
+      line: "SILENTREPORTS=no"
+  when:
+      - ubtu_18_010508
+  tags:
+      - UBTU-18-010508
+      - CAT2
+      - CCI-001744
+      - CCI-002702
+      - SRG-OS-000363-GPOS-00150
+      - SV-219338r610963_rule
+      - V-219338
+      - aide
+
+- name: "MEDIUM | UBTU-18-010509 | PATCH | The Ubuntu operating system must disable automatic mounting of Universal Serial Bus (USB) mass storage driver."
+  block:
+      - name: "MEDIUM | UBTU-18-010509 | PATCH | The Ubuntu operating system must disable automatic mounting of Universal Serial Bus (USB) mass storage driver. | Set modprobe config"
+        lineinfile:
+            path: /etc/modprobe.d/usb_storage.conf
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+            create: true
+        with_items:
+            - { regexp: '^install usb-storage', line: 'install usb-storage /bin/true' }
+            - { regexp: '^blacklist usb-storage', line: 'blacklist usb-storage' }
+
+      - name: "MEDIUM | UBTU-18-010509 | PATCH | The Ubuntu operating system must disable automatic mounting of Universal Serial Bus (USB) mass storage driver. | Remove USB storage module"
+        modprobe:
+            name: usb-storage
+            state: absent
+        when: ansible_connection != 'docker'
+  when:
+      - ubtu_18_010509
+  tags:
+      - UBTU-18-010509
+      - CAT2
+      - CCI-001958
+      - SRG-OS-000378-GPOS-00163
+      - SV-219339r802372_rule
+      - V-219339
+      - usb
+
+- name: "MEDIUM | UBTU-18-010512 | PATCH | The Ubuntu operating system must configure the uncomplicated firewall to rate-limit impacted network interfaces."
+  block:
+      - name: "MEDIUM | UBTU-18-010512 | PATCH | The Ubuntu operating system must configure the uncomplicated firewall to rate-limit impacted network interfaces. | limit on service"
+        ufw:
+            rule: limit
+            name: "{{ item }}"
+        with_items:
+            - "{{ ubtu18stig_limit_services }}"
+        when: "'service' in ubtu18stig_limit_method"
+
+      - name: "MEDIUM | UBTU-18-010512 | PATCH | The Ubuntu operating system must configure the uncomplicated firewall to rate-limit impacted network interfaces.| Limint on network ports"
+        ufw:
+          rule: limit
+          interface: "{{ item }}"
+          direction: in
+        with_items:
+            - "{{ ubtu18stig_limit_eth_port }}"
+        when: "'eth_port' in ubtu18stig_limit_method"
+  when:
+      - ubtu_18_010512
+  tags:
+      - UBTU-18-010512
+      - CAT2
+      - CCI-002385
+      - SRG-OS-000420-GPOS-00186
+      - SV-219340r802375_rule
+      - V-219340
+      - ufw
