@@ -52,6 +52,9 @@
       - reload auditd
       - restart auditd
 
+- name: reload kernel system
+  shell: sysctl --system
+
 - name: reload auditd
   shell: augenrules --load
 

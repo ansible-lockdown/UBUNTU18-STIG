@@ -2600,25 +2600,26 @@
         shell: /bin/true
         changed_when: false
         failed_when: false
-      # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Get current certs"
-      #   stat:
-      #       path: /etc/pam_pkcs11/pam_pkcs11.conf
-      #   register: ubtu_18_010425_pam_pkcs11_conf
 
-      # - debug: var=ubtu_18_010425_pam_pkcs11_conf
+  # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Get current certs"
+  #   stat:
+  #       path: /etc/pam_pkcs11/pam_pkcs11.conf
+  #   register: ubtu_18_010425_pam_pkcs11_conf
 
-      # - debug: var=ubtu_18_010425_pam_pkcs11_conf.stat.exists
+  # - debug: var=ubtu_18_010425_pam_pkcs11_conf
 
-      # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Create file if doens't exit"
-      #   shell:  gunzip -c /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz > /etc/pam_pkcs11/pam_pkcs11.conf
-      #   changed_when: true
-      #   when: not ubtu_18_010425_pam_pkcs11_conf.stat.exists
+  # - debug: var=ubtu_18_010425_pam_pkcs11_conf.stat.exists
 
-      # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Set cert_policy"
-      #   lineinfile:
-      #       path: /etc/pam_pkcs11/pam_pkcs11.conf
-      #       regexp: 'cert_policy ='
-      #       line: "    cert_policy = {{ ubtu18stig_cert_policy }};"
+  # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Create file if doens't exit"
+  #   shell:  gunzip -c /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz > /etc/pam_pkcs11/pam_pkcs11.conf
+  #   changed_when: true
+  #   when: not ubtu_18_010425_pam_pkcs11_conf.stat.exists
+
+  # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Set cert_policy"
+  #   lineinfile:
+  #       path: /etc/pam_pkcs11/pam_pkcs11.conf
+  #       regexp: 'cert_policy ='
+  #       line: "    cert_policy = {{ ubtu18stig_cert_policy }};"
   when:
       - ubtu_18_010425
   tags:
@@ -3001,9 +3002,9 @@
 
       - name: "MEDIUM | UBTU-18-010512 | PATCH | The Ubuntu operating system must configure the uncomplicated firewall to rate-limit impacted network interfaces.| Limint on network ports"
         ufw:
-          rule: limit
-          interface: "{{ item }}"
-          direction: in
+            rule: limit
+            interface: "{{ item }}"
+            direction: in
         with_items:
             - "{{ ubtu18stig_limit_eth_port }}"
         when: "'eth_port' in ubtu18stig_limit_method"
@@ -3017,3 +3018,252 @@
       - SV-219340r802375_rule
       - V-219340
       - ufw
+
+- name: "MEDIUM | UBTU-18-010514 | PATCH | The Ubuntu operating system must implement address space layout randomization to protect its memory from unauthorized code execution."
+  lineinfile:
+      path: /etc/sysctl.conf
+      regexp: '^kernel.randomize_va_space'
+      line: "kernel.randomize_va_space=2"
+  notify: reload kernel system
+  when:
+      - ubtu_18_010514
+  tags:
+      - UBTU-18-010514
+      - CAT2
+      - CCI-002824
+      - SRG-OS-000433-GPOS-00193
+      - SV-219342r610963_rule
+      - V-219342
+      - kernel
+
+- name: "MEDIUM | UBTU-18-010515 | PATCH | The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions."
+  package:
+      name: aide
+      state: present
+  when:
+      - ubtu_18_010515
+      - "'aide' not in ansible_facts.packages"
+  tags:
+      - UBTU-18-010515
+      - CAT2
+      - CCI-002696
+      - SRG-OS-000445-GPOS-00199
+      - SV-219343r610963_rule
+      - V-219343
+      - aide
+
+- name: "MEDIUM | UBTU-18-010516 | PATCH | The Ubuntu operating system must be configured so that a file integrity tool verifies the correct operation of security functions every 30 days."
+  copy:
+      src: /usr/share/aide/config/cron.daily/aide
+      dest: /etc/cron.daily/aide
+      remote_src: true
+  when:
+      - ubtu_18_010516
+  tags:
+      - UBTU-18-010516
+      - CAT2
+      - CCI-002699
+      - SRG-OS-000446-GPOS-00200
+      - SV-219344r610963_rule
+      - V-219344
+      - aide
+
+- name: "MEDIUM | UBTU-18-010418 | PATCH | The Ubuntu operating system must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements."
+  lineinfile:
+      path: /etc/ssh/sshd_confi
+      regexp: '^X11Forwarding '
+      line: "X11Forwarding no"
+  notify: restart sshd
+  when:
+      - ubtu_18_010418
+  tags:
+      - UBTU-18-010418
+      - CAT2
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-233779r610963_rule
+      - V-233779
+      - sshd
+
+- name: "MEDIUM | UBTU-18-010419 | PATCH | The Ubuntu operating system SSH daemon must prevent remote hosts from connecting to the proxy display."
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^X11UseLocalhost '
+      line: "X11UseLocalhost yes"
+  when:
+      - ubtu_18_010419
+  tags:
+      - UBTU-18-010419
+      - CAT2
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-233780r610963_rule
+      - V-233780
+      - sshd
+
+- name: "MEDIUM | UBTU-18-010450 | PATCH |  All local interactive user home directories defined in the /etc/passwd file must exist."
+  block:
+      - name: capture audit task for missing homedirs
+        block: &u18s_homedir_audit
+            - name: "MEDIUM | UBTU-18-010450 | PATCH |  All local interactive user home directories defined in the /etc/passwd file must exist. | Find users missing home directories"
+              shell: pwck -r | grep -P {{ ld_regex | quote }}
+              check_mode: false
+              register: ubtu_18_010450_users_missing_home
+              changed_when: ubtu_18_010450_audit | length > 0
+              # failed_when: 0: success, 1: no grep match, 2: pwck found something
+              failed_when: ubtu_18_010450_users_missing_home.rc not in [0,1,2]
+
+      ### NOTE: due to https://github.com/ansible/ansible/issues/24862 This is a shell command, and is quite frankly less than ideal.
+      - name: "MEDIUM | UBTU-18-010450 | PATCH |  All local interactive user home directories defined in the /etc/passwd file must exist. | Creates home directories"
+        command: "mkhomedir_helper {{ item }}"
+        # check_mode: "{{ ubtu18stig_disruptive_check_mode }}"
+        with_items: "{{ ubtu_18_010450_audit | map(attribute='id') | list }}"
+        when:
+            - ubtu_18_010450_users_missing_home is changed
+            - ubtu18stig_disruption_high
+
+      ### NOTE: Now we need to address that SELINUX will not let mkhomedir_helper create home directories for UUID < 500, so the ftp user will still show up in a pwck. Not sure this is needed, I need to confirm if that user is removed in an earlier task.
+      ### ^ Likely doesn't matter as "local interactive users" are defined as those w/ uid 1000-4999
+      - name: replay audit task
+        block: *u18s_homedir_audit
+
+      # CAUTION: debug loops don't show changed since 2.4:
+      # Fix: https://github.com/ansible/ansible/pull/59958
+      - name: "MEDIUM | UBTU-18-010450 | PATCH |  All local interactive user home directories defined in the /etc/passwd file must exist. | Alert about correcting owner and group"
+        debug: msg="You will need to mkdir -p {{ item }} and chown properly to the correct owner and group."
+        with_items: "{{ ubtu_18_010450_audit | map(attribute='dir') | list }}"
+        changed_when: ubtu18stig_audit_complex
+        when:
+            - ubtu_18_010450_users_missing_home is changed
+  vars:
+      ld_regex: >-
+          ^user '(?P<user>.*)': directory '(?P<dir>.*)' does not exist$
+      ld_users: "{{ ubtu_18_010450_users_missing_home.stdout_lines | map('regex_replace', ld_regex, '\\g<user>') | list }}"
+      ubtu_18_010450_audit: "{{ ubtu18stig_passwd | selectattr('uid', '>=', 1000) | selectattr('id', 'in', ld_users) | list }}"
+  when:
+      - ubtu_18_010450
+      - ubtu18stig_disruption_high
+  tags:
+      - UBTU-18-010450
+      - CAT2
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-237768r648736_rule
+      - V-237768
+      - users
+
+- name: "MEDIUM | UBTU-18-010451 | PATCH | All local interactive user home directories must have mode 0750 or less permissive."
+  block:
+      - name: "MEDIUM | UBTU-18-010451 | PATCH | All local interactive user home directories must have mode 0750 or less permissive. | Stat home directories"
+        stat:
+            path: "{{ item }}"
+        register: ubtu_18_010451_audit
+        with_items:
+            - "{{ ubtu18stig_passwd | selectattr('uid', '>=', 1000) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
+
+      - name: "MEDIUM | UBTU-18-010451 | PATCH | All local interactive user home directories must have mode 0750 or less permissive. | Find home directories more 750"
+        command: find -H {{ item.0 | quote }} -not -type l -perm /027
+        register: ubtu_18_010451_patch_audit
+        changed_when: ubtu_18_010451_patch_audit.stdout | length > 0
+        when:
+            - item.1.exists
+        with_together:
+            - "{{ ubtu_18_010451_audit.results | map(attribute='item') | list }}"
+            - "{{ ubtu_18_010451_audit.results | map(attribute='stat') | list }}"
+        loop_control:
+            label: "{{ item.0 }}"
+
+      - name: "MEDIUM | UBTU-18-010451 | PATCH | All local interactive user home directories must have mode 0750 or less permissive. | Set home perms"
+        file:
+            path: "{{ item.0 }}"
+            recurse: true
+            mode: a-st,g-w,o-rwx
+        register: ubtu_18_010451_patch
+        with_together:
+            - "{{ ubtu_18_010451_audit.results | map(attribute='item') | list }}"
+            - "{{ ubtu_18_010451_audit.results | map(attribute='stat') | list }}"
+        loop_control:
+            label: "{{ item.0 }}"
+        when:
+            - ubtu18stig_disruption_high
+            - item.1.exists
+
+      # set default ACLs so the homedir has an effective umask of 0027
+      - name: "MEDIUM | UBTU-18-010451 | PATCH | All local interactive user home directories must have mode 0750 or less permissive. | Set ACL's"
+        acl:
+            path: "{{ item.0 }}"
+            default: true
+            state: present
+            recursive: true
+            etype: "{{ item.1.etype }}"
+            permissions: "{{ item.1.mode }}"
+        when: not ubtu18stig_system_is_container
+        with_nested:
+            - "{{ (ansible_check_mode | ternary(ubtu_18_010451_patch_audit, ubtu_18_010451_patch)).results |
+              rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
+            -
+                - etype: group
+                  mode: rx
+                - etype: other
+                  mode: '0'
+  when:
+      - ubtu_18_010451
+      - ubtu18stig_disruption_high
+  tags:
+      - UBTU-18-010451
+      - CAT2
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-237769r648743_rule
+      - V-237769
+      - permissions
+      - users
+
+- name: "MEDIUM | UBTU-18-010452 | PATCH | All local interactive user home directories must be group-owned by the home directory owners primary group."
+  file:
+      path: "{{ item.dir }}"
+      group: "{{ item.id }}"
+      state: directory
+  with_items: "{{ ubtu18stig_passwd }}"
+  loop_control:
+      label: "{{ item.id }}"
+  when:
+      - ubtu_18_010452
+      - item.uid >= ubtu18stig_int_gid
+      - item.id != "nobody"
+  tags:
+      - UBTU-18-010452
+      - CAT2
+      - CCI-000366
+      - SRG-OS-000480-GPOS-00227
+      - SV-237770r648742_rul
+      - V-237770
+      - permissions
+      - users
+
+- name: "MEDIUM | UBTU-18-010521 | PATCH | The Ubuntu operating system must disable all wireless network adapters."
+  block:
+      - name: "MEDIUM | UBTU-18-010521 | PATCH | The Ubuntu operating system must disable all wireless network adapters. | Check if Wifi Enabled"
+        shell: nmcli radio wifi
+        changed_when: ubtu_18_010521_wifi_enabled.stdout != "disabled"
+        failed_when: false
+        check_mode: false
+        register: ubtu_18_010521_wifi_enabled
+        when: "'network-manager' in ansible_facts.packages"
+
+      - name: "MEDIUM | UBTU-18-010521 | PATCH | The Ubuntu operating system must disable all wireless network adapters. | Disable Wifi if Enabled"
+        shell: nmcli radio wifi off
+        when:
+            - ubtu_18_010521_wifi_enabled is changed
+            - "'network-manager' in ansible_facts.packages"
+  when:
+      - ubtu_18_010521
+  tags:
+      - UBTU-18-010521
+      - CAT2
+      - CCI-002418
+      - SRG-OS-000481-GPOS-00481
+      - SV-252703r819054_rule
+      - V-252703
+      - networking
+      - wireless

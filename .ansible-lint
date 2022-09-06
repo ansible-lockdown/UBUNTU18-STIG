@@ -10,5 +10,6 @@ skip_list:
   - '602'
   - 'fqcn-builtins'
   - 'ignore-errors'
+  - 'risky-octal'
 use_default_rules: true
 verbosity: 0
