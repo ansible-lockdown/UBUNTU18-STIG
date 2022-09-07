@@ -3,15 +3,41 @@
 - name: |
     "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes."
     "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance."
-  lineinfile:
-      dest: /etc/grub.d/40_custom
-      insertafter: EOF
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-  notify: update grub
-  with_items:
-      - { regexp: '^\s*set superusers=', line: '    set superusers="root"' }
-      - { regexp: '^password_pbkdf2', line: 'password_pbkdf2 {{ ubtu18stig_boot_superuser }} {{ ubtu18stig_bootloader_password_hash }}' }
+  block:
+      - name: |
+          "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes. | Get existing CLASS settings"
+          "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance. | Get existing CLASS settings"
+        shell: grep '^CLASS=' /etc/grub.d/10_linux | cut -d'"' -f2
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010000_boot_class
+
+      - name: |
+          "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes. | Get existing CLASS settings"
+          "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance. | Get existing CLASS settings"
+        lineinfile:
+            path: /etc/grub.d/10_linux
+            regexp: '^CLASS='
+            line: 'CLASS="{{ ubtu_18_010000_boot_class.stdout }} --unrestricted"'
+        notify: update grub
+        when:
+            - ubtu_18_010000_boot_class.stdout | length > 0
+            - "'--unrestricted' not in ubtu_18_010000_boot_class.stdout"
+
+      - debug: var=ubtu_18_010000_boot_class
+
+      - name: |
+          "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes."
+          "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance."
+        lineinfile:
+            dest: /etc/grub.d/40_custom
+            insertafter: EOF
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+        notify: update grub
+        with_items:
+            - { regexp: '^\s*set superusers=', line: 'set superusers="root"' }
+            - { regexp: '^password_pbkdf2', line: 'password_pbkdf2 {{ ubtu18stig_boot_superuser }} {{ ubtu18stig_bootloader_password_hash }}' }
   when:
       - ubtu_18_010000 or
         ubtu_18_010001

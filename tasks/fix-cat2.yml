@@ -2854,7 +2854,7 @@
   lineinfile:
       path: /etc/chrony/chrony.conf
       regexp: '^server {{ item }} iburst'
-      line: "server {{ item }} iburst maxpoll = {{ ubtu18stig_iburst_maxpoll_value }}"
+      line: "server {{ item }} iburst maxpoll {{ ubtu18stig_iburst_maxpoll_value }}"
   with_items:
       - "{{ ubtu18stig_dod_timesource }}"
   when:
@@ -2890,6 +2890,8 @@
       enabled: false
   when:
       - ubtu_18_010505
+      - "'kexec-tools' in ansible_facts.packages"
+      - not ubtu18stig_kdump_needed
   tags:
       - UBTU-18-010505
       - CAT2
@@ -3070,7 +3072,7 @@
 
 - name: "MEDIUM | UBTU-18-010418 | PATCH | The Ubuntu operating system must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements."
   lineinfile:
-      path: /etc/ssh/sshd_confi
+      path: /etc/ssh/sshd_config
       regexp: '^X11Forwarding '
       line: "X11Forwarding no"
   notify: restart sshd

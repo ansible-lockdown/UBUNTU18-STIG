@@ -190,6 +190,7 @@ ubtu_18_010509: true
 ubtu_18_010512: true
 ubtu_18_010514: true
 ubtu_18_010515: true
+ubtu_18_010516: true
 ubtu_18_010418: true
 ubtu_18_010419: true
 ubtu_18_010450: true
@@ -234,6 +235,9 @@ ubtu18stig_telnet_required: false
 
 # ubtu18stig_int_gid is the interactive user gid
 ubtu18stig_int_gid: 1000
+
+# ubtu18stig_kdump_needed is the toggle kdumps are needed or not, when false kernal dumper service is stopped
+ubtu18stig_kdump_needed: false
 
 # The variables below are related to specific tasks
 # CAT 1

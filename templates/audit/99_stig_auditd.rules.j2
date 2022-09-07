@@ -131,12 +131,12 @@
 -a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=execpriv
 {% endif %}
 {% if ubtu_18_010375 %}
--a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -Fauid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k delete
+-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k delete
 -a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k delete
 {% endif %}
 {% if ubtu_18_010379 %}
--a always,exit -F arch=b32 -S init_module -S finit_module -k modules
--a always,exit -F arch=b64 -S init_module -S finit_module -k modules
+-a always,exit -F arch=b64 -S init_module,finit_module -F key=module_chng
+-a always,exit -F arch=b32 -S init_module,finit_module -F key=module_chng
 {% endif %}
 {% if ubtu_18_010387 %}
 -a always,exit -F arch=b32 -S init_module -S finit_module -F key=modules

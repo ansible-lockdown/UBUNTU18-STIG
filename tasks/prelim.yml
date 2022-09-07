@@ -40,6 +40,17 @@
       - cat1
       - high
 
+- name: "PRELIM | Install AIDE"
+  package:
+      name: ['aide', 'aide-common']
+      state: present
+  when:
+      - "'aide' not in ansible_facts.packages"
+      - ubtu_18_010506 or
+        ubtu_18_010508 or
+        ubtu_18_010515 or
+        ubtu_18_010516
+
 - name: "PRELIM | Install auditd"
   package:
       name: auditd
@@ -104,8 +115,8 @@
         ubtu_18_010387 or
         ubtu_18_010388 or
         ubtu_18_010391 or
-        ubtu_18_010392
-
+        ubtu_18_010392 or
+        ubtu_18_010401
 
 - name: "PRELIM | Install audisp-remote plugin"
   package:
@@ -139,8 +150,10 @@
       state: present
   when:
       - "'chrony' not in ansible_facts.packages"
-      - ubtu18stig_cat3_patch
-      - ubtu_18_010502
+      - ubtu18stig_cat2_patch or
+        ubtu18stig_cat3_patch
+      - ubtu_18_010501 or
+        ubtu_18_010502
 
 - name: "PRELIM | Get audit log path"
   shell: "grep -iw log_file /etc/audit/auditd.conf | cut -d' ' -f3 | sed 's:[^/]*$::'"
