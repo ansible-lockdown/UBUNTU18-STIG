@@ -66,8 +66,14 @@
       - name: "HIGH | UBTU-18-010005 | AUDIT |  The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards | Alert no fips-mode"
         debug:
             msg:
-                - "Alert! You do not have FIPS-Mode enabled. This is a finding, please enable to conform to STIG standards"
+                - "Warning!! You do not have FIPS-Mode enabled. This is a finding, please enable to conform to STIG standards"
                 - "A subscription to Ubuntu Advantage is required to obtain FSIPs Kernel cryptography"
+        when: "'1' not in ubtustig_18_010005_fips_status.stdout"
+
+      - name: "HIGH | UBTU-18-010005 | AUDIT |  The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010005']"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: "'1' not in ubtustig_18_010005_fips_status.stdout"
   when:
       - ubtu_18_010005
@@ -140,8 +146,14 @@
       - name: "HIGH | UBTU-18-010037 | AUDIT | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group | Alert on users in sudo group"
         debug:
             msg:
-                - "Alert! The users below are in the sudoers group. Please make confirm all users are appropriate"
+                - "Warning!! The users below are in the sudoers group. Please make confirm all users are appropriate"
                 - "{{ sudoers_group_list }}"
+        when: not ubtu18_auto_remove_sudoers
+
+      - name: "HIGH | UBTU-18-010037 | AUDIT | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010037']"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: not ubtu18_auto_remove_sudoers
   when:
       - ubtu_18_010037
@@ -326,8 +338,16 @@
       - name: "HIGH | UBTU-18-010522 | AUDIT | The Ubuntu operating system must not have accounts configured with blank or null passwords. | Warn on users with blank passwords"
         debug:
             msg:
-                - "Alert! You have users that are not using passwords. Please either set a password, lock, or remove the accounts below:"
+                - "Warning!! You have users that are not using passwords. Please either set a password, lock, or remove the accounts below:"
                 - "{{ ubtu_18_010522_blank_pw_users.stdout_lines }}"
+        when:
+            - ubtu_18_010522_blank_pw_users.stdout | length > 0
+            - not ubtu18stig_disruption_high
+
+      - name: "HIGH | UBTU-18-010522 | AUDIT | The Ubuntu operating system must not have accounts configured with blank or null passwords. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010522']"
+            warn_count: "{{ warn_count | int + 1 }}"
         when:
             - ubtu_18_010522_blank_pw_users.stdout | length > 0
             - not ubtu18stig_disruption_high

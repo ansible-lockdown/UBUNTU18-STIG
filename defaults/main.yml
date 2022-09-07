@@ -27,6 +27,8 @@ ubtu18stig_audit_disruptive: true
 
 ubtu18stig_skip_for_travis: false
 
+ubtu18_skip_reboot: false
+
 ubtu18stig_workaround_for_disa_benchmark: true
 ubtu18stig_workaround_for_ssg_benchmark: true
 

@@ -59,3 +59,38 @@
   tags:
       - cat3
       - low
+
+# - name: run post remediation tasks
+#   import_tasks: post.yml
+#   tags:
+#       - post_tasks
+#       - always
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Reboot system
+  block:
+      - name: reboot system if not skipped
+        reboot:
+        when:
+            - not ubtu18_skip_reboot
+
+      - name: Warning a reboot is required but skip option set
+        debug:
+            msg: "Warning!! Changes have been made that require a reboot but the skip reboot was set - This can affect compliance check results"
+        changed_when: true
+        when: ubtu18_skip_reboot
+
+      - name: "Warning a reboot is required but skip option set | warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'Reboot_required' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu18_skip_reboot 
+
+- name: If Warnings found Output count and control IDs affected
+  debug:
+      msg: "You have {{ warn_count }} Warning(s) that require investigating that are related to the following benchmark ID(s) {{ control_number }}"
+  when: warn_count != 0
+  tags:
+      - always

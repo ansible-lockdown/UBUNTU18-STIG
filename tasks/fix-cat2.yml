@@ -45,7 +45,13 @@
       - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | Alert no partitions are encrypted"
         debug:
             msg:
-                - "Warning!! There no encrypted partitions. Please make sure all permenant partitions are encrypted"
+                - "Warning!! There are no encrypted partitions. Please make sure all permenant partitions are encrypted"
+        when: ubtu_18_010003_crypttab_status.stdout | length == 0
+
+      - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010003']"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu_18_010003_crypttab_status.stdout | length == 0
 
       - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | Alert no partitions are encrypted"
@@ -54,6 +60,12 @@
                 - "Warning!! Please review that no permenant partitions are missing. All permenant partitions need to be encrypted"
                 - "{{ ubtu_18_010003_crypttab_status.stdout_lines }}"
         when: ubtu_18_010003_crypttab_status.stdout | length > 0
+
+      - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010003']"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu_18_010003_crypttab_status.stdout | length == 0
   when:
       - ubtu_18_010003
   tags:
@@ -436,10 +448,17 @@
       - encryption
 
 - name: "MEDIUM | UBTU-18-010112 | AUDIT | The Ubuntu operating system must allow the use of a temporary password for system logons with an immediate change to a permanent password."
-  debug:
-      msg:
-          - "Warning!! Please create a policy that ensures when a user is created, it is created using a method that forces a user to change their password upon their next login."
-          - 'For example: "chage -d 0 [UserName]" or "passwd -e [UserName]"'
+  block:
+      - name: "MEDIUM | UBTU-18-010112 | AUDIT | The Ubuntu operating system must allow the use of a temporary password for system logons with an immediate change to a permanent password. | Message out warning"
+        debug:
+            msg:
+                - "Warning!! Please create a policy that ensures when a user is created, it is created using a method that forces a user to change their password upon their next login."
+                - 'For example: "chage -d 0 [UserName]" or "passwd -e [UserName]"'
+
+      - name: "MEDIUM | UBTU-18-010112 | AUDIT | The Ubuntu operating system must allow the use of a temporary password for system logons with an immediate change to a permanent password. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010112']"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu_18_010112
   tags:
@@ -2685,10 +2704,17 @@
       - not_implemented
 
 - name: "MEDIUM | UBTU-18-010436 | AUDIT | The Ubuntu operating system must only allow the use of DoD PKI-established certificate authorities for verification of the establishment of protected sessions."
-  debug:
-      msg:
-          - "Warning!! This control is a manual control"
-          - "Please use at least one DoD certificate authority to the '/usr/local/share/ca-certificates' directory"
+  block:
+      - name: "MEDIUM | UBTU-18-010436 | AUDIT | The Ubuntu operating system must only allow the use of DoD PKI-established certificate authorities for verification of the establishment of protected sessions.  | Message out warning"
+        debug:
+            msg:
+                - "Warning!! This control is a manual control"
+                - "Please use at least one DoD certificate authority to the '/usr/local/share/ca-certificates' directory"
+
+      - name: "MEDIUM | UBTU-18-010436 | AUDIT | The Ubuntu operating system must only allow the use of DoD PKI-established certificate authorities for verification of the establishment of protected sessions. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010436']"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu_18_010436
   tags:
@@ -2698,6 +2724,7 @@
       - SRG-OS-000403-GPOS-00182
       - SV-219321r610963_rule
       - V-219321
+      - certificates
 
 - name: |
     "MEDIUM | UBTU-18-010441 | PATCH | The Ubuntu operating system must be configured to use AppArmor."
@@ -2750,6 +2777,12 @@
                 - "Warning!! You have users with duplicate UID's"
                 - "Please resolve to make all users have unique UID's"
                 - "{{ ubtu_18_010444_duplicate_uid_users.stdout_lines }}"
+        when: ubtu_18_010444_duplicate_uid_users.stdout | length > 0
+
+      - name: "MEDIUM | UBTU-18-010444 | AUDIT | The Ubuntu operating system must uniquely identify interactive users. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010444']"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu_18_010444_duplicate_uid_users.stdout | length > 0
   when:
       - ubtu_18_010444
@@ -2806,11 +2839,18 @@
       - logins
 
 - name: "MEDIUM | UBTU-18-010449 | AUDIT | The Ubuntu operating system must provision temporary user accounts with an expiration time of 72 hours or less."
-  debug:
-      msg:
-          - "Warning!! This task is a manual check for temporary accounts having an expire date"
-          - "To conform to STIG standards please set all temporary accounts to expire 72 hours"
-          - "after creation date"
+  block:
+      - name: "MEDIUM | UBTU-18-010449 | AUDIT | The Ubuntu operating system must provision temporary user accounts with an expiration time of 72 hours or less. | Message out warning"
+        debug:
+            msg:
+                - "Warning!! This task is a manual check for temporary accounts having an expire date"
+                - "To conform to STIG standards please set all temporary accounts to expire 72 hours"
+                - "after creation date"
+
+      - name: "MEDIUM | UBTU-18-010449 | AUDIT | The Ubuntu operating system must provision temporary user accounts with an expiration time of 72 hours or less. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010449']"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu_18_010449
   tags:
@@ -2869,8 +2909,15 @@
       - chrony
 
 - name: "MEDIUM | UBTU-18-010504 | AUDIT | The Ubuntu operating system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments."
-  debug:
-      msg: "Warning!! Please make sure your UFW allow/deny settings conform to PPSM CAL vulnerability assessments"
+  block:
+      - name: "MEDIUM | UBTU-18-010504 | AUDIT | The Ubuntu operating system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments. | Message out warning"
+        debug:
+            msg: "Warning!! Please make sure your UFW allow/deny settings conform to PPSM CAL vulnerability assessments"
+
+      - name: "MEDIUM | UBTU-18-010504 | AUDIT | The Ubuntu operating system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010504']"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu_18_010504
   tags:

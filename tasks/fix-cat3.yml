@@ -344,6 +344,11 @@
                 - "Please make sure there is enough disk space for 1 weeks worth of logs and logs are on their own partition"
                 - "Path: {{ ubtu_18_010314_audit_log_path.stdout }}"
                 - "Disk Space: {{ ubtu_18_010314_audit_log_partition.stdout }}"
+
+      - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010314']"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu_18_010314
   tags:
@@ -405,10 +410,17 @@
       - apparmor
 
 - name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours."
-  debug:
-      msg:
-          - "Warning!! Below are the system accounts. If any where emergency accounts plese make sure they are removed or disabled after the crisis is resovled or within 72 hours"
-          - "{{ ubtu18stig_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
+  block:
+      - name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours."
+        debug:
+            msg:
+                - "Warning!! Below are the system accounts. If any where emergency accounts plese make sure they are removed or disabled after the crisis is resovled or within 72 hours"
+                - "{{ ubtu18stig_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
+
+      - name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours. | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + ['UBTU-18-010447']"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu_18_010447
   tags:

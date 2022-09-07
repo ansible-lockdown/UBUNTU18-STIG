@@ -19,11 +19,6 @@
   when:
       - "'openssh-server' in ansible_facts.packages"
 
-- name: restart auditd
-  service:
-      name: auditd
-      state: restarted
-
 - name: restart chrony
   service:
       name: chrony
@@ -44,9 +39,6 @@
 - name: reload kernel system
   shell: sysctl --system
 
-- name: reload auditd
-  shell: augenrules --load
-
 - name: update auditd
   template:
       src: audit/99_stig_auditd.rules.j2
@@ -58,17 +50,13 @@
       - reload auditd
       - restart auditd
 
-- name: restart auditd
-  command: /usr/sbin/service auditd restart
-  args:
-      warn: false
-  when:
-      - not ubtu18stig_skip_for_travis
-      - not ubtu18stig_system_is_chroot
-      - not system_is_container
-
 - name: reload auditd
   shell: augenrules --load
+
+- name: restart auditd
+  service:
+      name: auditd
+      state: restarted
 
 - name: restart rsyslog
   service:
