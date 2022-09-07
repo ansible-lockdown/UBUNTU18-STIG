@@ -60,12 +60,6 @@
       - cat3
       - low
 
-# - name: run post remediation tasks
-#   import_tasks: post.yml
-#   tags:
-#       - post_tasks
-#       - always
-
 - name: Flush handlers
   meta: flush_handlers
 
