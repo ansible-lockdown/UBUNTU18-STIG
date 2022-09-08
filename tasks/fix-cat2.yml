@@ -45,7 +45,7 @@
       - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | Alert no partitions are encrypted"
         debug:
             msg:
-                - "Warning!! There are no encrypted partitions. Please make sure all permenant partitions are encrypted"
+                - "Warning!! There are no encrypted partitions. Please make sure all permanent  partitions are encrypted"
         when: ubtu_18_010003_crypttab_status.stdout | length == 0
 
       - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | Set warning count"
@@ -57,7 +57,7 @@
       - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | Alert no partitions are encrypted"
         debug:
             msg:
-                - "Warning!! Please review that no permenant partitions are missing. All permenant partitions need to be encrypted"
+                - "Warning!! Please review that no permanent  partitions are missing. All permanent  partitions need to be encrypted"
                 - "{{ ubtu_18_010003_crypttab_status.stdout_lines }}"
         when: ubtu_18_010003_crypttab_status.stdout | length > 0
 
@@ -764,31 +764,6 @@
       - V-219202
       - permissions
 
-# - name: "MEDIUM | UBTU-18-010133 | PATCH | The Ubuntu operating system library files must have mode 0755 or less permissive."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010133 | AUDIT | The Ubuntu operating system library files must have mode 0755 or less permissive. | Get library files with mode 0755 or less"
-#         shell: find /lib /lib64 /usr/lib -perm /022 -type f -exec stat -c "%n %a" '{}' \; | cut -d" " -f1
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010133_lib_files
-
-#       - name: "MEDIUM | UBTU-18-010133 | PATCH | The Ubuntu operating system library files must have mode 0755 or less permissive. | Set library files with mode 0755 or more restrictive"
-#         file:
-#             path: "{{ item }}"
-#             mode: "{{ ubtu18stig_lib_file_perms }}"
-#         with_items:
-#             "{{ ubtu_18_010133_lib_files.stdout_lines }}"
-#         when: ubtu_18_010133_lib_files.stdout | length > 0
-#   when:
-#       - ubtu_18_010133
-#   tags:
-#       - UBTU-18-010133
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219198r802358_rule
-#       - V-219198
-#       - permissions
 - name: |
     "MEDIUM | UBTU-18-010134 | PATCH | The Ubuntu operating system library directories must have mode 0755 or less permissive."
     "MEDIUM | UBTU-18-010136 | PATCH | The Ubuntu operating system library directories must be owned by root."
@@ -835,141 +810,6 @@
       - V-219203
       - permissions
 
-# - name: "MEDIUM | UBTU-18-010134 | PATCH | The Ubuntu operating system library directories must have mode 0755 or less permissive."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010134 | AUDIT | The Ubuntu operating system library directories must have mode 0755 or less permissive. | Get library directories with 750 or less"
-#         shell: find /lib /lib64 /usr/lib -perm /022 -type d -exec stat -c "%n %a" '{}' \; | cut -d" " -f1
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010134_lib_dirs
-
-#       - debug: var=ubtu_18_010134_lib_dirs
-
-#       - name: "MEDIUM | UBTU-18-010134 | PATCH | The Ubuntu operating system library directories must have mode 0755 or less permissive. | Set library directories with 755 or more restrictive"
-#         file:
-#             path: "{{ item }}"
-#             mode: "{{ ubtu18stig_lib_dir_perms }}"
-#             state: directory
-#         loop:
-#             - "{{ ubtu_18_010134_lib_dirs.stdout_lines }}"
-#         when: ubtu_18_010134_lib_dirs.stdout | length > 0
-#   when:
-#       - ubtu_18_010134
-#   tags:
-#       - UBTU-18-010134
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219199r610963_rule
-#       - V-219199
-#       - permissions
-
-# - name: "MEDIUM | UBTU-18-010135 | PATCH | The Ubuntu operating system library files must be owned by root."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010135 | AUDIT | The Ubuntu operating system library files must be owned by root. | Get OS files not owned by root"
-#         shell: find /lib /usr/lib /lib64 ! -user root -type f -exec stat -c "%n %U" '{}' \; | cut -d" " -f1
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010135_lib_files_owner
-
-#       - name: "MEDIUM | UBTU-18-010135 | PATCH | The Ubuntu operating system library files must be owned by root. | Set OS files to be owned by root"
-#         file:
-#             path: "{{ item }}"
-#             owner: root
-#         with_items:
-#             - "{{ ubtu_18_010135_lib_files_owner.stdout_lines }}"
-#         when: ubtu_18_010135_lib_files_owner.stdout | length > 0
-#   when:
-#       - ubtu_18_010135
-#   tags:
-#       - UBTU-18-010135
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219200r610963_rule
-#       - V-219200
-#       - permissions
-
-# - name: "MEDIUM | UBTU-18-010136 | PATCH | The Ubuntu operating system library directories must be owned by root."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010136 | AUDIT | The Ubuntu operating system library directories must be owned by root. | Get OS library directories not owned by root"
-#         shell: find /lib /usr/lib /lib64 ! -user root -type d -exec stat -c "%n %U" '{}' \; | cut -d" " -f1
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010136_lib_files_owner
-
-#       - name: "MEDIUM | UBTU-18-010136 | PATCH | The Ubuntu operating system library directories must be owned by root. | Set OS library directories not owned by root"
-#         file:
-#             path: "{{ item }}"
-#             owner: root
-#             state: directory
-#         with_items:
-#             - "{{ ubtu_18_010136_lib_files_owner.stdout_lines }}"
-#         when: ubtu_18_010136_lib_files_owner.stdout | length > 0
-#   when:
-#       - ubtu_18_010136
-#   tags:
-#       - UBTU-18-010136
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219201r610963_rule
-#       - V-219201
-#       - permissions
-
-# - name: "MEDIUM | UBTU-18-010137 | PATCH | The Ubuntu operating system library files must be group-owned by root."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010137 | AUDIT | The Ubuntu operating system library files must be group-owned by root. | Get OS library files not group-owned by root"
-#         shell: find /lib /usr/lib /lib64 ! -group root -type f -exec stat -c "%n %G" '{}' \; | cut -d" " -f1
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010137_lib_files_group
-
-#       - name: "MEDIUM | UBTU-18-010137 | PATCH | The Ubuntu operating system library files must be group-owned by root. | Set OS library files not group-owned by root"
-#         file:
-#             path: "{{ item }}"
-#             group: root
-#         with_items:
-#             - "{{ ubtu_18_010137_lib_files_group.stdout_lines }}"
-#         when: ubtu_18_010137_lib_files_group.stdout | length > 0
-#   when:
-#       - ubtu_18_010137
-#   tags:
-#       - UBTU-18-010137
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219202r802361_rule
-#       - V-219202
-#       - permissions
-
-# - name: "MEDIUM | UBTU-18-010138 | PATCH | The Ubuntu operating system library directories must be group-owned by root."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010138 | AUDIT | The Ubuntu operating system library directories must be group-owned by root. | Get OS library directories not group-owned by root"
-#         shell: find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c "%n %G" '{}' \; | cut -d" " -f1
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010138_lib_dirs_group
-#       - debug: var=ubtu_18_010138_lib_dirs_group
-#       - name: "MEDIUM | UBTU-18-010138 | PATCH | The Ubuntu operating system library directories must be group-owned by root. | Set OS library directories not group-owned by root"
-#         file:
-#             name: "{{ item }}"
-#             group: root
-#             state: directory
-#         with_items:
-#             - "{{ ubtu_18_010138_lib_dirs_group.stdout_lines }}"
-#         when: ubtu_18_010138_lib_dirs_group.stdout | length > 0
-#   when:
-#       - ubtu_18_010138
-#   tags:
-#       - UBTU-18-010138
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219203r610963_rule
-#       - V-219203
-#       - permissions
-
 - name: |
     "MEDIUM | UBTU-18-010139 | PATCH | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive."
     "MEDIUM | UBTU-18-010141 | PATCH | The Ubuntu operating system must have system commands owned by root."
@@ -1015,32 +855,6 @@
       - V-219208
       - permissions
 
-# - name: "MEDIUM | UBTU-18-010139 | PATCH | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010139 | AUDIT | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive. | Get OS commands with mode less than 755"
-#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type f -exec stat -c "%n %a" '{}' \; | cut -d" " -f1
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010139_commands_perms
-
-#       - name: "MEDIUM | UBTU-18-010139 | PATCH | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive. | Set OS commands with mode 755 or more restricive"
-#         file:
-#             path: "{{ item }}"
-#             mode: "{{ ubtu18stig_sys_commands_perms }}"
-#         with_items:
-#             - "{{ ubtu_18_010139_commands_perms.stdout_lines }}"
-#         when:  ubtu_18_010139_commands_perms.stdout | length > 0
-#   when:
-#       - ubtu_18_010139
-#   tags:
-#       - UBTU-18-010139
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219204r610963_rule
-#       - V-219204
-#       - permissions
-
 - name: |
     "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive."
     "MEDIUM | UBTU-18-010142 | PATCH | The Ubuntu operating system must have directories that contain system commands owned by root."
@@ -1056,7 +870,7 @@
         register: ubtu_18_010140_command_dir_perms
 
       - name: |
-          "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive. | Set OS command directories with mode 755 or more restricive"
+          "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive. | Set OS command directories with mode 755 or more restrictive"
           "MEDIUM | UBTU-18-010142 | PATCH | The Ubuntu operating system must have directories that contain system commands owned by root. | Set OS command dirs not owned by root to root"
           "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root. | Set OS command dirs not group-owned by root to root"
         file:
@@ -1087,157 +901,11 @@
       - V-219209
       - permissions
 
-
-# - name: "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010140 | AUDIT | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive. | Get OS command directories with mode less than 755"
-#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c "%n %a" '{}' \; | cut -d" " -f1
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010140_command_dir_perms
-
-#       - name: "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive. | Set OS command directories with mode 755 or more restricive"
-#         file:
-#             path: "{{ item }}"
-#             mode: "{{ ubtu18stig_sys_comm_dir_perms }}"
-#             state: directory
-#         with_items:
-#             - "{{ ubtu_18_010140_command_dir_perms.stdout_lines }}"
-#         when: ubtu_18_010140_command_dir_perms.stdout | length > 0
-#   when:
-#       - ubtu_18_010140
-#   tags:
-#       - UBTU-18-010140
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219205r610963_rule
-#       - V-219205
-#       - permissions
-
-# - name: "MEDIUM | UBTU-18-010141 | PATCH | The Ubuntu operating system must have system commands owned by root."
-#   block:
-#         - name: "MEDIUM | UBTU-18-010141 | AUDIT | The Ubuntu operating system must have system commands owned by root. | Get OS commands not owned by root"
-#           shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c "%n %U" '{}' \; | cut -d" " -f1
-#           changed_when: false
-#           failed_when: false
-#           register: ubtu_18_010141_sys_comm_files_owner
-
-#         - name: "MEDIUM | UBTU-18-010141 | PATCH | The Ubuntu operating system must have system commands owned by root. | Set OS commands not owned by root to owned by root"
-#           file:
-#               path: "{{ item }}"
-#               owner: root
-#           with_items:
-#               - "{{ ubtu_18_010141_sys_comm_files_owner.stdout_lines }}"
-#           when: ubtu_18_010141_sys_comm_files_owner.stdout | length > 0
-#   when:
-#       - ubtu_18_010141
-#   tags:
-#       - UBTU-18-010141
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219206r610963_rule
-#       - V-219206
-#       - permissions
-
-# - name: "MEDIUM | UBTU-18-010142 | PATCH | The Ubuntu operating system must have directories that contain system commands owned by root."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010142 | AUDIT | The Ubuntu operating system must have directories that contain system commands owned by root. | Get OS command dirs not owned by root"
-#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type d -exec stat -c "%n %U" '{}' \; | cut -d" " -f1
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010142_sys_comm_dir_owner
-
-#       - debug: var=ubtu_18_010142_sys_comm_dir_owner
-#       - name: "MEDIUM | UBTU-18-010142 | PATCH | The Ubuntu operating system must have directories that contain system commands owned by root. | Set OS command dirs not owned by root to root"
-#         file:
-#             path: "{{ item }}"
-#             owner: root
-#             state: directory
-#         with_items:
-#             - "{{ ubtu_18_010142_sys_comm_dir_owner.stdout_lines }}"
-#         when: ubtu_18_010142_sys_comm_dir_owner.stdout | length > 0
-#   when:
-#       - ubtu_18_010142
-#   tags:
-#       - UBTU-18-010142
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219207r610963_rule
-#       - V-219207
-#       - permissions
-
-# - name: "MEDIUM | UBTU-18-010143 | PATCH | The Ubuntu operating system must have system commands group-owned by root or a system account."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010143 | PATCH | The Ubuntu operating system must have system commands group-owned by root or a system account. | Get OS commands not group-owned by root"
-#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f -exec stat -c "%n" '{}' \;
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010143_sys_comm_files_group
-
-#       - debug: var=ubtu_18_010143_sys_comm_files_group
-
-#       - name: "MEDIUM | UBTU-18-010143 | PATCH | The Ubuntu operating system must have system commands group-owned by root or a system account. | Set OS commands not group-owned by root to root"
-#         file:
-#             path: "{{ item }}"
-#             group: root
-#         with_items:
-#             - "{{ ubtu_18_010143_sys_comm_files_group.stdout_lines }}"
-#         when: ubtu_18_010143_sys_comm_files_group.stdout | length > 0
-#   when:
-#       - ubtu_18_010143
-#   tags:
-#       - UBTU-18-010143
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219208r832925_rule
-#       - V-219208
-#       - permessions
-
-# - name: "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root."
-#   block:
-#       - name: "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root. | Get OS command dirs not group-owned by root"
-#         shell: find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c "%n" '{}' \;
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu_18_010144_sys_comm_dirs_group
-
-#       - name: "MEDIUM | UBTU-18-010144 | PATCH | The Ubuntu operating system must have directories that contain system commands group-owned by root."
-#         file:
-#             path: "{{ item }}"
-#             group: root
-#             state: directory
-#         with_items:
-#             - "{{ ubtu_18_010144_sys_comm_dirs_group.stdout_lines }}"
-#         when: ubtu_18_010144_sys_comm_dirs_group.stdout | length > 0
-#   when:
-#       - ubtu_18_010144
-#   tags:
-#       - UBTU-18-010144
-#       - CAT2
-#       - CCI-001499
-#       - SRG-OS-000259-GPOS-00100
-#       - SV-219209r610963_rule
-#       - V-219209
-#       - permissions
-
 - name: "MEDIUM | UBTU-18-010201 | PATCH | The Ubuntu operating system must generate audit records for the use and modification of the tallylog file."
   debug:
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /var/log/tallylog'
-  #     line: "-w /var/log/tallylog -p wa -k logins"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010201
   tags:
@@ -1254,15 +922,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /var/log/faillog'
-  #     line: "-w /var/log/faillog -p wa -k logins"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010202
   tags:
@@ -1279,15 +938,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /var/log/lastlog'
-  #     line: "-w /var/log/lastlog -p wa -k logins"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010203
   tags:
@@ -1304,15 +954,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /var/log/sudo.log'
-  #     line: "-w /var/log/sudo.log -p wa -k actions"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010237
   tags:
@@ -1329,15 +970,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /var/log/wtmp'
-  #     line: "-w /var/log/wtmp -p wa -k logins"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010238
   tags:
@@ -1354,15 +986,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /var/run/utmp'
-  #     line: "-w /var/run/utmp -p wa -k logins"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010239
   tags:
@@ -1379,15 +1002,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /var/log/btmp'
-  #     line: "-w /var/log/btmp -p wa -k logins"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010240
   tags:
@@ -1404,15 +1018,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /etc/passwd'
-  #     line: "-w /etc/passwd -p wa -k usergroup_modification"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010244
   tags:
@@ -1434,15 +1039,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /etc/group -p wa -k'
-  #     line: "-w /etc/group -p wa -k usergroup_modification"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010245
   tags:
@@ -1463,15 +1059,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /etc/gshadow -p wa -k'
-  #     line: "-w /etc/gshadow -p wa -k usergroup_modification"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010246
   tags:
@@ -1492,15 +1079,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /etc/shadow'
-  #     line: "-w /etc/shadow -p wa -k usergroup_modification"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010247
   tags:
@@ -1521,15 +1099,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-w /etc/security/opasswd'
-  #     line: "-w /etc/security/opasswd -p wa -k usergroup_modification"
-  #     create: true
-  #     owner: root
-  #     group: root
-  #     mode: 0600
-  # notify: reload auditd
   when:
       - ubtu_18_010248
   tags:
@@ -1721,11 +1290,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-a always,exit -F path=/bin/su'
-  #     line: "-a always,exit -F path=/bin/su -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-priv_change"
-  # notify: reload auditd
   when:
       - ubtu_18_010315
   tags:
@@ -1742,11 +1306,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-a always,exit -F path=/usr/bin/chfn'
-  #     line: "-a always,exit -F path=/usr/bin/chfn -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-chfn"
-  # notify: reload auditd
   when:
       - ubtu_18_010316
   tags:
@@ -1763,11 +1322,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-a always,exit -F path=/bin/mount'
-  #     line: "-a always,exit -F path=/bin/mount -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-mount"
-  # notify: reload auditd
   when:
       - ubtu_18_010317
   tags:
@@ -1784,11 +1338,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-a always,exit -F path=/bin/umount'
-  #     line: "-a always,exit -F path=/bin/umount -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-umount"
-  # notify: reload auditd
   when:
       - ubtu_18_010318
   tags:
@@ -1805,11 +1354,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-a always,exit -F path=/usr/bin/ssh-agent'
-  #     line: "-a always,exit -F path=/usr/bin/ssh-agent -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-ssh"
-  # notify: reload auditd
   when:
       - ubtu_18_010319
   tags:
@@ -1826,11 +1370,7 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-a always,exit -F path=/usr/lib/openssh/ssh-keysign'
-  #     line: "-a always,exit -F path=/usr/lib/openssh/ssh-keysign -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k privileged-ssh"
-  # notify: reload auditd
+
   when:
       - ubtu_18_010320
   tags:
@@ -1847,30 +1387,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # block:
-  #     - name: "MEDIUM | UBTU-18-010321 | PATCH | The Ubuntu operating system must generate audit records for any usage of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls."
-  #       lineinfile:
-  #           path: /etc/audit/rules.d/99_stig_auditd.rules
-  #           regexp: "{{ item.regexp }}"
-  #           line: "{{ item.line }}"
-  #       notify: reload auditd
-  #       with_items:
-  #           - { regexp: '^-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_mod" }
-  #           - { regexp: '^-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 ', line: "-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod" }
-  #           - { regexp: '^-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_mod" }
-  #           - { regexp: '^-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0', line: "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod" }
-  #       when: "'x86_64' in ansible_facts.userspace_architecture"
-
-  #     - name: "MEDIUM | UBTU-18-010321 | PATCH | The Ubuntu operating system must generate audit records for any usage of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls."
-  #       lineinfile:
-  #           path: /etc/audit/rules.d/99_stig_auditd.rules
-  #           regexp: "{{ item.regexp }}"
-  #           line: "{{ item.line }}"
-  #       notify: reload auditd
-  #       with_items:
-  #           - { regexp: '^-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_mod" }
-  #           - { regexp: '^-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0', line: "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod " }
-  #       when: "'x86_64' not in ansible_facts.userspace_architecture"
   when:
       - ubtu_18_010321
   tags:
@@ -1887,25 +1403,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # block:
-  #     - name: "MEDIUM | UBTU-18-010327 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls."
-  #       lineinfile:
-  #           path: /etc/audit/rules.d/99_stig_auditd.rules
-  #           regexp: "{{ item.regexp }}"
-  #           line: "{{ item.line }}"
-  #       notify: reload auditd
-  #       with_items:
-  #           - { regexp: '^-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng" }
-  #           - { regexp: '^-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng"}
-  #       when: "'x86_64' in ansible_facts.userspace_architecture"
-
-  #     - name: "MEDIUM | UBTU-18-010327 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls."
-  #       lineinfile:
-  #           path: /etc/audit/rules.d/99_stig_auditd.rules
-  #           regexp: '^-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }}'
-  #           line: "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng"
-  #       notify: reload auditd
-  #       when: "'x86_64' not in ansible_facts.userspace_architecture"
   when:
       - ubtu_18_010327
   tags:
@@ -1922,25 +1419,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # block:
-  #     - name: "MEDIUM | UBTU-18-010331 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls."
-  #       lineinfile:
-  #           path: /etc/audit/rules.d/99_stig_auditd.rules
-  #           regexp: '^-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }}'
-  #           line: "-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng"
-  #       notify: reload auditd
-  #       when: "'x86_64' in ansible_facts.userspace_architecture"
-  #       with_items:
-  #           - { regexp: '^-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng" }
-  #           - { regexp: '^-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng" }
-
-  #     - name: "MEDIUM | UBTU-18-010331 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls."
-  #       lineinfile:
-  #           path: /etc/audit/rules.d/99_stig_auditd.rules
-  #           regexp: '^-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }}'
-  #           line: "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_chng"
-  #       notify: reload auditd
-  #       when: "'x86_64' in ansible_facts.userspace_architecture"
   when:
       - ubtu_18_010331
   tags:
@@ -1957,30 +1435,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # block:
-  #     - name: "MEDIUM | UBTU-18-010334 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls."
-  #       lineinfile:
-  #           path: /etc/audit/rules.d/99_stig_auditd.rules
-  #           regexp: "{{ item.regexp }}"
-  #           line: "{{ item.line }}"
-  #       notify: reload auditd
-  #       with_items:
-  #           - { regexp: '^-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
-  #           - { regexp: '^-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
-  #           - { regexp: '^-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
-  #           - { regexp: '^-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access"}
-  #       when: "'x86_64' in ansible_facts.userspace_architecture"
-
-  #     - name: "MEDIUM | UBTU-18-010334 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls."
-  #       lineinfile:
-  #           path: /etc/audit/rules.d/99_stig_auditd.rules
-  #           regexp: "{{ item.regexp }}"
-  #           line: "{{ item.line }}"
-  #       notify: reload auditd
-  #       with_items:
-  #           - { regexp: '^-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
-  #           - { regexp: '^-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }}', line: "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k perm_access" }
-  #       when: "'x86_64' not in ansible_facts.userspace_architecture"
   when:
       - ubtu_18_010334
   tags:
@@ -1997,11 +1451,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regex: '^-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>={{ ubtu18stig_int_gid }}'
-  #     line: "-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k priv_cmd"
-  # notify: reload auditd
   when:
       - ubtu_18_010340
   tags:
@@ -2018,11 +1467,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>={{ ubtu18stig_int_gid }}'
-  #     line: "-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k priv_cmd"
-  # notify: reload auditd
   when:
       - ubtu_18_010341
   tags:
@@ -2039,11 +1483,6 @@
       msg: "Control being set via Handler 'update auditd' which writes to /etc/audit.d/99_stig_auditd.rules"
   changed_when: true
   notify: update auditd
-  # lineinfile:
-  #     path: /etc/audit/rules.d/99_stig_auditd.rules
-  #     regexp: '^-a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>={{ ubtu18stig_int_gid }}'
-  #     line: "-a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k priv_cmd"
-  # notify: reload auditd
   when:
       - ubtu_18_010342
   tags:
@@ -2629,7 +2068,7 @@
 
   # - debug: var=ubtu_18_010425_pam_pkcs11_conf.stat.exists
 
-  # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Create file if doens't exit"
+  # - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | Create file if doesn't exit"
   #   shell:  gunzip -c /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz > /etc/pam_pkcs11/pam_pkcs11.conf
   #   changed_when: true
   #   when: not ubtu_18_010425_pam_pkcs11_conf.stat.exists
@@ -3049,7 +2488,7 @@
             - "{{ ubtu18stig_limit_services }}"
         when: "'service' in ubtu18stig_limit_method"
 
-      - name: "MEDIUM | UBTU-18-010512 | PATCH | The Ubuntu operating system must configure the uncomplicated firewall to rate-limit impacted network interfaces.| Limint on network ports"
+      - name: "MEDIUM | UBTU-18-010512 | PATCH | The Ubuntu operating system must configure the uncomplicated firewall to rate-limit impacted network interfaces.| Limit on network ports"
         ufw:
             rule: limit
             interface: "{{ item }}"
