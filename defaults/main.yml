@@ -238,14 +238,14 @@ ubtu18stig_telnet_required: false
 # ubtu18stig_int_gid is the interactive user gid
 ubtu18stig_int_gid: 1000
 
-# ubtu18stig_kdump_needed is the toggle kdumps are needed or not, when false kernal dumper service is stopped
+# ubtu18stig_kdump_needed is the toggle kdumps are needed or not, when false kernel dumper service is stopped
 ubtu18stig_kdump_needed: false
 
 # The variables below are related to specific tasks
 # CAT 1
 
 # UBTU-18-010000
-# Passowrd protect bootloader
+# Password protect bootloader
 # DO NOT USE PLAIN TEXT PASSWORDS!!!!
 # The has is intended to be used with a PW management tool like Ansible Vault
 ubtu18stig_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
@@ -266,10 +266,10 @@ ubtu18_auto_remove_sudoers: true
 # UBTU-18-010033
 # ubtu18stig_pamd_faillock are the settings related to the pam_faillock.so module and controls
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-auth, which is used
-# as a referrence in adding the auth required pam_faillock.so authfail and authsucc settings if pam_faillock.so does not already exist.
+# as a reference in adding the auth required pam_faillock.so authfail and authsucc settings if pam_faillock.so does not already exist.
 # The state value determines before or after the stated type/control/module_path.
 # deny is the number of failed login attempts before denying access. This value needs to be 3 or lower
-# fail_interval is how long the account is lockedout in seconds. This value needs to be 900 or less
+# fail_interval is how long the account is locked out in seconds. This value needs to be 900 or less
 ubtu18stig_pamd_faillock:
     type: auth
     control: "[success=1 default=ignore]"
@@ -336,7 +336,7 @@ ubtu18stig_password_complexity:
 # UBTU-18-010110
 # ubtu18stig_pamd_encryption are the pam_unix settings related to setting the encryption schema for logins.
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
-# as a referrence in adding the pam_unix.so entry and encryption parameter.
+# as a refe rence in adding the pam_unix.so entry and encryption parameter.
 # new_control is the control settings for the pam_unix.so settings, by default we have the default value entered here. It can be
 # modified
 ubtu18stig_pamd_encryption:
@@ -353,7 +353,7 @@ ubtu18stig_pamd_encryption:
 ubtu18stig_pam_pwquality_retry: 3
 # ubtu18stig_pamd_retry are the settings related to adding the pam_pwquality.so retry value.
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
-# as a referrence in adding the pam_pwquality.so entry and retry parameter.
+# as a reference in adding the pam_pwquality.so entry and retry parameter.
 ubtu18stig_pamd_retry:
     type: password
     control: requisite
@@ -376,22 +376,22 @@ ubtu18cis_var_log_syslog_perms: 640
 ubtu18cis_tool_perms: 755
 
 # UBTU-18-010133
-# ubtu18stig_lib_file_perms are the perms to put on all library files if they are found be less restricive than 755
-# To conform to STIG standards this value needs to be 755 or more restricive
+# ubtu18stig_lib_file_perms are the perms to put on all library files if they are found be less restrictive than 755
+# To conform to STIG standards this value needs to be 755 or more restrictive
 ubtu18stig_lib_file_perms: 755
 
 # UBTU-18-010134
-# ubtu18stig_lib_dir_perms are the perms to put on the library directories if they are found to be less restricive than 755
-# To conform to STIG standards this value needs to be 755 or more restricive
+# ubtu18stig_lib_dir_perms are the perms to put on the library directories if they are found to be less restrictive than 755
+# To conform to STIG standards this value needs to be 755 or more restrictive
 ubtu18stig_lib_dir_perms: 755
 
 # UBTU-18-010129
-# ubtu18stig_sys_commands_perms are the permissions to put on the OS system command files if they are found to be less restricive than 755
-# To conform to STIG standards this value needs to be 755 or more restricive
+# ubtu18stig_sys_commands_perms are the permissions to put on the OS system command files if they are found to be less restrictive than 755
+# To conform to STIG standards this value needs to be 755 or more restrictive
 ubtu18stig_sys_commands_perms: 755
 
-# ubtu18stig_sys_comm_dir_perms are the permissions to put on the OS system commands directories if they are found to be less restricive than 755
-# To conform to STIG standards this value needs to be 755 or more restricive
+# ubtu18stig_sys_comm_dir_perms are the permissions to put on the OS system commands directories if they are found to be less restrictive than 755
+# To conform to STIG standards this value needs to be 755 or more restrictive
 ubtu18stig_sys_comm_dir_perms: 755
 
 # UBTU-18-010300
@@ -406,17 +406,17 @@ ubtu18stig_auditd_disk_full_action: HALT
 
 # UBTU-18-010305
 # ubtu18stig_audit_log is the permissions value on all files in the audit logs folder, /var/logs/audit by default
-# To conform to STIG standards this needs to be 0600 or more restricive
+# To conform to STIG standards this needs to be 0600 or more restrictive
 ubtu18stig_audit_log_files: 600
 
 # UBTU-18-010308
 # ubtu18stig_audit_log_dirs is the permissions value on the audit logs folder, var/logs/audit by default
-# To conform to STIG standards this needs to be 0750 or more restricive
+# To conform to STIG standards this needs to be 0750 or more restrictive
 ubtu18stig_audit_log_dirs: 750
 
 # UBTU-18-010311
 # ubtu18stig_audit_rules_conf_perms is the permissions value on the audit.rules and audit.conf files in /etc/audit and files in /etc/audit/rules.d/
-# To conform to STIG standards this needs to be 0640 or more restricive
+# To conform to STIG standards this needs to be 0640 or more restrictive
 ubtu18stig_audit_rules_conf_perms: 640
 
 # UBTU-18-010402
@@ -439,7 +439,7 @@ ubtu18stig_sshd:
 # UBTU-18-010427
 # ubtu18cis_pkcs11 are the settings related to the pkcs11 pam module
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
-# as a referrence in adding the pam_pkcs11.so entry
+# as a reference in adding the pam_pkcs11.so entry
 ubtu18cis_pkcs11:
     new_control: "[success=2 default=ignore]"
     type: auth
@@ -492,13 +492,13 @@ ubtu18stig_auditd_admin_space_left: 20
 
 # UBTU-18-010007
 # UBTU-18-010025
-# ubtu18stig_audispd_remote_servers is the address of the remote server recieving the auditd logs
+# ubtu18stig_audispd_remote_servers is the address of the remote server receiving the auditd logs
 ubtu18stig_audispd_remote_servers: 10.10.10.10
 
 # UBTU-18-010031
 # ubtu18stig_pamd_faildelay are the pam.d placement settings and value for the delay
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-auth, which is used
-# as a referrence in adding the auth required pam_faildelay.so delay= value if pam_faildelay does not already exist.
+# as a reference in adding the auth required pam_faildelay.so delay= value if pam_faildelay does not already exist.
 # The state value determines before or after the stated type/control/module_path.
 # The delay setting is is in microseconds and needs to be a minimum 4 seconds (4000000) to conform to STIG standards
 ubtu18stig_pamd_faildelay:
@@ -511,7 +511,7 @@ ubtu18stig_pamd_faildelay:
 # UBTU-18-010032
 # ubtu18stig_pamd_showfailed are the pam.d placement settings and for the showfail setting.
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/login, which is used
-# as a referrence in adding the showfail parameter.
+# as a reference in adding the showfail parameter.
 ubtu18stig_pamd_showfailed:
     type: session
     control: required
@@ -551,8 +551,8 @@ ubtu18stig_pass_max_days: 60
 # UBTU-18-010108
 # ubtu18stig_pamd_remember are the pam.d placement settings and value for password remember setting
 # The settings, type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
-# as a referrence in adding the password [success default] pam_unix.so remember values if pam_unix.so with success/default do not already exist.
-# new_control is the value for the success and deafult with pam_unix.so
+# as a reference in adding the password [success default] pam_unix.so remember values if pam_unix.so with success/default do not already exist.
+# new_control is the value for the success and default with pam_unix.so
 # remember is the number of generations to remember, this value should be no less than 5.
 ubtu18stig_pamd_remember:
     new_control: "[success=1 default=ignore]"
