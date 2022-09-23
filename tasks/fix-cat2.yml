@@ -492,15 +492,36 @@
       - passwords
 
 - name: "MEDIUM | UBTU-18-010114 | PATCH | The Ubuntu operating system must require users to re-authenticate for privilege escalation and changing roles."
-  replace:
-      path: /etc/sudoers
-      regexp: "{{ item.regexp }}"
-      replace: "{{ item.replace }}"
-  with_items:
-      - { regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)', replace: '\1PASSWD\2' }
-      - { regexp: '^([^#].*)!authenticate(.*)', replace: '\1authenticate\2' }
-  loop_control:
-      label: "{{ item.replace }}"
+  block:
+      - name: "MEDIUM | UBTU-18-010114 | AUDIT | The Ubuntu operating system must require users to re-authenticate for privilege escalation and changing roles. | Get sudoers nopasswd files"
+        shell: egrep -i '(nopasswd)' /etc/sudoers /etc/sudoers.d/* | cut -d':' -f1
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010114_sudoers_nopasswd_status
+
+      - name: "MEDIUM | UBTU-18-010114 | AUDIT | The Ubuntu operating system must require users to re-authenticate for privilege escalation and changing roles. | Get sudoers authenticate files"
+        shell: egrep -i '(!authenticate)' /etc/sudoers /etc/sudoers.d/* | cut -d':' -f1
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010114_sudoers_authenticate_status
+
+      - name: "MEDIUM | UBTU-18-010114 | PATCH | The Ubuntu operating system must require users to re-authenticate for privilege escalation and changing roles."
+        replace:
+            path: "{{ item }}"
+            regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
+            replace: '\1PASSWD\2' 
+        with_items:
+            - "{{ ubtu_18_010114_sudoers_nopasswd_status.stdout_lines }}"
+        when: ubtu_18_010114_sudoers_nopasswd_status.stdout | length >= 1
+
+      - name: "MEDIUM | UBTU-18-010114 | PATCH | The Ubuntu operating system must require users to re-authenticate for privilege escalation and changing roles."
+        replace:
+            path: "{{ item }}"
+            regexp: '^([^#].*)!authenticate(.*)'
+            replace: '\1authenticate\2'
+        with_items:
+            - "{{ ubtu_18_010114_sudoers_authenticate_status.stdout_lines }}"
+        when: ubtu_18_010114_sudoers_authenticate_status.stdout | length >= 1
   when:
       - ubtu_18_010114
   tags:
