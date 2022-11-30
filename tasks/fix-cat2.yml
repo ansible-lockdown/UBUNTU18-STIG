@@ -127,7 +127,7 @@
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
             create: true
-            mode: 644
+            mode: 644  # noqa: risky-octal
             owner: root
             group: root
         with_items:
@@ -509,7 +509,7 @@
         replace:
             path: "{{ item }}"
             regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
-            replace: '\1PASSWD\2' 
+            replace: '\1PASSWD\2'
         with_items:
             - "{{ ubtu_18_010114_sudoers_nopasswd_status.stdout_lines }}"
         when: ubtu_18_010114_sudoers_nopasswd_status.stdout | length >= 1

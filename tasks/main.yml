@@ -29,7 +29,8 @@
   tags:
       - always
 
-- import_tasks: prelim.yml
+- name: Include prelim tasks
+  import_tasks: prelim.yml
   tags:
       - prelim_tasks
 
@@ -80,7 +81,7 @@
         set_fact:
             control_number: "{{ control_number }} + [ 'Reboot_required' ]"
             warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu18_skip_reboot 
+        when: ubtu18_skip_reboot
 
 - name: If Warnings found Output count and control IDs affected
   debug:
