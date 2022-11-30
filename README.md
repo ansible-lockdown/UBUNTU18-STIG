@@ -3,7 +3,7 @@
 
 Configure an Ubuntu 18 system to be DISA STIG compliant. All findings will be audited by default. Non-disruptive CAT I, CAT II, and CAT III findings will be corrected by default. Disruptive finding remediation can be enabled by setting `ubtu18stig_disruption_high` to `yes`.
 
-This role is based on Ubuntu 18.04 DISA STIG: [Version 2, Rel 8 released on  Jul 27, 2022](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_18-04_LTS_V2R8_STIG_Ansible.zip).
+This role is based on Ubuntu 18.04 DISA STIG: [Version 2, Rel 9 released on  Oct 27, 2022](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_18-04_LTS_V2R8_STIG_Ansible.zip).
 
 ## Join us
 
