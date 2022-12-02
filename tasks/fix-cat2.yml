@@ -127,7 +127,7 @@
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
             create: true
-            mode: 644
+            mode: 644  # noqa: risky-octal
             owner: root
             group: root
         with_items:
@@ -149,17 +149,17 @@
 # There is no mfetp package available. The McAfee instructions have you download the installer from their portal. This package may no longer be available
 # - name: "MEDIUM | UBTU-18-010021 | PATCH | The Ubuntu operating system must deploy Endpoint Security for Linux Threat Prevention (ENSLTP)."
 #   package:
-#       name: mfetp
+#       name: mcfeetp
 #       state: present
 #   when:
 #       - ubtu_18_010021
-#       - '"mfetp" not in ansible_facts.packages'
+#       - '"mcfeetp" not in ansible_facts.packages'
 #   tags:
 #       - UBTU-18-010021
 #       - CAT2
 #       - CCI-001233
 #       - SRG-OS-000191-GPOS-00080
-#       - SV-219159r610963_rule
+#       - SV-219159r858515_rule
 #       - V-219159
 #       - ensltp
 
@@ -509,7 +509,7 @@
         replace:
             path: "{{ item }}"
             regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
-            replace: '\1PASSWD\2' 
+            replace: '\1PASSWD\2'
         with_items:
             - "{{ ubtu_18_010114_sudoers_nopasswd_status.stdout_lines }}"
         when: ubtu_18_010114_sudoers_nopasswd_status.stdout | length >= 1
