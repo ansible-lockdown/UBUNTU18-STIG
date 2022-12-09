@@ -24,8 +24,6 @@
             - ubtu_18_010000_boot_class.stdout | length > 0
             - "'--unrestricted' not in ubtu_18_010000_boot_class.stdout"
 
-      - debug: var=ubtu_18_010000_boot_class
-
       - name: |
           "HIGH | UBTU-18-010000 | PATCH | Ubuntu operating systems booted with a BIOS must require authentication upon booting into single-user and maintenance modes."
           "HIGH | UBTU-18-010001 | PATCH | Ubuntu operating systems booted with United Extensible Firmware Interface (UEFI) implemented must require authentication upon booting into single-user mode and maintenance."
