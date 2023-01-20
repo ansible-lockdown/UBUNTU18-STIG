@@ -25,7 +25,7 @@
       - CAT3
       - CCI-001855
       - SRG-OS-000343-GPOS-00134
-      - SV-219152r610963_rule
+      - SV-219152r877389_rule
       - V-219152
       - auditd
 
@@ -49,16 +49,32 @@
       - CCI-001851
       - SRG-OS-000479-GPOS-00224
       - SRG-OS-000342-GPOS-00133
-      - SV-219153r610963_rule
-      - SV-219162r610963_rule
+      - SV-219153r853361_rule
+      - SV-219162r877390_rule
       - V-219153
       - V-219162
       - auditd
 
-- name: "LOW | UBTU-18-010008 | PATCH | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems."
-  shell: /bin/true
-  changed_when: false
-  failed_when: false
+- name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems."
+  block:
+      - name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems. | Get Weekly Crontab Folder."
+        shell: sudo ls /etc/cron.weekly
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010008_cron_weekly
+
+      - name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems. | Warning Message."
+        debug:
+            msg:
+                - "Warning!! Please verify there is a weekly cron job script to offload audit data."
+                - "The STIG states audit-offload should be listed and have a proper script moving to a external media device."
+                - "Weekly Cron Folder Contents Listed Below"
+                - "{{ ubtu_18_010008_cron_weekly.stdout_lines }}"
+
+      - name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems. | Warn Count."
+        import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'UBTU-18-010008'
   when:
       - ubtu_18_010008
   tags:
@@ -66,10 +82,9 @@
       - CAT3
       - CCI-001851
       - SRG-OS-000479-GPOS-00224
-      - SV-219154r610963_rule
+      - SV-219154r853362_rule
       - V-219154
       - cron
-      - not_implemented
 
 - name: "LOW | UBTU-18-010030 | PATCH | The Ubuntu operating system must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day."
   lineinfile:
@@ -84,7 +99,7 @@
       - CAT3
       - CCI-002007
       - SRG-OS-000383-GPOS-00166
-      - SV-219163r610963_rule
+      - SV-219163r853368_rule
       - V-219163
       - pam
 
@@ -346,9 +361,9 @@
                 - "Disk Space: {{ ubtu_18_010314_audit_log_partition.stdout }}"
 
       - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + ['UBTU-18-010314']"
-            warn_count: "{{ warn_count | int + 1 }}"
+        import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'UBTU-18-010314'
   when:
       - ubtu_18_010314
   tags:
@@ -356,7 +371,7 @@
       - CAT3
       - CCI-001849
       - SRG-OS-000341-GPOS-00132
-      - SV-219237r610963_rule
+      - SV-219237r877391_rule
       - V-219237
       - logging
       - mounts
@@ -379,7 +394,7 @@
       - CAT3
       - CCI-000054
       - SRG-OS-000027-GPOS-00008
-      - SV-219301r802366_rule
+      - SV-219301r877399_rule
       - V-219301
       - login
 
@@ -404,7 +419,7 @@
       - CCI-002165
       - CCI-002235
       - SRG-OS-000312-GPOS-00122
-      - SV-219322r610963_rule
+      - SV-219322r853390_rule
       - V-219322
       - pam
       - apparmor
@@ -418,9 +433,9 @@
                 - "{{ ubtu18stig_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
 
       - name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours. | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + ['UBTU-18-010447']"
-            warn_count: "{{ warn_count | int + 1 }}"
+        import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'UBTU-18-010447'
   when:
       - ubtu_18_010447
   tags:
@@ -445,7 +460,7 @@
       - CAT3
       - CCI-002046
       - SRG-OS-000356-GPOS-00144
-      - SV-219332r610963_rule
+      - SV-219332r853394_rule
       - V-219332
       - chrony
 
@@ -468,6 +483,32 @@
       - CAT3
       - CCI-001890
       - SRG-OS-000359-GPOS-00146
-      - SV-219333r610963_rule
+      - SV-219333r877383_rule
       - V-219333
       - time
+
+- name: "LOW | UBTU-18-010510 | AUDIT | The Ubuntu operating system must restrict access to the kernel message buffer."
+  block:
+      - name: "LOW | UBTU-18-010510 | AUDIT | The Ubuntu operating system must restrict access to the kernel message buffer. | Find current status."
+        shell: sudo sysctl kernel.dmesg_restrict
+        changed_when: false
+        failed_when: false
+        register: rhel_08_010375_conflicting_settings
+
+      - name: "LOW | UBTU-18-010510 | AUDIT | The Ubuntu operating system must restrict access to the kernel message buffer. | Set restrict to 1."
+        lineinfile:
+            path: /etc/sysctl.d/10-kernel-hardening.conf
+            regexp: '(?i)^#?kernel.dmesg_restrict'
+            line: 'kernel.dmesg_restrict = 1'
+        notify: reload kernel system
+        when: rhel_08_010375_conflicting_settings.stdout != 'kernel.dmesg_restrict = 1'
+  when:
+      - ubtu_18_010510
+  tags:
+      - UBTU-18-010510
+      - CAT3
+      - CCI-001090
+      - SRG-OS-000138-GPOS-00069
+      - SV-255907r880894_rule
+      - V-255907
+      - kernel

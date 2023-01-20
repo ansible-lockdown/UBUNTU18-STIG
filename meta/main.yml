@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-    author: "Sam Doran, Josh Springer, Daniel Shepherd, James Cassell, Mike Renfro, DFed, George Nalen, Mark Bolwell"
+    author: "Sam Doran, Josh Springer, Daniel Shepherd, James Cassell, Mike Renfro, DFed, George Nalen, Mark Bolwell, Stephen Williams"
     description: "Apply the DISA Ubuntu 18 STIG"
     company: "MindPoint Group"
     license: MIT

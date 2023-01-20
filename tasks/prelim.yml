@@ -7,7 +7,7 @@
 
 - name: "PRELIM | Run apt update"
   apt:
-      update_cache: yes
+      update_cache: true
 
 - name: "PRELIM | UBTU-18-010000 | Check whether machine is UEFI-based"
   stat:

@@ -65,13 +65,13 @@
         debug:
             msg:
                 - "Warning!! You do not have FIPS-Mode enabled. This is a finding, please enable to conform to STIG standards"
-                - "A subscription to Ubuntu Advantage is required to obtain FSIPs Kernel cryptography"
+                - "A subscription to the Ubuntu Pro plan is required to obtain the FIPS Kernel cryptographic modules and enable FIPS"
         when: "'1' not in ubtustig_18_010005_fips_status.stdout"
 
       - name: "HIGH | UBTU-18-010005 | AUDIT | The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + ['UBTU-18-010005']"
-            warn_count: "{{ warn_count | int + 1 }}"
+        import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'UBTU-18-010005'
         when: "'1' not in ubtustig_18_010005_fips_status.stdout"
   when:
       - ubtu_18_010005
@@ -80,7 +80,7 @@
       - CAT1
       - CCI-002450
       - SRG-OS-000478-GPOS-00223
-      - SV-219151r610963_rule
+      - SV-219151r880862_rule
       - V-219151
       - fips
 
@@ -149,9 +149,9 @@
         when: not ubtu18_auto_remove_sudoers
 
       - name: "HIGH | UBTU-18-010037 | AUDIT | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + ['UBTU-18-010037']"
-            warn_count: "{{ warn_count | int + 1 }}"
+        import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'UBTU-18-010037'
         when: not ubtu18_auto_remove_sudoers
   when:
       - ubtu_18_010037
@@ -176,7 +176,7 @@
       - CAT1
       - CCI-000197
       - SRG-OS-000074-GPOS-00042
-      - SV-219177r610963_rule
+      - SV-219177r877396_rule
       - V-219177
       - telnet
 
@@ -234,7 +234,7 @@
       - CCI-001941
       - CCI-001942
       - SRG-OS-000112-GPOS-00057
-      - SV-219308r610963_rule
+      - SV-219308r853380_rule
       - V-219308
       - ssh
 
@@ -250,7 +250,7 @@
         service:
             name: sshd
             state: started
-            enabled: yes
+            enabled: true
   when:
       - ubtu_18_010420
   tags:
@@ -261,7 +261,7 @@
       - CCI-002421
       - CCI-002422
       - SRG-OS-000423-GPOS-00187
-      - SV-219313r610963_rule
+      - SV-219313r853383_rule
       - V-219313
       - ssh
 
@@ -281,7 +281,7 @@
       - CAT1
       - CCI-000366
       - SRG-OS-000480-GPOS-00229
-      - V-219314r610963_rule
+      - SV-219314r877377_rule
       - V-219314
       - ssh
 
@@ -319,7 +319,7 @@
       - CAT1
       - CCI-000187
       - SRG-OS-000068-GPOS-00036
-      - SV-219316r610963_rule
+      - SV-219316r880891_rule
       - V-219316
       - pam
       - authentication
@@ -343,9 +343,9 @@
             - not ubtu18stig_disruption_high
 
       - name: "HIGH | UBTU-18-010522 | AUDIT | The Ubuntu operating system must not have accounts configured with blank or null passwords. | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + ['UBTU-18-010522']"
-            warn_count: "{{ warn_count | int + 1 }}"
+        import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'UBTU-18-010522'
         when:
             - ubtu_18_010522_blank_pw_users.stdout | length > 0
             - not ubtu18stig_disruption_high
@@ -353,7 +353,7 @@
       - name: "HIGH | UBTU-18-010522 | PATCH | The Ubuntu operating system must not have accounts configured with blank or null passwords. | Lock accounts with blank passwords"
         user:
             name: "{{ item }}"
-            password_lock: yes
+            password_lock: true
         with_items:
             - "{{ ubtu_18_010522_blank_pw_users.stdout_lines }}"
         when:

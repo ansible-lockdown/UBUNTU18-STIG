@@ -190,11 +190,13 @@ ubtu_18_010507: true
 ubtu_18_010508: true
 ubtu_18_010509: true
 ubtu_18_010512: true
+ubtu_18_010513: true
 ubtu_18_010514: true
 ubtu_18_010515: true
 ubtu_18_010516: true
 ubtu_18_010418: true
 ubtu_18_010419: true
+ubtu_18_010421: true
 ubtu_18_010450: true
 ubtu_18_010451: true
 ubtu_18_010452: true
@@ -222,6 +224,7 @@ ubtu_18_010437: true
 ubtu_18_010447: true
 ubtu_18_010502: true
 ubtu_18_010503: true
+ubtu_18_010510: true
 
 # ubtu18cis_desktop_required is the toggle to turn on desktop related controls
 # value of true will run tasks that are intended for the desktop, false will skip desktop related controls
@@ -362,8 +365,8 @@ ubtu18stig_pamd_retry:
 
 # UBTU-18-010124
 # ubtu18cis_var_log_perms is the permissions on the /var/log directory
-# To conform to STIG starndards this needs to be 0750 or more restrictive
-ubtu18cis_var_log_perms: 750
+# To conform to STIG starndards this needs to be 0755 or more restrictive
+ubtu18cis_var_log_perms: 755
 
 # UBTU-18-010127
 # ubtu18cis_var_log_syslog_perms is the permissions on the /var/log/syslog file
@@ -431,10 +434,13 @@ ubtu18cis_shell_session_timeout: 900
 # client_alive_interval is the amount of time idle before ssh session terminated. Set to 600 or less to conform to STIG standards
 # UBTU-18-010417
 # macs are the mac ciphers to be used so to hmac-sha2-512,hmac-sha2-256 only and in that order to conform to STIG standards
+# UBTU-18-010421
+# kexalgorithms are the cryptographic algorithms to add to sshd_config. STIG FIPS Compliance must only use ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256
 ubtu18stig_sshd:
     ciphers: "aes256-ctr,aes192-ctr,aes128-ctr"
     client_alive_interval: 600
     macs: "hmac-sha2-512,hmac-sha2-256"
+    kexalgorithms: "ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256"
 
 # UBTU-18-010427
 # ubtu18cis_pkcs11 are the settings related to the pkcs11 pam module
