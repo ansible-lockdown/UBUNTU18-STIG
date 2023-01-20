@@ -183,7 +183,7 @@
             warn_control_id: 'UBTU-18-010021'
         when:
             - ubtu_18_mcafeetp.stdout | length == 0 or
-            - ubtu_18_mcafeetp.stdout | length > 0
+              ubtu_18_mcafeetp.stdout | length > 0
             - ubtu_18_mcafeetp_daemon_status | length == 0
   when:
       - ubtu_18_010021
