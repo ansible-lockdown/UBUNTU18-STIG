@@ -2664,7 +2664,7 @@
                 - "Use the following command | sudo aide.wrapper --check | to perform"
                 - "a manual check and verify it conforms policies."
 
-      - name:  "MEDIUM | UBTU-18-010515 | AUDIT | The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions. | Warning Out."
+      - name: "MEDIUM | UBTU-18-010515 | AUDIT | The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions. | Warning Out."
         import_tasks: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010515'
