@@ -32,7 +32,7 @@
       - SRG-OS-000254-GPOS-00095
       - SV-219149r610963_rule
       - V-219149
-      - grub
+      - GRUB
 
 - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest."
   block:
@@ -77,8 +77,8 @@
       - SRG-OS-000185-GPOS-00079
       - SV-219150r853358_rule
       - V-219150
-      - encryption
-      - mounts
+      - ENCRYPTION
+      - MOUNTS
 
 - name: "MEDIUM | UBTU-18-010016 | PATCH | Advance package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization."
   block:
@@ -105,7 +105,7 @@
       - SRG-OS-000366-GPOS-00153
       - SV-219155r877463_rule
       - V-219155
-      - apt
+      - APT
 
 - name: "MEDIUM | UBTU-18-010017 | PATCH | The Ubuntu operating system must be configured so that Advance package Tool (APT) removes all software components after updated versions have been installed."
   block:
@@ -144,7 +144,7 @@
       - SRG-OS-000437-GPOS-00194
       - SV-219156r853364_rule
       - V-219156
-      - apt
+      - APT
 
 # There is no mfetp package available. The McAfee instructions have you download the installer from their portal. This package may no longer be available
 - name: "MEDIUM | UBTU-18-010021 | AUDIT | The Ubuntu operating system must deploy Endpoint Security for Linux Threat Prevention (ENSLTP)."
@@ -175,7 +175,7 @@
                 - "However the daemon is not currently running please start the daemon."
         when:
             - ubtu_18_mcafeetp.stdout | length > 0
-            - ubtu_18_mcafeetp_daemon_status | length == 0
+            - ubtu_18_mcafeetp_daemon_status.stdout | length == 0
 
       - name: "MEDIUM | UBTU-18-010021 | AUDIT | The Ubuntu operating system must deploy Endpoint Security for Linux Threat Prevention (ENSLTP). | Set warning count."
         import_tasks: warning_facts.yml
@@ -184,7 +184,7 @@
         when:
             - ubtu_18_mcafeetp.stdout | length == 0 or
               ubtu_18_mcafeetp.stdout | length > 0
-            - ubtu_18_mcafeetp_daemon_status | length == 0
+            - ubtu_18_mcafeetp_daemon_status.stdout | length == 0
   when:
       - ubtu_18_010021
   tags:
@@ -194,7 +194,7 @@
       - SRG-OS-000191-GPOS-00080
       - SV-219159r858515_rule
       - V-219159
-      - ensltp
+      - ENSLTP
 
 - name: "MEDIUM | UBTU-18-010022 | PATCH | The Ubuntu operating system must be configured to preserve log records from failure events."
   service:
@@ -210,7 +210,7 @@
       - SRG-OS-000269-GPOS-00103
       - SV-219160r610963_rule
       - V-219160
-      - rsyslog
+      - RSYSLOG
 
 - name: "MEDIUM | UBTU-18-010023 | PATCH | The Ubuntu operating system must have an application firewall installed in order to control remote access methods."
   package:
@@ -225,8 +225,8 @@
       - SRG-OS-000297-GPOS-00115
       - SV-219161r853365_rule
       - V-219161
-      - ufw
-      - firewall
+      - UFW
+      - FIREWALL
 
 - name: "MEDIUM | UBTU-18-010033 | PATCH | The Ubuntu operating system must be configured so that three consecutive invalid logon attempts by a user automatically locks the account until released by an administrator."
   block:
@@ -309,7 +309,7 @@
       - SRG-OS-000021-GPOS-00005
       - SV-219166r853369_rule
       - V-219166
-      - pamd
+      - PAMD
 
 - name: "MEDIUM | UBTU-18-010035 | PATCH | The Ubuntu operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting local access to the system via a graphical user logon. | Set banner settings"
   lineinfile:
@@ -327,12 +327,12 @@
   with_items:
       - { regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]', insertafter: EOF }
       - { regexp: 'banner-message-enable', line: 'banner-message-enable=true', insertafter: '\[org\/gnome\/login-screen\]'}
-      - { regexp: 'banner-message-text', line: 'banner-message-text={{ ubtu18cis_warning_banner }}', insertafter: 'banner-message-enable' }
+      - { regexp: 'banner-message-text', line: 'banner-message-text={{ ubtu18stig_warning_banner }}', insertafter: 'banner-message-enable' }
   loop_control:
       label: "{{ item.regexp }}"
   when:
       - ubtu_18_010035
-      - ubtu18cis_desktop_required
+      - ubtu18stig_desktop_required
   tags:
       - UBTU-18-010035
       - CAT2
@@ -340,7 +340,7 @@
       - SRG-OS-000024-GPOS-00007
       - SV-219167r610963_rule
       - V-219167
-      - banner
+      - BANNER
 
 - name: "MEDIUM | UBTU-18-010036 | PATCH | The Ubuntu operating system must prevent direct login into the root account."
   user:
@@ -355,7 +355,7 @@
       - SRG-OS-000109-GPOS-00056
       - SV-219168r610963_rule
       - V-219168
-      - accounts
+      - ACCOUNTS
 
 - name: "MEDIUM | UBTU-18-010038 | PATCH | The Ubuntu operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting any publically accessible connection to the system."
   block:
@@ -370,7 +370,7 @@
       - name: "MEDIUM | UBTU-18-010038 | PATCH | The Ubuntu operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting any publically accessible connection to the system. | Set banner message"
         copy:
             dest: "{{ item }}"
-            content: "{{ ubtu18cis_warning_banner }}"
+            content: "{{ ubtu18stig_warning_banner }}"
             owner: root
             group: root
             mode: '0644'
@@ -393,7 +393,7 @@
       - SRG-OS-000228-GPOS-00088
       - SV-219170r610963_rule
       - V-219170
-      - banner
+      - BANNER
 
 - name: "MEDIUM | UBTU-18-010104 | PATCH | The Ubuntu operating system must encrypt all stored passwords with a FIPS 140-2 approved cryptographic hashing algorithm."
   lineinfile:
@@ -409,8 +409,8 @@
       - SRG-OS-000073-GPOS-00041
       - SV-219176r877397_rule
       - V-219176
-      - fips
-      - encryption
+      - FIPS
+      - ENCRYPTION
 
 - name: "MEDIUM | UBTU-18-010109 | PATCH | The Ubuntu operating system must enforce a minimum 15-character password length."
   lineinfile:
@@ -430,7 +430,7 @@
       - SRG-OS-000078-GPOS-00046
       - SV-219181r610963_rule
       - V-219181
-      - accounts
+      - ACCOUNTS
 
 - name: "MEDIUM | UBTU-18-010110 | PATCH | The Ubuntu operating system must employ a FIPS 140-2 approved cryptographic hashing algorithms for all created and stored passwords."
   block:
@@ -477,8 +477,8 @@
       - SRG-OS-000120-GPOS-00061
       - SV-219182r610963_rule
       - V-219182
-      - pamd
-      - encryption
+      - PAMD
+      - ENCRYPTION
 
 - name: "MEDIUM | UBTU-18-010112 | AUDIT | The Ubuntu operating system must allow the use of a temporary password for system logons with an immediate change to a permanent password."
   block:
@@ -501,8 +501,8 @@
       - SRG-OS-000380-GPOS-00165
       - SV-219183r853370_rule
       - V-219183
-      - passwords
-      - accounts
+      - PASSWORDS
+      - ACCOUNTS
 
 - name: "MEDIUM | UBTU-18-010113 | PATCH | The Ubuntu operating system must prevent the use of dictionary words for passwords."
   lineinfile:
@@ -522,7 +522,7 @@
       - SRG-OS-000480-GPOS-00225
       - SV-219184r610963_rule
       - V-219184
-      - passwords
+      - PASSWORDS
 
 - name: "MEDIUM | UBTU-18-010114 | PATCH | The Ubuntu operating system must require users to re-authenticate for privilege escalation and changing roles."
   block:
@@ -564,7 +564,7 @@
       - SRG-OS-000373-GPOS-00156
       - SV-219185r853371_rule
       - V-219185
-      - sudo
+      - SUDO
 
 - name: "MEDIUM | UBTU-18-010116 | PATCH | The Ubuntu Operating system must be configured so that when passwords are changed or new passwords are established, pwquality must be used."
   block:
@@ -617,9 +617,9 @@
       - SRG-OS-000480-GPOS-00225
       - SV-219186r610963_rule
       - V-219186
-      - pamd
-      - pwquality
-      - login
+      - PAMD
+      - PWQUALITY
+      - LOGIN
 
 - name: "MEDIUM | UBTU-18-010120 | PATCH | The Ubuntu operating system must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources."
   block:
@@ -645,7 +645,7 @@
       - SRG-OS-000138-GPOS-00069
       - SV-219187r610963_rule
       - V-219187
-      - permissions
+      - PERMISSIONS
 
 - name: "MEDIUM | UBTU-18-010121 | PATCH | The Ubuntu operating system must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries."
   block:
@@ -681,7 +681,7 @@
       path: /var/log
       owner: "{{ ubtu_18_010123 | ternary('root',omit) }}"
       group: "{{ ubtu_18_010122 | ternary('syslog',omit) }}"
-      mode: "{{ ubtu_18_010124 | ternary(ubtu18cis_var_log_perms,omit) }}"
+      mode: "{{ ubtu_18_010124 | ternary(ubtu18stig_var_log_perms,omit) }}"
       state: directory
   when:
       - ubtu_18_010122 or
@@ -700,17 +700,17 @@
       - V-219189
       - V-219190
       - V-219191
-      - permissions
+      - PERMISSIONS
 
 - name: |
     "MEDIUM | UBTU-18-010125 | PATCH | The Ubuntu operating system must configure the /var/log/syslog file to be group-owned by adm."
-    "MEDIUM | UBTU-18-010126 | PATCH | he Ubuntu operating system must configure /var/log/syslog file to be owned by syslog."
+    "MEDIUM | UBTU-18-010126 | PATCH | The Ubuntu operating system must configure /var/log/syslog file to be owned by syslog."
     "MEDIUM | UBTU-18-010127 | PATCH | The Ubuntu operating system must configure /var/log/syslog file with mode 0640 or less permissive."
   file:
       path: /var/log/syslog
       owner: "{{ ubtu_18_010126 | ternary('syslog',omit) }}"
       group: "{{ ubtu_18_010125 | ternary('adm',omit) }}"
-      mode: "{{ ubtu_18_010127 | ternary(ubtu18cis_var_log_syslog_perms,omit) }}"
+      mode: "{{ ubtu_18_010127 | ternary(ubtu18stig_var_log_syslog_perms,omit) }}"
   when:
       - ubtu_18_010125 or
         ubtu_18_010126 or
@@ -728,7 +728,7 @@
       - V-219192
       - V-219193
       - V-219194
-      - permissions
+      - PERMISSIONS
 
 - name: |
     "MEDIUM | UBTU-18-010128 | PATCH | The Ubuntu operating system must configure audit tools with a mode of 0755 or less permissive."
@@ -752,7 +752,7 @@
             path: "{{ item }}"
             owner: "{{ ubtu_18_010129 | ternary('root',omit) }}"
             group: "{{ ubtu_18_010130 | ternary('root',omit) }}"
-            mode: "{{ ubtu_18_010128 | ternary(ubtu18cis_tool_perms,omit) }}"
+            mode: "{{ ubtu_18_010128 | ternary(ubtu18stig_tool_perms,omit) }}"
         with_items:
             - "{{ ubtu_18_010129_tools.stdout_lines }}"
         when: ubtu_18_010129_tools.stdout | length > 0
@@ -774,7 +774,7 @@
       - V-219195
       - V-219196
       - V-219197
-      - permissions
+      - PERMISSIONS
 
 - name: |
     "MEDIUM | UBTU-18-010133 | PATCH | The Ubuntu operating system library files must have mode 0755 or less permissive."
@@ -819,7 +819,7 @@
       - V-219198
       - V-219200
       - V-219202
-      - permissions
+      - PERMISSIONS
 
 - name: |
     "MEDIUM | UBTU-18-010134 | PATCH | The Ubuntu operating system library directories must have mode 0755 or less permissive."
@@ -865,7 +865,7 @@
       - V-219199
       - V-219201
       - V-219203
-      - permissions
+      - PERMISSIONS
 
 - name: |
     "MEDIUM | UBTU-18-010139 | PATCH | The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive."
@@ -911,7 +911,7 @@
       - V-219204
       - V-219206
       - V-219208
-      - permissions
+      - PERMISSIONS
 
 - name: |
     "MEDIUM | UBTU-18-010140 | PATCH | The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive."
@@ -957,7 +957,7 @@
       - V-219205
       - V-219207
       - V-219209
-      - permissions
+      - PERMISSIONS
 
 - name: "MEDIUM | UBTU-18-010201 | PATCH | The Ubuntu operating system must generate audit records for the use and modification of the tallylog file."
   debug:
@@ -973,7 +973,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219213r610963_rule
       - V-219213
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010202 | PATCH | The Ubuntu operating system must generate audit records for the use and modification of faillog file."
   debug:
@@ -989,7 +989,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219214r610963_rule
       - V-219214
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010203 | PATCH | The Ubuntu operating system must generate audit records for the use and modification of the lastlog file."
   debug:
@@ -1005,7 +1005,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219215r610963_rule
       - V-219215
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010237 | PATCH | The Ubuntu operating system must generate audit records for privileged activities or other system-level access."
   debug:
@@ -1021,7 +1021,7 @@
       - SRG-OS-000471-GPOS-00215
       - SV-219216r610963_rule
       - V-219216
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010238 | PATCH | The Ubuntu operating system must generate audit records for the /var/log/wtmp file."
   debug:
@@ -1037,7 +1037,7 @@
       - SRG-OS-000472-GPOS-00217
       - SV-219217r610963_rule
       - V-219217
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010239 | PATCH | The Ubuntu operating system must generate audit records for the /var/run/utmp file."
   debug:
@@ -1053,7 +1053,7 @@
       - SRG-OS-000472-GPOS-00217
       - SV-219218r802364_rule
       - V-219218
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010240 | PATCH | The Ubuntu operating system must generate audit records for the /var/log/btmp file."
   debug:
@@ -1069,7 +1069,7 @@
       - SRG-OS-000472-GPOS-00217
       - SV-219219r610963_rule
       - V-219219
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010244 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd."
   debug:
@@ -1090,7 +1090,7 @@
       - SRG-OS-000476-GPOS-00221
       - SV-219220r853372_rule
       - V-219220
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010245 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group."
   debug:
@@ -1110,7 +1110,7 @@
       - SRG-OS-000476-GPOS-00221
       - SV-219221r853373_rule
       - V-219221
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010246 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow."
   debug:
@@ -1130,7 +1130,7 @@
       - SRG-OS-000476-GPOS-00221
       - SV-219222r853374_rule
       - V-219222
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010247 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow."
   debug:
@@ -1150,7 +1150,7 @@
       - SRG-OS-000476-GPOS-00221
       - SV-219223r853375_rule
       - V-219223
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010248 | PATCH | The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/security/opasswd."
   debug:
@@ -1170,7 +1170,7 @@
       - SRG-OS-000476-GPOS-00221
       - SV-219224r853376_rule
       - V-219224
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010250 | PATCH | The Ubuntu operating system must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DoD-defined auditable events and actions in near real time."
   systemd:
@@ -1203,8 +1203,8 @@
       - SRG-OS-000038-GPOS-00016
       - SV-219225r853377_rule
       - V-219225
-      - auditd
-      - services
+      - AUDITD
+      - SERVICES
 
 - name: "MEDIUM | UBTU-18-010300 | PATCH | The Ubuntu operating system must alert the ISSO and SA (at a minimum) in the event of an audit processing failure."
   lineinfile:
@@ -1224,7 +1224,7 @@
       - SRG-OS-000046-GPOS-00022
       - SV-219226r610963_rule
       - V-219226
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010301 | PATCH | The Ubuntu operating system must shut down by default upon audit failure (unless availability is an overriding concern)."
   lineinfile:
@@ -1240,7 +1240,7 @@
       - SRG-OS-000047-GPOS-00023
       - SV-219227r610963_rule
       - V-219227
-      - auditd
+      - AUDITD
 
 - name: |
     "MEDIUM | UBTU-18-010305 | PATCH | The Ubuntu operating system must be configured so that audit log files cannot be read or write-accessible by unauthorized users."
@@ -1270,7 +1270,7 @@
       - V-219228
       - V-219229
       - V-219230
-      - auditd
+      - AUDITD
 
 - name: |
     "MEDIUM | UBTU-18-010308 | PATCH | The Ubuntu operating system must be configured so that the audit log directory is not write-accessible by unauthorized users."
@@ -1299,7 +1299,7 @@
       - V-219231
       - V-219232
       - V-219233
-      - auditd
+      - AUDITD
 
 - name: |
     "MEDIUM | UBTU-18-010311 | PATCH | The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users."
@@ -1344,7 +1344,7 @@
       - V-219234
       - V-219235
       - V-219236
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010315 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the su command."
   debug:
@@ -1360,7 +1360,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219238r610963_rule
       - V-219238
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010316 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chfn command."
   debug:
@@ -1376,7 +1376,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219239r610963_rule
       - V-219239
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010317 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the mount command."
   debug:
@@ -1392,7 +1392,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219240r610963_rule
       - V-219240
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010318 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the umount command."
   debug:
@@ -1408,7 +1408,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219241r610963_rule
       - V-219241
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010319 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the ssh-agent command."
   debug:
@@ -1424,7 +1424,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219242r610963_rule
       - V-219242
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010320 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the ssh-keysign command."
   debug:
@@ -1441,7 +1441,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219243r610963_rule
       - V-219243
-      - aduitd
+      - ADUITD
 
 - name: "MEDIUM | UBTU-18-010321 | PATCH | The Ubuntu operating system must generate audit records for any usage of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls."
   debug:
@@ -1457,7 +1457,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219244r809514_rule
       - V-219244
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010327 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls."
   debug:
@@ -1473,7 +1473,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219250r809517_rule
       - V-219250
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010331 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls."
   debug:
@@ -1489,7 +1489,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219254r809520_rule
       - V-219254
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010334 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls."
   debug:
@@ -1505,7 +1505,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219257r809523_rule
       - V-219257
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010340 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudo command."
   debug:
@@ -1521,7 +1521,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219263r610963_rule
       - V-219263
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010341 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudoedit command."
   debug:
@@ -1537,7 +1537,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219264r610963_rule
       - V-219264
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010342 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chsh command."
   debug:
@@ -1553,7 +1553,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219265r610963_rule
       - V-219265
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010343 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the newgrp command."
   debug:
@@ -1569,7 +1569,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219266r610963_rule
       - V-219266
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010344 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chcon command."
   debug:
@@ -1585,7 +1585,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219267r610963_rule
       - V-219267
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010345 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the apparmor_parser command."
   debug:
@@ -1601,7 +1601,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219268r610963_rule
       - V-219268
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010346 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the setfacl command."
   debug:
@@ -1617,7 +1617,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219269r610963_rule
       - V-219269
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010347 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chacl command."
   debug:
@@ -1633,7 +1633,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219270r610963_rule
       - V-219270
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010348 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the passwd command."
   debug:
@@ -1649,7 +1649,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219271r755156_rule
       - V-219271
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010349 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the unix_update command."
   debug:
@@ -1665,7 +1665,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219272r610963_rule
       - V-219272
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010350 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the gpasswd command."
   debug:
@@ -1681,7 +1681,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219273r610963_rule
       - V-219273
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010351 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chage command."
   debug:
@@ -1697,7 +1697,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219274r610963_rule
       - V-219274
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010352 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the usermod command."
   debug:
@@ -1713,7 +1713,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219275r610963_rule
       - V-219275
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010353 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the crontab command."
   debug:
@@ -1729,7 +1729,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219276r610963_rule
       - V-219276
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010354 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the pam_timestamp_check command."
   debug:
@@ -1745,7 +1745,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219277r610963_rule
       - V-219277
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010356 | PATCH | The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the finit_module syscall."
   debug:
@@ -1761,7 +1761,7 @@
       - SRG-OS-000064-GPOS-00033
       - SV-219279r610963_rule
       - V-219279
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010358 | PATCH | The Ubuntu operating system must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions."
   debug:
@@ -1778,7 +1778,7 @@
       - SRG-OS-000326-GPOS-00126
       - SV-219281r853379_rule
       - V-219281
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010375 | PATCH | The Ubuntu operating system must generate audit records upon successful/unsuccessful use of unlink, unlinkat, rename, renameat, and rmdir system calls."
   debug:
@@ -1794,7 +1794,7 @@
       - SRG-OS-000468-GPOS-00212
       - SV-219287r809526_rule
       - V-219287
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010379 | PATCH | The Ubuntu operating system must generate audit records when loading dynamic kernel modules."
   debug:
@@ -1810,7 +1810,7 @@
       - SRG-OS-000471-GPOS-00216
       - SV-219291r610963_rule
       - V-219291
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010387 | PATCH | The Ubuntu operating system must generate records for successful/unsuccessful uses of init_module or finit_module syscalls."
   debug:
@@ -1826,7 +1826,7 @@
       - SRG-OS-000477-GPOS-00222
       - SV-219296r648693_rule
       - V-219296
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010388 | PATCH | The Ubuntu operating system must generate records for successful/unsuccessful uses of delete_module syscall and when unloading dynamic kernel modules."
   debug:
@@ -1842,7 +1842,7 @@
       - SRG-OS-000477-GPOS-00222
       - SV-219297r648694_rule
       - V-219297
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010389 | PATCH | The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use modprobe command."
   debug:
@@ -1858,7 +1858,7 @@
       - SRG-OS-000477-GPOS-00222
       - SV-219298r610963_rule
       - V-219298
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010391 | PATCH | The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use the kmod command."
   debug:
@@ -1874,7 +1874,7 @@
       - SRG-OS-000477-GPOS-00222
       - SV-219299r610963_rule
       - V-219299
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010392 | PATCH | The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use the fdisk command."
   debug:
@@ -1890,7 +1890,7 @@
       - SRG-OS-000477-GPOS-00222
       - SV-219300r610963_rule
       - V-219300
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010401 | PATCH | The Ubuntu operating system must retain a users session lock until that user reestablishes access using established identification and authentication procedures."
   block:
@@ -1906,7 +1906,7 @@
         when: "'true' not in ubtu_18_010401_screen_saver_lock.stdout"
   when:
       - ubtu_18_010401
-      - ubtu18cis_desktop_required
+      - ubtu18stig_desktop_required
   tags:
       - UBTU-18-010401
       - CAT2
@@ -1914,7 +1914,7 @@
       - SRG-OS-000028-GPOS-00009
       - SV-219302r610963_rule
       - V-219302
-      - auditd
+      - AUDITD
 
 - name: "MEDIUM | UBTU-18-010402 | PATCH | The Ubuntu operating system must initiate a session lock after a 15-minute period of inactivity for all connection types."
   blockinfile:
@@ -1925,7 +1925,7 @@
       marker: "# {mark} ANSIBLE MANAGED"
       block: |
           # Set session timeout - STIG ID UBTU-18-010402
-          TMOUT={{ ubtu18cis_shell_session_timeout }}
+          TMOUT={{ ubtu18stig_shell_session_timeout }}
           readonly TMOUT
           export TMOUT
   when:
@@ -1937,7 +1937,7 @@
       - SRG-OS-000029-GPOS-00010
       - SV-219303r610963_rule
       - V-219303
-      - user
+      - USER
 
 - name: "MEDIUM | UBTU-18-010403 | PATCH | The Ubuntu operating system must be configured for users to directly initiate a session lock for all connection types."
   package:
@@ -1954,7 +1954,7 @@
       - SRG-OS-000030-GPOS-00011
       - SV-219304r610963_rule
       - V-219304
-      - user
+      - USER
 
 - name: "MEDIUM | UBTU-18-010410 | PATCH | The Ubuntu operating system must monitor remote access methods."
   block:
@@ -1986,7 +1986,7 @@
       - SRG-OS-000032-GPOS-00013
       - SV-219306r832922_rule
       - V-219306
-      - rsyslog
+      - RSYSLOG
 
 - name: "MEDIUM | UBTU-18-010411 | PATCH | The Ubuntu operating system must implement DoD-approved encryption to protect the confidentiality of remote access sessions."
   lineinfile:
@@ -2004,8 +2004,8 @@
       - SRG-OS-000033-GPOS-00014
       - SV-219307r877398_rule
       - V-219307
-      - sshd
-      - encryption
+      - SSHD
+      - ENCRYPTION
 
 - name: "MEDIUM | UBTU-18-010414 | PATCH | The Ubuntu operating system must use strong authenticators in establishing nonlocal maintenance and diagnostic sessions."
   lineinfile:
@@ -2022,7 +2022,7 @@
       - SRG-OS-000125-GPOS-00065
       - SV-219309r877395_rule
       - V-219309
-      - sshd
+      - SSHD
 
 - name: "MEDIUM | UBTU-18-010415 | PATCH | The Ubuntu operating system must immediately terminate all network connections associated with SSH traffic after a period of inactivity."
   lineinfile:
@@ -2039,7 +2039,7 @@
       - SRG-OS-000126-GPOS-00066
       - SV-219310r610963_rule
       - V-219310
-      - sshd
+      - SSHD
 
 - name: "MEDIUM | UBTU-18-010416 | PATCH | The Ubuntu operating system must automatically terminate all network connections associated with SSH traffic at the end of the session or after 10 minutes of inactivity."
   lineinfile:
@@ -2057,7 +2057,7 @@
       - SRG-OS-000163-GPOS-00072
       - SV-219311r853381_rule
       - V-219311
-      - sshd
+      - SSHD
 
 - name: "MEDIUM | UBTU-18-010417 | PATCH | The Ubuntu operating system must configure the SSH daemon to only use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hash algorithms to protect the integrity of nonlocal maintenance and diagnostic communications."
   lineinfile:
@@ -2076,7 +2076,7 @@
       - SRG-OS-000250-GPOS-00093
       - SV-219312r877394_rule
       - V-219312
-      - sshd
+      - SSHD
 
 # this is out of order due to it installing needed packages for the next couple of tasks
 - name: "MEDIUM | UBTU-18-010431 | PATCH | The Ubuntu operating system must implement multifactor authentication for remote access to privileged accounts in such a way that one of the factors is provided by a device separate from the system gaining access."
@@ -2093,8 +2093,8 @@
       - SRG-OS-000375-GPOS-00160
       - SV-219318r853386_rule
       - V-219318
-      - pamd
-      - pkcs11
+      - PAMD
+      - PKCS11
 
 # this is out of order due to it installing needed packages for the next couple of tasks
 - name: "MEDIUM | UBTU-18-010432 | PATCH |  The Ubuntu operating system must accept Personal Identity Verification (PIV) credentials."
@@ -2111,7 +2111,7 @@
       - SRG-OS-000376-GPOS-00161
       - SV-219319r853387_rule
       - V-219319
-      - certificates
+      - CERTIFICATES
 
 - name: "MEDIUM | UBTU-18-010425 | AUDIT | The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor."
   block:
@@ -2149,13 +2149,13 @@
       - SRG-OS-000066-GPOS-00034
       - SV-219315r853384_rule
       - V-219315
-      - certificates
-      - not_implemented
+      - CERTIFICATES
+      - NOT_IMPLEMENTED
 
 - name: "MEDIUM | UBTU-18-010427 | PATCH | The Ubuntu operating system must implement smart card logins for multifactor authentication for access to accounts."
   block:
       - name: "MEDIUM | UBTU-18-010427 | AUDIT | The Ubuntu operating system must implement smart card logins for multifactor authentication for access to accounts. | Get pkcs11 pamd status"
-        shell: grep '^auth.*{{ ubtu18cis_pkcs11.new_control }}.*pam_pkcs11.so' /etc/pam.d/common-auth
+        shell: grep '^auth.*{{ ubtu18stig_pkcs11.new_control }}.*pam_pkcs11.so' /etc/pam.d/common-auth
         changed_when: false
         failed_when: false
         register: ubtu_18_010427_pam_pkcs11_status
@@ -2163,13 +2163,13 @@
       - name: "MEDIUM | UBTU-18-010427 | PATCH | The Ubuntu operating system must implement smart card logins for multifactor authentication for access to accounts. | Set pkcs11 if doesn't exist"
         pamd:
             name: common-auth
-            type: "{{ ubtu18cis_pkcs11.type }}"
-            control: "{{ ubtu18cis_pkcs11.control }}"
-            module_path: "{{ ubtu18cis_pkcs11.module_path }}"
+            type: "{{ ubtu18stig_pkcs11.type }}"
+            control: "{{ ubtu18stig_pkcs11.control }}"
+            module_path: "{{ ubtu18stig_pkcs11.module_path }}"
             new_type: auth
-            new_control: "{{ ubtu18cis_pkcs11.new_control }}"
+            new_control: "{{ ubtu18stig_pkcs11.new_control }}"
             new_module_path: pam_pkcs11.so
-            state: "{{ ubtu18cis_pkcs11.state }}"
+            state: "{{ ubtu18stig_pkcs11.state }}"
         when: ubtu_18_010427_pam_pkcs11_status.stdout | length == 0
   when:
       - ubtu_18_010427
@@ -2184,8 +2184,8 @@
       - SRG-OS-000105-GPOS-00052
       - SV-219317r853385_rule
       - V-219317
-      - pamd
-      - certificates
+      - PAMD
+      - CERTIFICATES
 
 - name: "MEDIUM | UBTU-18-010434 | PATCH | The Ubuntu operating system must implement certificate status checking for multifactor authentication."
   shell: /bin/true
@@ -2200,8 +2200,8 @@
       - SRG-OS-000377-GPOS-00162
       - SV-219320r853388_rule
       - V-219320
-      - certificates
-      - not_implemented
+      - CERTIFICATES
+      - NOT_IMPLEMENTED
 
 - name: "MEDIUM | UBTU-18-010436 | AUDIT | The Ubuntu operating system must only allow the use of DoD PKI-established certificate authorities for verification of the establishment of protected sessions."
   block:
@@ -2224,7 +2224,7 @@
       - SRG-OS-000403-GPOS-00182
       - SV-219321r853389_rule
       - V-219321
-      - certificates
+      - CERTIFICATES
 
 - name: |
     "MEDIUM | UBTU-18-010441 | PATCH | The Ubuntu operating system must be configured to use AppArmor."
@@ -2260,8 +2260,8 @@
       - SV-219324r853392_rule
       - V-219323
       - V-219324
-      - apparmor
-      - firewall
+      - APPARMOR
+      - FIREWALL
 
 - name: "MEDIUM | UBTU-18-010444 | AUDIT | The Ubuntu operating system must uniquely identify interactive users."
   block:
@@ -2294,7 +2294,7 @@
       - SRG-OS-000104-GPOS-00051
       - SV-219325r610963_rule
       - V-219325
-      - users
+      - USERS
 
 - name: "MEDIUM | UBTU-18-010445 | PATCH | The Ubuntu operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity."
   block:
@@ -2320,7 +2320,7 @@
       - SRG-OS-000118-GPOS-00060
       - SV-219326r610963_rule
       - V-219326
-      - logins
+      - LOGINS
 
 - name: "MEDIUM | UBTU-18-010448 | PATCH | The Ubuntu operating system default filesystem permissions must be defined in such a way that all authenticated users can only read and modify their own files."
   lineinfile:
@@ -2336,7 +2336,7 @@
       - SRG-OS-000480-GPOS-00228
       - SV-219328r610963_rule
       - V-219328
-      - logins
+      - LOGINS
 
 - name: "MEDIUM | UBTU-18-010449 | AUDIT | The Ubuntu operating system must provision temporary user accounts with an expiration time of 72 hours or less."
   block:
@@ -2360,7 +2360,7 @@
       - SRG-OS-000002-GPOS-00002
       - SV-219329r610963_rule
       - V-219329
-      - accounts
+      - ACCOUNTS
 
 - name: "MEDIUM | UBTU-18-010500 | PATCH | The Ubuntu operating system must be configured to use TCP syncookies."
   block:
@@ -2388,7 +2388,7 @@
       - SRG-OS-000142-GPOS-00071
       - SV-219330r610963_rule
       - V-219330
-      - tcp
+      - TCP
 
 - name: "MEDIUM | UBTU-18-010501 | PATCH | The Ubuntu operating system must, for networked systems, compare internal information system clocks at least every 24 hours with a server which is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS)."
   lineinfile:
@@ -2406,7 +2406,7 @@
       - SRG-OS-000355-GPOS-00143
       - SV-219331r877038_rule
       - V-219331
-      - chrony
+      - CHRONY
 
 - name: "MEDIUM | UBTU-18-010504 | AUDIT | The Ubuntu operating system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments."
   block:
@@ -2427,8 +2427,8 @@
       - SRG-OS-000096-GPOS-00050
       - SV-219334r802369_rule
       - V-219334
-      - firewall
-      - ufw
+      - FIREWALL
+      - UFW
 
 - name: "MEDIUM | UBTU-18-010505 | PATCH | Kernel core dumps must be disabled unless needed."
   systemd:
@@ -2447,7 +2447,7 @@
       - SV-219335r610963_rule
       - V-219335
       - kernel_dump
-      - logging
+      - LOGGING
 
 - name: "MEDIUM | UBTU-18-010506 | PATCH | The Ubuntu operating system must use cryptographic mechanisms to protect the integrity of audit tools."
   lineinfile:
@@ -2474,7 +2474,7 @@
       - SRG-OS-000278-GPOS-00108
       - SV-219336r877393_rule
       - V-219336
-      - aide
+      - AIDE
 
 - name: "MEDIUM | UBTU-18-010507 | PATCH | The Ubuntu operating system must enable and run the uncomplicated firewall(ufw)."
   systemd:
@@ -2491,8 +2491,8 @@
       - SRG-OS-000297-GPOS-00115
       - SV-219337r853396_rule
       - V-219337
-      - firewall
-      - ufw
+      - FIREWALL
+      - UFW
 
 - name: "MEDIUM | UBTU-18-010508 | PATCH | The Ubuntu operating system must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the system administrator when changes to the baseline configuration or anomalies in the operation of any security functions are discovered."
   lineinfile:
@@ -2509,7 +2509,7 @@
       - SRG-OS-000363-GPOS-00150
       - SV-219338r853397_rule
       - V-219338
-      - aide
+      - AIDE
 
 - name: "MEDIUM | UBTU-18-010509 | PATCH | The Ubuntu operating system must disable automatic mounting of Universal Serial Bus (USB) mass storage driver."
   block:
@@ -2537,7 +2537,7 @@
       - SRG-OS-000378-GPOS-00163
       - SV-219339r853398_rule
       - V-219339
-      - usb
+      - USB
 
 - name: "MEDIUM | UBTU-18-010512 | PATCH | The Ubuntu operating system must configure the uncomplicated firewall to rate-limit impacted network interfaces."
   block:
@@ -2566,7 +2566,7 @@
       - SRG-OS-000420-GPOS-00186
       - SV-219340r853399_rule
       - V-219340
-      - ufw
+      - UFW
 
 - name: "MEDIUM | UBTU-18-010513 | AUDIT | The Ubuntu operating system must implement non-executable data to protect its memory from unauthorized code execution."
   block:
@@ -2603,7 +2603,7 @@
       - SRG-OS-000433-GPOS-00192
       - SV-219341r853400_rule
       - V-219341
-      - nx
+      - NX
 
 - name: "MEDIUM | UBTU-18-010514 | PATCH | The Ubuntu operating system must implement address space layout randomization to protect its memory from unauthorized code execution."
   lineinfile:
@@ -2620,7 +2620,7 @@
       - SRG-OS-000433-GPOS-00193
       - SV-219342r853401_rule
       - V-219342
-      - kernel
+      - KERNEL
 
 - name: "MEDIUM | UBTU-18-010515 | PATCH | The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions."
   block:
@@ -2677,7 +2677,7 @@
       - SRG-OS-000445-GPOS-00199
       - SV-219343r880897_rule
       - V-219343
-      - aide
+      - AIDE
 
 - name: "MEDIUM | UBTU-18-010516 | PATCH | The Ubuntu operating system must be configured so that a file integrity tool verifies the correct operation of security functions every 30 days."
   copy:
@@ -2693,7 +2693,7 @@
       - SRG-OS-000446-GPOS-00200
       - SV-219344r853403_rule
       - V-219344
-      - aide
+      - AIDE
 
 - name: "MEDIUM | UBTU-18-010418 | PATCH | The Ubuntu operating system must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements."
   lineinfile:
@@ -2710,7 +2710,7 @@
       - SRG-OS-000480-GPOS-00227
       - SV-233779r610963_rule
       - V-233779
-      - sshd
+      - SSHD
 
 - name: "MEDIUM | UBTU-18-010419 | PATCH | The Ubuntu operating system SSH daemon must prevent remote hosts from connecting to the proxy display."
   lineinfile:
@@ -2726,7 +2726,7 @@
       - SRG-OS-000480-GPOS-00227
       - SV-233780r610963_rule
       - V-233780
-      - sshd
+      - SSHD
 
 - name: "MEDIUM | UBTU-18-010450 | PATCH |  All local interactive user home directories defined in the /etc/passwd file must exist."
   block:
@@ -2777,7 +2777,7 @@
       - SRG-OS-000480-GPOS-00227
       - SV-237768r648736_rule
       - V-237768
-      - users
+      - USERS
 
 - name: "MEDIUM | UBTU-18-010451 | PATCH | All local interactive user home directories must have mode 0750 or less permissive."
   block:
@@ -2843,8 +2843,8 @@
       - SRG-OS-000480-GPOS-00227
       - SV-237769r648743_rule
       - V-237769
-      - permissions
-      - users
+      - PERMISSIONS
+      - USERS
 
 - name: "MEDIUM | UBTU-18-010452 | PATCH | All local interactive user home directories must be group-owned by the home directory owners primary group."
   file:
@@ -2865,8 +2865,8 @@
       - SRG-OS-000480-GPOS-00227
       - SV-237770r648742_rule
       - V-237770
-      - permissions
-      - users
+      - PERMISSIONS
+      - USERS
 
 - name: "MEDIUM | UBTU-18-010521 | PATCH | The Ubuntu operating system must disable all wireless network adapters."
   block:
@@ -2892,8 +2892,8 @@
       - SRG-OS-000481-GPOS-00481
       - SV-252703r854181_rule
       - V-252703
-      - networking
-      - wireless
+      - NETWORKING
+      - WIRELESS
 
 - name: "MEDIUM | UBTU-18-010421 | PATCH | The Ubuntu operating system SSH server must be configured to use only FIPS-validated key exchange algorithms."
   lineinfile:
@@ -2910,4 +2910,4 @@
       - SRG-OS-000250-GPOS-00093
       - SV-255906r880889_rule
       - V-255906
-      - sshd
+      - SSHD

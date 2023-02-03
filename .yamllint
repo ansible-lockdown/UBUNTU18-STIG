@@ -1,4 +1,5 @@
 ---
+
 ignore: |
   tests/
   molecule/

@@ -27,7 +27,7 @@
       - SRG-OS-000343-GPOS-00134
       - SV-219152r877389_rule
       - V-219152
-      - auditd
+      - AUDITD
 
 - name: |
     "LOW | UBTU-18-010007 | PATCH | The Ubuntu operating system audit event multiplexor must be configured to off-load audit logs onto a different system in real time, if the system is interconnected.
@@ -53,7 +53,7 @@
       - SV-219162r877390_rule
       - V-219153
       - V-219162
-      - auditd
+      - AUDITD
 
 - name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems."
   block:
@@ -84,7 +84,7 @@
       - SRG-OS-000479-GPOS-00224
       - SV-219154r853362_rule
       - V-219154
-      - cron
+      - CRON
 
 - name: "LOW | UBTU-18-010030 | PATCH | The Ubuntu operating system must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day."
   lineinfile:
@@ -101,7 +101,7 @@
       - SRG-OS-000383-GPOS-00166
       - SV-219163r853368_rule
       - V-219163
-      - pam
+      - PAM
 
 - name: "LOW | UBTU-18-010031 | PATCH | The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt."
   block:
@@ -142,7 +142,7 @@
       - SRG-OS-000480-GPOS-00226
       - SV-219164r610963_rule
       - V-219164
-      - pam
+      - PAM
 
 - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon."
   block:
@@ -183,7 +183,7 @@
       - SRG-OS-000480-GPOS-00227
       - SV-219165r858512_rule
       - V-219165
-      - pamd
+      - PAMD
 
 - name: "LOW | UBTU-18-010100 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one upper-case character be used."
   lineinfile:
@@ -199,7 +199,7 @@
       - SRG-OS-000069-GPOS-00037
       - SV-219172r610963_rule
       - V-219172
-      - login
+      - LOGIN
 
 - name: "LOW | UBTU-18-010101 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one lower-case character be used."
   lineinfile:
@@ -215,7 +215,7 @@
       - SRG-OS-000070-GPOS-00038
       - SV-219173r610963_rule
       - V-219173
-      - login
+      - LOGIN
 
 - name: "LOW | UBTU-18-010102 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one numeric character be used."
   lineinfile:
@@ -231,7 +231,7 @@
       - SRG-OS-000071-GPOS-00039
       - SV-219174r610963_rule
       - V-219174
-      - login
+      - LOGIN
 
 - name: "LOW | UBTU-18-010103 | PATCH | The Ubuntu operating system must require the change of at least 8 characters when passwords are changed."
   lineinfile:
@@ -247,7 +247,7 @@
       - SRG-OS-000072-GPOS-00040
       - SV-219175r610963_rule
       - V-219175
-      - login
+      - LOGIN
 
 - name: "LOW | UBTU-18-010106 | PATCH | The Ubuntu operating system must enforce 24 hours/1 day as the minimum password lifetime. Passwords for new users must have a 24 hours/1 day minimum password lifetime restriction."
   lineinfile:
@@ -263,7 +263,7 @@
       - SRG-OS-000075-GPOS-00043
       - SV-219178r610963_rule
       - V-219178
-      - login
+      - LOGIN
 
 - name: "LOW | UBTU-18-010107 | PATCH | The Ubuntu operating system must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction."
   lineinfile:
@@ -279,7 +279,7 @@
       - SRG-OS-000076-GPOS-00044
       - SV-219179r610963_rule
       - V-219179
-      - login
+      - LOGIN
 
 - name: "LOW | UBTU-18-010108 | PATCH | The Ubuntu operating system must prohibit password reuse for a minimum of five generations."
   block:
@@ -320,7 +320,7 @@
       - SRG-OS-000077-GPOS-00045
       - SV-219180r610963_rule
       - V-219180
-      - pamd
+      - PAMD
 
 - name: "LOW | UBTU-18-010145 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one special character be used."
   lineinfile:
@@ -336,7 +336,7 @@
       - SRG-OS-000266-GPOS-00101
       - SV-219210r610963_rule
       - V-219210
-      - login
+      - LOGIN
 
 - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
   block:
@@ -373,8 +373,8 @@
       - SRG-OS-000341-GPOS-00132
       - SV-219237r877391_rule
       - V-219237
-      - logging
-      - mounts
+      - LOGGING
+      - MOUNTS
 
 # Control asks for this value to be at the top of the file, but it should go at the end.
 - name: "LOW | UBTU-18-010400 | PATCH | The Ubuntu operating system must limit the number of concurrent sessions to ten for all accounts and/or account types."
@@ -396,7 +396,7 @@
       - SRG-OS-000027-GPOS-00008
       - SV-219301r877399_rule
       - V-219301
-      - login
+      - LOGIN
 
 - name: "LOW | UBTU-18-010437 | PATCH | Pam_Apparmor must be configured to allow system administrators to pass information to any other Ubuntu operating system administrator or user, change security attributes, and to confine all non-privileged users from executing functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures."
   block:
@@ -421,8 +421,8 @@
       - SRG-OS-000312-GPOS-00122
       - SV-219322r853390_rule
       - V-219322
-      - pam
-      - apparmor
+      - PAM
+      - APPARMOR
 
 - name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours."
   block:
@@ -445,7 +445,7 @@
       - SRG-OS-000123-GPOS-00064
       - SV-219327r610963_rule
       - V-219327
-      - accounts
+      - ACCOUNTS
 
 - name: "LOW | UBTU-18-010502 | PATCH | The Ubuntu operating system must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second."
   lineinfile:
@@ -462,7 +462,7 @@
       - SRG-OS-000356-GPOS-00144
       - SV-219332r853394_rule
       - V-219332
-      - chrony
+      - CHRONY
 
 - name: "LOW | UBTU-18-010503 | PATCH | The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT)."
   block:
@@ -473,9 +473,9 @@
         register: ubtu_18_010503_current_timezone
 
       - name: "LOW | UBTU-18-010503 | PATCH | The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT). | Set timezone"
-        shell: timedatectl set-timezone {{ ubtu18cis_timezone }}
+        shell: timedatectl set-timezone {{ ubtu18stig_timezone }}
         changed_when: true
-        when: ubtu18cis_timezone not in ubtu_18_010503_current_timezone.stdout
+        when: ubtu18stig_timezone not in ubtu_18_010503_current_timezone.stdout
   when:
       - ubtu_18_010503
   tags:
@@ -485,7 +485,7 @@
       - SRG-OS-000359-GPOS-00146
       - SV-219333r877383_rule
       - V-219333
-      - time
+      - TIME
 
 - name: "LOW | UBTU-18-010510 | AUDIT | The Ubuntu operating system must restrict access to the kernel message buffer."
   block:
@@ -493,7 +493,7 @@
         shell: sudo sysctl kernel.dmesg_restrict
         changed_when: false
         failed_when: false
-        register: rhel_08_010375_conflicting_settings
+        register: ubtu_18_010510_conflicting_settings
 
       - name: "LOW | UBTU-18-010510 | AUDIT | The Ubuntu operating system must restrict access to the kernel message buffer. | Set restrict to 1."
         lineinfile:
@@ -501,7 +501,7 @@
             regexp: '(?i)^#?kernel.dmesg_restrict'
             line: 'kernel.dmesg_restrict = 1'
         notify: reload kernel system
-        when: rhel_08_010375_conflicting_settings.stdout != 'kernel.dmesg_restrict = 1'
+        when: ubtu_18_010510_conflicting_settings.stdout != 'kernel.dmesg_restrict = 1'
   when:
       - ubtu_18_010510
   tags:
@@ -511,4 +511,4 @@
       - SRG-OS-000138-GPOS-00069
       - SV-255907r880894_rule
       - V-255907
-      - kernel
+      - KERNEL

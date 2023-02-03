@@ -49,9 +49,9 @@
       - SV-219148r808471_rule
       - V-219147
       - V-219148
-      - pbkd
-      - grub
-      - uefi
+      - PBKD
+      - GRUB
+      - UEFI
 
 - name: "HIGH | UBTU-18-010005 | AUDIT | The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards"
   block:
@@ -82,7 +82,7 @@
       - SRG-OS-000478-GPOS-00223
       - SV-219151r880862_rule
       - V-219151
-      - fips
+      - FIPS
 
 - name: "HIGH | UBTU-18-010018 | PATCH | The Ubuntu operating system must not have the Network Information Service (NIS) package installed."
   package:
@@ -98,7 +98,7 @@
       - SRG-OS-000095-GPOS-00049
       - SV-219157r610963_rule
       - V-219157
-      - nis
+      - NIS
 
 - name: "HIGH | UBTU-18-010019 | PATCH | The Ubuntu operating system must not have the rsh-server package installed."
   package:
@@ -114,7 +114,7 @@
       - SRG-OS-000095-GPOS-00049
       - SV-219158r610963_rule
       - V-219158
-      - rsh-server
+      - RSH-SERVER
 
 - name: "HIGH | UBTU-18-010037 | PATCH | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group"
   block:
@@ -162,7 +162,7 @@
       - SRG-OS-000134-GPOS-00068
       - SV-219169r610963_rule
       - V-219169
-      - sudo
+      - SUDO
 
 - name: "HIGH | UBTU-18-010105 | PATCH | The Ubuntu operating system must not have the telnet package installed."
   package:
@@ -178,7 +178,7 @@
       - SRG-OS-000074-GPOS-00042
       - SV-219177r877396_rule
       - V-219177
-      - telnet
+      - TELNET
 
 - name: "HIGH | UBTU-18-010150 | PATCH | The Ubuntu Operating system must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed"
   lineinfile:
@@ -200,7 +200,7 @@
       - SRG-OS-000480-GPOS-00227
       - SV-219211r610963_rule
       - V-219211
-      - dconf
+      - DCONF
 
 - name: "HIGH | UBTU-18-010151 | PATCH | The Ubuntu Operating system must disable the x86 Ctrl-Alt-Delete key sequence."
   systemd:
@@ -218,7 +218,7 @@
       - SRG-OS-000480-GPOS-00227
       - SV-219212r832928_rule
       - V-219212
-      - service
+      - SERVICE
 
 - name: "HIGH | UBTU-18-010412 | PATCH | The Ubuntu operating system must enforce SSHv2 for network access to all accounts."
   lineinfile:
@@ -236,7 +236,7 @@
       - SRG-OS-000112-GPOS-00057
       - SV-219308r853380_rule
       - V-219308
-      - ssh
+      - SSH
 
 - name: "HIGH | UBTU-18-010420 | PATCH | The Ubuntu operating system must use SSH to protect the confidentiality and integrity of transmitted information unless otherwise protected by alternative physical safeguards, such as, at a minimum, a Protected Distribution System (PDS)."
   block:
@@ -263,7 +263,7 @@
       - SRG-OS-000423-GPOS-00187
       - SV-219313r853383_rule
       - V-219313
-      - ssh
+      - SSH
 
 - name: "HIGH | UBTU-18-010424 | PATCH | The Ubuntu operating system must not allow unattended or automatic login via ssh."
   lineinfile:
@@ -283,7 +283,7 @@
       - SRG-OS-000480-GPOS-00229
       - SV-219314r877377_rule
       - V-219314
-      - ssh
+      - SSH
 
 - name: "HIGH | UBTU-18-010426 | PATCH | The Ubuntu operating system must map the authenticated identity to the user or group account for PKI-based authentication."
   block:
@@ -321,8 +321,8 @@
       - SRG-OS-000068-GPOS-00036
       - SV-219316r880891_rule
       - V-219316
-      - pam
-      - authentication
+      - PAM
+      - AUTHENTICATION
 
 - name: "HIGH | UBTU-18-010522 | PATCH | The Ubuntu operating system must not have accounts configured with blank or null passwords."
   block:
@@ -368,8 +368,8 @@
       - SRG-OS-000480-GPOS-00227
       - SV-251506r808515_rule
       - V-251506
-      - users
-      - accounts
+      - USERS
+      - ACCOUNTS
 
 - name: "HIGH | UBTU-18-010523 | PATCH | The Ubuntu operating system must not allow accounts configured with blank or null passwords."
   replace:
@@ -385,4 +385,4 @@
       - SRG-OS-000480-GPOS-00227
       - SV-251507r832931_rule
       - V-251507
-      - pamd
+      - PAMD

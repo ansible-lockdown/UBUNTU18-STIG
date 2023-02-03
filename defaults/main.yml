@@ -25,8 +25,6 @@ ubtu18stig_disruption_high: true
 # setting to make them stand out.
 ubtu18stig_audit_disruptive: true
 
-ubtu18stig_skip_for_travis: false
-
 ubtu18_skip_reboot: true
 
 ubtu18stig_workaround_for_disa_benchmark: true
@@ -226,9 +224,9 @@ ubtu_18_010502: true
 ubtu_18_010503: true
 ubtu_18_010510: true
 
-# ubtu18cis_desktop_required is the toggle to turn on desktop related controls
+# ubtu18stig_desktop_required is the toggle to turn on desktop related controls
 # value of true will run tasks that are intended for the desktop, false will skip desktop related controls
-ubtu18cis_desktop_required: false
+ubtu18stig_desktop_required: false
 
 # Install and enable ssh on networked systems
 ubtu18stig_ssh_required: true
@@ -282,8 +280,8 @@ ubtu18stig_pamd_faillock:
     fail_interval: 900
 
 # UBTU-18-010035
-# ubtu18cis_warning_banner is the banner to be displayed when logging into a system
-ubtu18cis_warning_banner: |
+# ubtu18stig_warning_banner is the banner to be displayed when logging into a system
+ubtu18stig_warning_banner: |
     'You are accessing a U.S. Government (USG) Information System (IS) that is
     provided for USG-authorized use only.
 
@@ -351,7 +349,7 @@ ubtu18stig_pamd_encryption:
     encryption: sha512
 
 # UBTU-18-010116
-# ubtu18cis_pam_pwquality_retry is the number of times a password entry fails before warning with an error
+# ubtu18stig_pam_pwquality_retry is the number of times a password entry fails before warning with an error
 # To conform with STIG standards this value needs to be higher than 0 but no more than 3
 ubtu18stig_pam_pwquality_retry: 3
 # ubtu18stig_pamd_retry are the settings related to adding the pam_pwquality.so retry value.
@@ -364,19 +362,19 @@ ubtu18stig_pamd_retry:
     state: after
 
 # UBTU-18-010124
-# ubtu18cis_var_log_perms is the permissions on the /var/log directory
+# ubtu18stig_var_log_perms is the permissions on the /var/log directory
 # To conform to STIG starndards this needs to be 0755 or more restrictive
-ubtu18cis_var_log_perms: 755
+ubtu18stig_var_log_perms: 755
 
 # UBTU-18-010127
-# ubtu18cis_var_log_syslog_perms is the permissions on the /var/log/syslog file
+# ubtu18stig_var_log_syslog_perms is the permissions on the /var/log/syslog file
 # To conform to STIG standards this needs to be 0640 or more restrictive
-ubtu18cis_var_log_syslog_perms: 640
+ubtu18stig_var_log_syslog_perms: 640
 
-# ubtu18cis_tool_perms is the permissions set to the /sbin/auditctl, /sbin/aureport,
+# ubtu18stig_tool_perms is the permissions set to the /sbin/auditctl, /sbin/aureport,
 # /sbin/ausearch, /sbin/autrace, /sbin/auditd, /sbin/audispd, /sbin/augenrules tools
 # To conform to STIG standards this needs to be 0755 or more restrictive
-ubtu18cis_tool_perms: 755
+ubtu18stig_tool_perms: 755
 
 # UBTU-18-010133
 # ubtu18stig_lib_file_perms are the perms to put on all library files if they are found be less restrictive than 755
@@ -423,9 +421,9 @@ ubtu18stig_audit_log_dirs: 750
 ubtu18stig_audit_rules_conf_perms: 640
 
 # UBTU-18-010402
-# ubtu18cis_shell_session_timeout is the session timeout value in seconds
+# ubtu18stig_shell_session_timeout is the session timeout value in seconds
 # To conform to STIG standards the value needs to be 900 or less
-ubtu18cis_shell_session_timeout: 900
+ubtu18stig_shell_session_timeout: 900
 
 # ubtu18stig_sshd will contain all sshd variables. The task association and variable descriptions for each section are listed below
 # UBTU-18-010411
@@ -443,10 +441,10 @@ ubtu18stig_sshd:
     kexalgorithms: "ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256"
 
 # UBTU-18-010427
-# ubtu18cis_pkcs11 are the settings related to the pkcs11 pam module
+# ubtu18stig_pkcs11 are the settings related to the pkcs11 pam module
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-password, which is used
 # as a reference in adding the pam_pkcs11.so entry
-ubtu18cis_pkcs11:
+ubtu18stig_pkcs11:
     new_control: "[success=2 default=ignore]"
     type: auth
     control: "[success=1 default=ignore]"
@@ -484,13 +482,13 @@ ubtu18stig_limit_eth_port:
 # CAT 3
 
 # UBTU-18-010006
-# ubtu18cis_auditd_space_left_action is the setting on which who is notified when audit record storage volume
+# ubtu18stig_auditd_space_left_action is the setting on which who is notified when audit record storage volume
 # reaches 75% of the repository maximum
 # To conform to STIG standards this value needs to be exec or email
 ubtu18stig_auditd_space_left_action: "email"
 # ubtu18stig_auditd_action_mail_acct is the email account used when ubtu18stig_auditd_space_left_action is set to email
 ubtu18stig_auditd_action_mail_acct: root
-# ubtu18cis_auditd_space_left is the setting for how much space (as a percentage) is left before alerting the space_left_action accounts
+# ubtu18stig_auditd_space_left is the setting for how much space (as a percentage) is left before alerting the space_left_action accounts
 # To conform to STIG standards this value needs to be 25% or less
 # The Admin space left is not part of the STIG, but can't be more than the space_left value
 ubtu18stig_auditd_space_left: 25
@@ -525,7 +523,7 @@ ubtu18stig_pamd_showfailed:
     state: before
 
 # UBTU-18-010100
-# ubtu18cis_pwquality_ucredit is the value set to the ucredit parameter in the /etc/security/pwquality.conf file
+# ubtu18stig_pwquality_ucredit is the value set to the ucredit parameter in the /etc/security/pwquality.conf file
 # To conform to STIG standards the value can be no larger than -1, so the next incremental value should be -2
 ubtu18stig_pwquality_ucredit: "-1"
 
@@ -585,5 +583,5 @@ ubtu18stig_chrony:
     makestep: "1 -1"
 
 # UBTU-18-010503
-# ubtu18cis_timezone is the timezone to configure the host in
-ubtu18cis_timezone: "EST"
+# ubtu18stig_timezone is the timezone to configure the host in
+ubtu18stig_timezone: "EST"
