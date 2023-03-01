@@ -2,9 +2,9 @@
 
 ubtu18stig_report_dir: /tmp
 
-ubtu18stig_cat1_patch: true
-ubtu18stig_cat2_patch: true
-ubtu18stig_cat3_patch: true
+ubtu18stig_cat1_patch: false
+ubtu18stig_cat2_patch: false
+ubtu18stig_cat3_patch: false
 
 # We've defined complexity-high to mean that we cannot automatically remediate
 # the rule in question.  In the future this might mean that the remediation
