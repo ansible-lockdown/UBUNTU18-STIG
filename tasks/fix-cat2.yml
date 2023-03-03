@@ -2642,7 +2642,7 @@
       - name: "MEDIUM | UBTU-18-010515 | PATCH | The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions. | Initialize If Not Already Running."
         ansible.builtin.shell: sudo aideinit
         changed_when: true
-        failed_when: true
+        failed_when: false
         register: ubtu_18_010515_aide_initialized
         when:
             - not ubtu_18_010515_aidedb_present.stat.exists
@@ -2651,7 +2651,7 @@
       - name: "MEDIUM | UBTU-18-010515 | PATCH | The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions. | Copy New Database."
         ansible.builtin.shell: sudo cp -p /var/lib/aide/aide.db.new /var/lib/aide/aide.db
         changed_when: true
-        failed_when: true
+        failed_when: false
         when:
             - not ubtu_18_010515_aidedb_present.stat.exists
             - not ubtu_18_010515_aidedbnew_present.stat.exists
