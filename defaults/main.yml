@@ -75,7 +75,7 @@ ubtu_18_010109: true
 ubtu_18_010110: true
 ubtu_18_010112: true
 ubtu_18_010113: true
-ubtu_18_010114: false
+ubtu_18_010114: true
 ubtu_18_010116: true
 ubtu_18_010120: true
 ubtu_18_010121: true
@@ -226,7 +226,7 @@ ubtu_18_010510: true
 
 # ubtu18stig_desktop_required is the toggle to turn on desktop related controls
 # value of true will run tasks that are intended for the desktop, false will skip desktop related controls
-ubtu18stig_desktop_required: true
+ubtu18stig_desktop_required: false
 
 # Service configuration variables, set to true to keep service
 ubtu18stig_nis_required: false
