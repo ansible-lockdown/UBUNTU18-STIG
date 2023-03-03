@@ -13,10 +13,6 @@ ignore*
 # VSCode
 .vscode
 
-# Vagrant Files
-Vagrantfile
-update_upgrade.yml
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

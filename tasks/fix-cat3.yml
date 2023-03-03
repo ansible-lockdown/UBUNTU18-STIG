@@ -495,7 +495,7 @@
         failed_when: false
         register: ubtu_18_010510_conflicting_settings
 
-      - name: "LOW | UBTU-18-010510 | AUDIT | The Ubuntu operating system must restrict access to the kernel message buffer. | Set restrict to 1."
+      - name: "LOW | UBTU-18-010510 | PATCH | The Ubuntu operating system must restrict access to the kernel message buffer. | Set restrict to 1."
         ansible.builtin.lineinfile:
             path: /etc/sysctl.d/10-kernel-hardening.conf
             regexp: '(?i)^#?kernel.dmesg_restrict'

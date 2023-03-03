@@ -1900,7 +1900,8 @@
 
       - name: "MEDIUM | UBTU-18-010401 | PATCH | The Ubuntu operating system must retain a users session lock until that user reestablishes access using established identification and authentication procedures. | Set screensaver lock"
         ansible.builtin.shell: gsettings set org.gnome.desktop.screensaver lock-enabled true
-        changed_when: true
+        changed_when: false
+        failed_when: false
         when: "'true' not in ubtu_18_010401_screen_saver_lock.stdout"
   when:
       - ubtu_18_010401
@@ -2640,8 +2641,8 @@
 
       - name: "MEDIUM | UBTU-18-010515 | PATCH | The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions. | Initialize If Not Already Running."
         ansible.builtin.shell: sudo aideinit
-        changed_when: false
-        failed_when: false
+        changed_when: true
+        failed_when: true
         register: ubtu_18_010515_aide_initialized
         when:
             - not ubtu_18_010515_aidedb_present.stat.exists
@@ -2649,8 +2650,8 @@
 
       - name: "MEDIUM | UBTU-18-010515 | PATCH | The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions. | Copy New Database."
         ansible.builtin.shell: sudo cp -p /var/lib/aide/aide.db.new /var/lib/aide/aide.db
-        changed_when: false
-        failed_when: false
+        changed_when: true
+        failed_when: true
         when:
             - not ubtu_18_010515_aidedb_present.stat.exists
             - not ubtu_18_010515_aidedbnew_present.stat.exists
