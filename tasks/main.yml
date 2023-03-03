@@ -1,4 +1,5 @@
 ---
+
 - name: Gather distribution info
   setup:
       gather_subset: distribution,!all,!min
@@ -23,6 +24,7 @@
 #       msg: You must use Ansible {{ ubtu18stig_min_ansible_version }} or greater
 #   tags:
 #       - always
+
 - name: Gather the package facts before prelim
   package_facts:
       manager: auto
@@ -71,21 +73,16 @@
         when:
             - not ubtu18_skip_reboot
 
-      - name: Warning a reboot is required but skip option set
+      - name: Warning a reboot required but skip option set
         debug:
-            msg: "Warning!! Changes have been made that require a reboot but the skip reboot was set - This can affect compliance check results"
+            msg: "Warning!! changes have been made that require a reboot to be implemented but skip reboot was set - Can affect compliance check results"
         changed_when: true
-        when: ubtu18_skip_reboot
-
-      - name: "Warning a reboot is required but skip option set | warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'Reboot_required' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu18_skip_reboot
+        when:
+            - ubtu18_skip_reboot
 
 - name: If Warnings found Output count and control IDs affected
   debug:
-      msg: "You have {{ warn_count }} Warning(s) that require investigating that are related to the following benchmark ID(s) {{ control_number }}"
+      msg:
+          - "You have {{ warn_count }} Warning(s) that require investigation(s). Their ID’s are listed below:"
+          - "{{ warn_control_list }}"
   when: warn_count != 0
-  tags:
-      - always

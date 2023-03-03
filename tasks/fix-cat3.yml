@@ -3,14 +3,14 @@
 - name: "LOW | UBTU-18-010006 | PATCH | The Ubuntu operating system must immediately notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity."
   block:
       - name: "LOW | UBTU-18-010006 | PATCH | The Ubuntu operating system must immediately notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity. | Set action_mail_acct when set to email"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/audit/auditd.conf
             regexp: '(?i)^#?action_mail_acct ='
             line: 'action_mail_acct = {{ ubtu18stig_auditd_action_mail_acct }}'
         when: ubtu18stig_auditd_space_left_action == "email"
 
       - name: "LOW | UBTU-18-010006 | PATCH | The Ubuntu operating system must immediately notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity. | Set spact_left_action and space_left"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/audit/auditd.conf
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
@@ -25,14 +25,14 @@
       - CAT3
       - CCI-001855
       - SRG-OS-000343-GPOS-00134
-      - SV-219152r610963_rule
+      - SV-219152r877389_rule
       - V-219152
       - auditd
 
 - name: |
     "LOW | UBTU-18-010007 | PATCH | The Ubuntu operating system audit event multiplexor must be configured to off-load audit logs onto a different system in real time, if the system is interconnected.
      LOW | UBTU-18-010025 | PATCH | The Ubuntu operating system audit event multiplexor must be configured to off-load audit logs onto a different system or storage media from the system being audited."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: "{{ item.path }}"
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
@@ -49,16 +49,32 @@
       - CCI-001851
       - SRG-OS-000479-GPOS-00224
       - SRG-OS-000342-GPOS-00133
-      - SV-219153r610963_rule
-      - SV-219162r610963_rule
+      - SV-219153r853361_rule
+      - SV-219162r877390_rule
       - V-219153
       - V-219162
       - auditd
 
-- name: "LOW | UBTU-18-010008 | PATCH | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems."
-  shell: /bin/true
-  changed_when: false
-  failed_when: false
+- name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems."
+  block:
+      - name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems. | Get Weekly Crontab Folder."
+        ansible.builtin.shell: sudo ls /etc/cron.weekly
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010008_cron_weekly
+
+      - name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems. | Warning Message."
+        ansible.builtin.debug:
+            msg:
+                - "Warning!! Please verify there is a weekly cron job script to offload audit data."
+                - "The STIG states audit-offload should be listed and have a proper script moving to a external media device."
+                - "Weekly Cron Folder Contents Listed Below"
+                - "{{ ubtu_18_010008_cron_weekly.stdout_lines }}"
+
+      - name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems. | Warn Count."
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'UBTU-18-010008'
   when:
       - ubtu_18_010008
   tags:
@@ -66,13 +82,12 @@
       - CAT3
       - CCI-001851
       - SRG-OS-000479-GPOS-00224
-      - SV-219154r610963_rule
+      - SV-219154r853362_rule
       - V-219154
       - cron
-      - not_implemented
 
 - name: "LOW | UBTU-18-010030 | PATCH | The Ubuntu operating system must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/sssd/sssd.conf
       regexp: '^offline_credentials_expiration =|^#offline_credentials_expiration ='
       line: "offline_credentials_expiration = 1"
@@ -84,20 +99,20 @@
       - CAT3
       - CCI-002007
       - SRG-OS-000383-GPOS-00166
-      - SV-219163r610963_rule
+      - SV-219163r853368_rule
       - V-219163
       - pam
 
 - name: "LOW | UBTU-18-010031 | PATCH | The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt."
   block:
       - name: "LOW | UBTU-18-010031 | AUDIT | The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt. | Get current faildelay.so settings"
-        shell: grep 'auth.*required.*pam_faildelay.so delay=' /etc/pam.d/common-auth
+        ansible.builtin.shell: grep 'auth.*required.*pam_faildelay.so delay=' /etc/pam.d/common-auth
         changed_when: false
         failed_when: false
         register: ubtu_18_010031_faildelay_state
 
       - name: "LOW | UBTU-18-010031 | PATCH | The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt. | Set if no faildelay.so settings"
-        pamd:
+        community.general.pamd:
             name: common-auth
             type: auth
             control: required
@@ -107,7 +122,7 @@
         when: ubtu_18_010031_faildelay_state.stdout | length > 0
 
       - name: "LOW | UBTU-18-010031 | PATCH | The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt. | Set if faildelay.so settings exist"
-        pamd:
+        community.general.pamd:
             name: common-auth
             type: "{{ ubtu18stig_pamd_faildelay.type }}"
             control: "{{ ubtu18stig_pamd_faildelay.control }}"
@@ -132,13 +147,13 @@
 - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon."
   block:
       - name: "LOW | UBTU-18-010032 | AUDIT | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Get pam_lastlog.so showfailed status"
-        shell: grep 'session.*required.*pam_lastlog.so' /etc/pam.d/login
+        ansible.builtin.shell: grep 'session.*required.*pam_lastlog.so' /etc/pam.d/login
         changed_when: false
         failed_when: false
         register: ubtu_18_010031_showfailed_state
 
       - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Set if noshowfail exists"
-        pamd:
+        community.general.pamd:
             name: login
             type: session
             control: required
@@ -148,7 +163,7 @@
         when: ubtu_18_010031_showfailed_state.stdout | length > 0
 
       - name: "LOW | UBTU-18-010032 | PATCH | The Ubuntu operating system must display the date and time of the last successful account logon upon logon. | Set if no noshowfail"
-        pamd:
+        community.general.pamd:
             name: login
             type: "{{ ubtu18stig_pamd_showfailed.type }}"
             control: "{{ ubtu18stig_pamd_showfailed.control }}"
@@ -171,7 +186,7 @@
       - pamd
 
 - name: "LOW | UBTU-18-010100 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one upper-case character be used."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/security/pwquality.conf
       regexp: '^ucredit.*=|^#.*ucredit.*='
       line: ucredit={{ ubtu18stig_pwquality_ucredit }}
@@ -187,7 +202,7 @@
       - login
 
 - name: "LOW | UBTU-18-010101 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one lower-case character be used."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/security/pwquality.conf
       regexp: '^lcredit.*=|^#.*lcredit.*='
       line: lcredit={{ ubtu18stig_pwquality_lcredit }}
@@ -203,7 +218,7 @@
       - login
 
 - name: "LOW | UBTU-18-010102 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one numeric character be used."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/security/pwquality.conf
       regexp: '^dcredit.*=|^#.*dcredit.*='
       line: dcredit={{ ubtu18stig_pwquality_dcredit }}
@@ -219,7 +234,7 @@
       - login
 
 - name: "LOW | UBTU-18-010103 | PATCH | The Ubuntu operating system must require the change of at least 8 characters when passwords are changed."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/security/pwquality.conf
       regexp: '^difok.*=|^#.*difok.*='
       line: difok={{ ubtu18stig_pwquality_difok }}
@@ -235,7 +250,7 @@
       - login
 
 - name: "LOW | UBTU-18-010106 | PATCH | The Ubuntu operating system must enforce 24 hours/1 day as the minimum password lifetime. Passwords for new users must have a 24 hours/1 day minimum password lifetime restriction."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/login.defs
       regexp: '^PASS_MIN_DAYS|^#.*PASS_MIN_DAYS'
       line: "PASS_MIN_DAYS   {{ ubtu18stig_pass_min_days }}"
@@ -251,7 +266,7 @@
       - login
 
 - name: "LOW | UBTU-18-010107 | PATCH | The Ubuntu operating system must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/login.defs
       regexp: '^PASS_MAX_DAYS|^#.*PASS_MAX_DAYS'
       line: "PASS_MAX_DAYS   {{ ubtu18stig_pass_max_days }}"
@@ -269,13 +284,13 @@
 - name: "LOW | UBTU-18-010108 | PATCH | The Ubuntu operating system must prohibit password reuse for a minimum of five generations."
   block:
       - name: "LOW | UBTU-18-010108 | AUDIT | The Ubuntu operating system must prohibit password reuse for a minimum of five generations. | Get password remember status"
-        shell: grep '^password.*[success=2 default=ignore].*pam_unix.so' /etc/pam.d/common-password
+        ansible.builtin.shell: grep '^password.*[success=2 default=ignore].*pam_unix.so' /etc/pam.d/common-password
         changed_when: false
         failed_when: false
         register: ubtu_18_010108_remember
 
       - name: "LOW | UBTU-18-010108 | PATCH | The Ubuntu operating system must prohibit password reuse for a minimum of five generations. | Add remember if doesn't exist"
-        pamd:
+        community.general.pamd:
             name: common-password
             type: password
             control: "{{ ubtu18stig_pamd_remember.new_control }}"
@@ -285,7 +300,7 @@
         when: ubtu_18_010108_remember.stdout | length > 0
 
       - name: "LOW | UBTU-18-010108 | PATCH | The Ubuntu operating system must prohibit password reuse for a minimum of five generations. | Add remember exists"
-        pamd:
+        community.general.pamd:
             name: common-password
             type: "{{ ubtu18stig_pamd_remember.type }}"
             control: "{{ ubtu18stig_pamd_remember.control }}"
@@ -308,7 +323,7 @@
       - pamd
 
 - name: "LOW | UBTU-18-010145 | PATCH | The Ubuntu operating system must enforce password complexity by requiring that at least one special character be used."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/security/pwquality.conf
       regexp: '^ocredit.*=|^#.*ocredit.*='
       line: ocredit={{ ubtu18stig_pwquality_ocredit }}
@@ -326,19 +341,19 @@
 - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
   block:
       - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Get audit log partition"
-        shell: grep log_file /etc/audit/auditd.conf | grep -v max | awk '{print $3}' | sed 's|\(.*\)/.*|\1|'
+        ansible.builtin.shell: grep log_file /etc/audit/auditd.conf | grep -v max | awk '{print $3}' | sed 's|\(.*\)/.*|\1|'
         changed_when: false
         failed_when: false
         register: ubtu_18_010314_audit_log_path
 
       - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Get size of the audit partition"
-        shell: "df -h {{ ubtu_18_010314_audit_log_path.stdout }} | sed 1d"
+        ansible.builtin.shell: "df -h {{ ubtu_18_010314_audit_log_path.stdout }} | sed 1d"
         changed_when: false
         failed_when: false
         register: ubtu_18_010314_audit_log_partition
 
       - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Message out partition size"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! Below is the path and size of the partition for the audit logs."
                 - "Please make sure there is enough disk space for 1 weeks worth of logs and logs are on their own partition"
@@ -346,9 +361,9 @@
                 - "Disk Space: {{ ubtu_18_010314_audit_log_partition.stdout }}"
 
       - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + ['UBTU-18-010314']"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'UBTU-18-010314'
   when:
       - ubtu_18_010314
   tags:
@@ -356,14 +371,14 @@
       - CAT3
       - CCI-001849
       - SRG-OS-000341-GPOS-00132
-      - SV-219237r610963_rule
+      - SV-219237r877391_rule
       - V-219237
       - logging
       - mounts
 
 # Control asks for this value to be at the top of the file, but it should go at the end.
 - name: "LOW | UBTU-18-010400 | PATCH | The Ubuntu operating system must limit the number of concurrent sessions to ten for all accounts and/or account types."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/security/limits.conf
       regexp: '^\*               hard    maxlogins'
       line: '*               hard    maxlogins       {{ ubtu18stig_maxlogins }}'
@@ -379,20 +394,20 @@
       - CAT3
       - CCI-000054
       - SRG-OS-000027-GPOS-00008
-      - SV-219301r802366_rule
+      - SV-219301r877399_rule
       - V-219301
       - login
 
 - name: "LOW | UBTU-18-010437 | PATCH | Pam_Apparmor must be configured to allow system administrators to pass information to any other Ubuntu operating system administrator or user, change security attributes, and to confine all non-privileged users from executing functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures."
   block:
       - name: "LOW | UBTU-18-010437 | PATCH | Pam_Apparmor must be configured to allow system administrators to pass information to any other Ubuntu operating system administrator or user, change security attributes, and to confine all non-privileged users from executing functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures. | Install Apparmor"
-        package:
+        ansible.builtin.package:
             name: libpam-apparmor
             state: present
         when: "'libpam-apparmor' not in ansible_facts.packages"
 
       - name: "LOW | UBTU-18-010437 | PATCH | Pam_Apparmor must be configured to allow system administrators to pass information to any other Ubuntu operating system administrator or user, change security attributes, and to confine all non-privileged users from executing functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures. | Enable/Start Apparmor service"
-        systemd:
+        ansible.builtin.systemd:
             name: apparmor
             state: started
             enabled: true
@@ -404,7 +419,7 @@
       - CCI-002165
       - CCI-002235
       - SRG-OS-000312-GPOS-00122
-      - SV-219322r610963_rule
+      - SV-219322r853390_rule
       - V-219322
       - pam
       - apparmor
@@ -412,15 +427,15 @@
 - name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours."
   block:
       - name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours."
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! Below are the system accounts. If any where emergency accounts please make sure they are removed or disabled after the crisis is resolved or within 72 hours"
                 - "{{ ubtu18stig_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
 
       - name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours. | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + ['UBTU-18-010447']"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+        vars:
+            warn_control_id: 'UBTU-18-010447'
   when:
       - ubtu_18_010447
   tags:
@@ -433,7 +448,7 @@
       - accounts
 
 - name: "LOW | UBTU-18-010502 | PATCH | The Ubuntu operating system must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second."
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/chrony/chrony.conf
       regexp: '^makestep|^#makestep'
       line: makestep {{ ubtu18stig_chrony.makestep }}
@@ -445,22 +460,22 @@
       - CAT3
       - CCI-002046
       - SRG-OS-000356-GPOS-00144
-      - SV-219332r610963_rule
+      - SV-219332r853394_rule
       - V-219332
-      - chrony
+      - CHRONY
 
 - name: "LOW | UBTU-18-010503 | PATCH | The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT)."
   block:
       - name: "LOW | UBTU-18-010503 | PATCH | The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT). | Get timezone status"
-        shell: timedatectl status | grep -i "time zone"
+        ansible.builtin.shell: timedatectl status | grep -i "time zone"
         changed_when: false
         failed_when: false
         register: ubtu_18_010503_current_timezone
 
       - name: "LOW | UBTU-18-010503 | PATCH | The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT). | Set timezone"
-        shell: timedatectl set-timezone {{ ubtu18cis_timezone }}
+        ansible.builtin.shell: timedatectl set-timezone {{ ubtu18stig_timezone }}
         changed_when: true
-        when: ubtu18cis_timezone not in ubtu_18_010503_current_timezone.stdout
+        when: ubtu18stig_timezone not in ubtu_18_010503_current_timezone.stdout
   when:
       - ubtu_18_010503
   tags:
@@ -468,6 +483,32 @@
       - CAT3
       - CCI-001890
       - SRG-OS-000359-GPOS-00146
-      - SV-219333r610963_rule
+      - SV-219333r877383_rule
       - V-219333
       - time
+
+- name: "LOW | UBTU-18-010510 | AUDIT | The Ubuntu operating system must restrict access to the kernel message buffer."
+  block:
+      - name: "LOW | UBTU-18-010510 | AUDIT | The Ubuntu operating system must restrict access to the kernel message buffer. | Find current status."
+        ansible.builtin.shell: sudo sysctl kernel.dmesg_restrict
+        changed_when: false
+        failed_when: false
+        register: ubtu_18_010510_conflicting_settings
+
+      - name: "LOW | UBTU-18-010510 | PATCH | The Ubuntu operating system must restrict access to the kernel message buffer. | Set restrict to 1."
+        ansible.builtin.lineinfile:
+            path: /etc/sysctl.d/10-kernel-hardening.conf
+            regexp: '(?i)^#?kernel.dmesg_restrict'
+            line: 'kernel.dmesg_restrict = 1'
+        notify: reload kernel system
+        when: ubtu_18_010510_conflicting_settings.stdout != 'kernel.dmesg_restrict = 1'
+  when:
+      - ubtu_18_010510
+  tags:
+      - UBTU-18-010510
+      - CAT3
+      - CCI-001090
+      - SRG-OS-000138-GPOS-00069
+      - SV-255907r880894_rule
+      - V-255907
+      - kernel

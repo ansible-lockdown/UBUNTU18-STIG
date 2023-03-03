@@ -4,8 +4,8 @@
   block:
       - name: "PRELIM | {{ ubtu18stig_passwd_tasks }} | Parse /etc/passwd"
         command: cat /etc/passwd
-        changed_when: no
-        check_mode: no
+        changed_when: false
+        check_mode: false
         register: ubtu18stig_passwd_file_audit
 
       - name: "PRELIM | {{ ubtu18stig_passwd_tasks }} | Split passwd entries"
