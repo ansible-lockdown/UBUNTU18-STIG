@@ -17,6 +17,10 @@
 - Updated Linting
 - Deprecated Module Check
 - Updated Readme
+- Updated Full Module Names
+- Updated Pipeline
+- Issue #6 Closed
+
 
 ## Release 1.2.1
 - Added Workflow to update Ansible Galaxy

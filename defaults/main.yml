@@ -2,9 +2,9 @@
 
 ubtu18stig_report_dir: /tmp
 
-ubtu18stig_cat1_patch: false
-ubtu18stig_cat2_patch: false
-ubtu18stig_cat3_patch: false
+ubtu18stig_cat1_patch: true
+ubtu18stig_cat2_patch: true
+ubtu18stig_cat3_patch: true
 
 # We've defined complexity-high to mean that we cannot automatically remediate
 # the rule in question.  In the future this might mean that the remediation
@@ -75,7 +75,7 @@ ubtu_18_010109: true
 ubtu_18_010110: true
 ubtu_18_010112: true
 ubtu_18_010113: true
-ubtu_18_010114: true
+ubtu_18_010114: false
 ubtu_18_010116: true
 ubtu_18_010120: true
 ubtu_18_010121: true
@@ -226,10 +226,7 @@ ubtu_18_010510: true
 
 # ubtu18stig_desktop_required is the toggle to turn on desktop related controls
 # value of true will run tasks that are intended for the desktop, false will skip desktop related controls
-ubtu18stig_desktop_required: false
-
-# Install and enable ssh on networked systems
-ubtu18stig_ssh_required: true
+ubtu18stig_desktop_required: true
 
 # Service configuration variables, set to true to keep service
 ubtu18stig_nis_required: false
@@ -264,6 +261,7 @@ ubtu18_allowed_sudoers:
 ubtu18_auto_remove_sudoers: true
 
 # Cat 2
+
 # UBTU-18-010033
 # ubtu18stig_pamd_faillock are the settings related to the pam_faillock.so module and controls
 # The settings type, control, module_path, and state need to correspond to an existing rule in /etc/pam.d/common-auth, which is used
