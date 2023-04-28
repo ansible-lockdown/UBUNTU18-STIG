@@ -1,16 +1,16 @@
 ---
 
 - name: "PRELIM | Include Parse /etc/passwd"
-  import_tasks: parse_etc_passwd.yml
+  ansible.builtin.import_tasks: parse_etc_passwd.yml
   when:
       - ubtu_18_010447
 
 - name: "PRELIM | Run apt update"
-  apt:
+  ansible.builtin.apt:
       update_cache: true
 
 - name: "PRELIM | UBTU-18-010000 | Check whether machine is UEFI-based"
-  stat:
+  ansible.builtin.stat:
       path: /sys/firmware/efi
   register: ubtu_18_sys_firmware_efi
   when:
@@ -22,13 +22,13 @@
 - name: "PRELIM | UBTU-18-010150 | dconf setup"
   block:
       - name: "PRELIM | dconf setup | UBTU-18-010150 | check for dconf"
-        command: which dconf
+        ansible.builtin.command: which dconf
         changed_when: false
         failed_when: false
         register: ubtu18stig_dconf_status
 
       - name: "PRELIM | dconf setup | UBTU-18-010150  | install if missing"
-        package:
+        ansible.builtin.package:
             name: dconf-cli
             state: present
         when:
@@ -41,7 +41,7 @@
       - high
 
 - name: "PRELIM | Install AIDE"
-  package:
+  ansible.builtin.package:
       name: ['aide', 'aide-common']
       state: present
   when:
@@ -52,7 +52,7 @@
         ubtu_18_010516
 
 - name: "PRELIM | Install auditd"
-  package:
+  ansible.builtin.package:
       name: auditd
       state: present
   when:
@@ -119,7 +119,7 @@
         ubtu_18_010401
 
 - name: "PRELIM | Install audisp-remote plugin"
-  package:
+  ansible.builtin.package:
       name: audispd-plugins
       state: present
   when:
@@ -127,7 +127,7 @@
         ubtu_18_010025
 
 - name: "PRELIM | Install rsyslog"
-  package:
+  ansible.builtin.package:
       name: rsyslog
       state: present
   when:
@@ -136,7 +136,7 @@
       - ubtu_18_010022
 
 - name: "PRELIM | Install sssd package"
-  package:
+  ansible.builtin.package:
       name: sssd
       state: present
   when:
@@ -145,7 +145,7 @@
       - ubtu_18_010030
 
 - name: "PRELIM | Install Chrony"
-  package:
+  ansible.builtin.package:
       name: chrony
       state: present
   when:
@@ -156,7 +156,7 @@
         ubtu_18_010502
 
 - name: "PRELIM | Get audit log path"
-  shell: "grep -iw log_file /etc/audit/auditd.conf | cut -d' ' -f3 | sed 's:[^/]*$::'"
+  ansible.builtin.shell: "grep -iw log_file /etc/audit/auditd.conf | cut -d' ' -f3 | sed 's:[^/]*$::'"
   changed_when: false
   failed_when: false
   register: ubtu_18_audit_log_path
