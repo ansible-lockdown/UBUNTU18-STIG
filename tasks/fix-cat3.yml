@@ -72,7 +72,8 @@
                 - "{{ ubtu_18_010008_cron_weekly.stdout_lines }}"
 
       - name: "LOW | UBTU-18-010008 | AUDIT | The Ubuntu operating system must have a crontab script running weekly to off-load audit events of standalone systems. | Warn Count."
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010008'
   when:
@@ -361,7 +362,8 @@
                 - "Disk Space: {{ ubtu_18_010314_audit_log_partition.stdout }}"
 
       - name: "LOW | UBTU-18-010314 | AUDIT | The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks worth of audit records, when audit records are not immediately sent to a central audit record storage facility. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010314'
   when:
@@ -433,7 +435,8 @@
                 - "{{ ubtu18stig_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
 
       - name: "LOW | UBTU-18-010447 | AUDIT | The Ubuntu operating system must automatically remove or disable emergency accounts after 72 hours. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010447'
   when:

@@ -69,7 +69,8 @@
         when: "'1' not in ubtustig_18_010005_fips_status.stdout"
 
       - name: "HIGH | UBTU-18-010005 | AUDIT | The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: to provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010005'
         when: "'1' not in ubtustig_18_010005_fips_status.stdout"
@@ -149,7 +150,8 @@
         when: not ubtu18_auto_remove_sudoers
 
       - name: "HIGH | UBTU-18-010037 | AUDIT | The Ubuntu operating system must be configured so that only users who need access to security functions are part of the sudo group | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010037'
         when: not ubtu18_auto_remove_sudoers
@@ -343,7 +345,8 @@
             - not ubtu18stig_disruption_high
 
       - name: "HIGH | UBTU-18-010522 | AUDIT | The Ubuntu operating system must not have accounts configured with blank or null passwords. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010522'
         when:
