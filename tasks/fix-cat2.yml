@@ -2750,11 +2750,12 @@
       # CAUTION: debug loops don't show changed since 2.4:
       # Fix: https://github.com/ansible/ansible/pull/59958
       - name: "MEDIUM | UBTU-18-010450 | PATCH |  All local interactive user home directories defined in the /etc/passwd file must exist. | Alert about correcting owner and group"
-        ansible.builtin.debug: msg="You will need to mkdir -p {{ item }} and chown properly to the correct owner and group."
+        ansible.builtin.debug:
+            msg: "You will need to mkdir -p {{ item }} and chown properly to the correct owner and group."
         with_items: "{{ ubtu_18_010450_audit | map(attribute='dir') | list }}"
         changed_when: ubtu18stig_audit_complex
         when:
-            - ubtu_18_010450_users_missing_home is changed
+            - ubtu_18_010450_users_missing_home is changed  # noqa: no-handler
   vars:
       ld_regex: >-
           ^user '(?P<user>.*)': directory '(?P<dir>.*)' does not exist$
