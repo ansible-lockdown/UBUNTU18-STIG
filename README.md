@@ -15,20 +15,19 @@
 ![Ansible Galaxy Quality](https://img.shields.io/ansible/quality/61237?label=Quality&&logo=ansible)
 ![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
 
-![Devel Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/UBUNTU18-STIG/linux_benchmark_testing.yml?label=Devel%20Build%20Status)
-![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/UBUNTU18-STIG/devel?color=dark%20green&label=Devel%20Branch%20commits)
+![Devel Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/ubuntu18-stig/linux_benchmark_testing.yml?label=Devel%20Build%20Status)
+![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/ubuntu18-stig/devel?color=dark%20green&label=Devel%20Branch%20Commits)
 
-![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen) 
-![Main Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/UBUNTU18-STIG/linux_benchmark_testing.yml?label=Build%20Status)
-![Main Release Date](https://img.shields.io/github/release-date/ansible-lockdown/UBUNTU18-STIG?label=Release%20Date)
-![Release Tag](https://img.shields.io/github/v/tag/ansible-lockdown/UBUNTU18-STIG?label=Release%20Tag&&color=success)
+![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
+![Main Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/ubuntu18-stig/linux_benchmark_testing.yml?label=Build%20Status)
+![Main Release Date](https://img.shields.io/github/release-date/ansible-lockdown/ubuntu18-stig?label=Release%20Date)
+![Release Tag](https://img.shields.io/github/v/tag/ansible-lockdown/ubuntu18-stig?label=Release%20Tag&&color=success)
 
-![Issues Open](https://img.shields.io/github/issues-raw/ansible-lockdown/UBUNTU18-STIG?label=Open%20Issues)
-![Issues Closed](https://img.shields.io/github/issues-closed-raw/ansible-lockdown/UBUNTU18-STIG?label=Closed%20Issues&&color=success)
-![Pull Requests](https://img.shields.io/github/issues-pr/ansible-lockdown/UBUNTU18-STIG?label=Pull%20Requests)
+![Issues Open](https://img.shields.io/github/issues-raw/ansible-lockdown/ubuntu18-stig?label=Open%20Issues)
+![Issues Closed](https://img.shields.io/github/issues-closed-raw/ansible-lockdown/ubuntu18-stig?label=Closed%20Issues&&color=success)
+![Pull Requests](https://img.shields.io/github/issues-pr/ansible-lockdown/ubuntu18-stig?label=Pull%20Requests)
 
-![License](https://img.shields.io/github/license/ansible-lockdown/UBUNTU18-STIG?label=License)
-
+![License](https://img.shields.io/github/license/ansible-lockdown/ubuntu18-stig?label=License)
 ---
 
 ## Looking for support?
@@ -39,7 +38,7 @@
 
 ### Community
 
-Join us on our [Discord Server](https://discord.io/ansible-lockdown) to ask questions, discuss features, or just chat with other Ansible-Lockdown users.
+Join us on our [Discord Server](https://www.lockdownenterprise.com/discord) to ask questions, discuss features, or just chat with other Ansible-Lockdown users.
 
 ---
 
@@ -64,7 +63,7 @@ This is managed using tags:
 - CAT2
 - CAT3
 
-The control found in defaults main also need to reflect true so as this will allow the controls to run when the playbook is launched. 
+The control found in defaults main also need to reflect true so as this will allow the controls to run when the playbook is launched.
 
 ## Coming from a previous release
 
@@ -75,7 +74,7 @@ Further details can be seen in the [Changelog](./ChangeLog.md)
 
 ## Auditing (new)
 
-Currently this release does not have a auditing tool. 
+Currently this release does not have a auditing tool.
 
 ## Documentation
 
@@ -147,3 +146,11 @@ uses:
 - ansible collections - pulls in the latest version based on requirements file
 - runs the audit using the devel branch
 - This is an automated test that occurs on pull requests into devel
+
+## Added Extras
+
+- [pre-commit](https://pre-commit.com) can be tested and can be run from within the directory
+
+```sh
+pre-commit run
+```

@@ -1,13 +1,21 @@
 ---
 
 - name: "PRELIM | Include Parse /etc/passwd"
-  ansible.builtin.import_tasks: parse_etc_passwd.yml
+  ansible.builtin.import_tasks:
+      file: parse_etc_passwd.yml
   when:
       - ubtu_18_010447
 
 - name: "PRELIM | Run apt update"
   ansible.builtin.apt:
       update_cache: true
+
+- name: "PRELIM | Ensure acl package is installed"
+  ansible.builtin.apt:
+      name: acl
+      state: present
+  tags:
+      - always
 
 - name: "PRELIM | UBTU-18-010000 | Check whether machine is UEFI-based"
   ansible.builtin.stat:
