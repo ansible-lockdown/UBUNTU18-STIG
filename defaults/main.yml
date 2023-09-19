@@ -27,6 +27,9 @@ ubtu18stig_audit_disruptive: true
 
 ubtu18_skip_reboot: true
 
+# Whether to run OS assertions check
+ubtu18stig_os_check: true
+
 ubtu18stig_workaround_for_disa_benchmark: true
 ubtu18stig_workaround_for_ssg_benchmark: true
 

@@ -8,22 +8,21 @@
   tags:
       - always
 
-# - name: Check OS version and family
-#   assert:
-#       # that: ansible_os_family == 'Ubuntu' and ansible_distribution_major_version is version_compare('18', '==')
-#       msg: "This role can only be run against Ubuntu 18. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
-#       that:
-#           - ansible_os_family == 'Ubuntu'
-#           - ansible_distribution_major_version is version_compare('18', '==')
-#   tags:
-#       - always
+- name: Check OS version and family
+  assert:
+      that: ansible_distribution== 'Ubuntu' and ansible_distribution_major_version is version_compare('18', '==')
+      fail_msg: "This role can only be run against Ubuntu 18. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+  when:
+      - ubtu18stig_os_check
+  tags:
+      - always
 
-# - name: Check ansible version
-#   assert:
-#       that: ansible_version.full is version_compare(ubtu18stig_min_ansible_version, '>=')
-#       msg: You must use Ansible {{ ubtu18stig_min_ansible_version }} or greater
-#   tags:
-#       - always
+- name: Check ansible version
+  assert:
+      that: ansible_version.full is version_compare(ubtu18stig_min_ansible_version, '>=')
+      msg: You must use Ansible {{ ubtu18stig_min_ansible_version }} or greater
+  tags:
+      - always
 
 - name: Gather the package facts before prelim
   ansible.builtin.package_facts:
@@ -32,7 +31,8 @@
       - always
 
 - name: Include prelim tasks
-  ansible.builtin.import_tasks: prelim.yml
+  ansible.builtin.import_tasks:
+      file: prelim.yml
   tags:
       - prelim_tasks
 
@@ -43,22 +43,25 @@
       - always
 
 - name: Include CAT I patches
-  ansible.builtin.import_tasks: fix-cat1.yml
+  ansible.builtin.import_tasks:
+      file: fix-cat1.yml
   when: ubtu18stig_cat1_patch
   tags:
       - cat1
       - high
 
 - name: Include CAT II patches
-  ansible.builtin.import_tasks: fix-cat2.yml
-  when: ubtu18stig_cat2_patch | bool
+  ansible.builtin.import_tasks:
+      file: fix-cat2.yml
+  when: ubtu18stig_cat2_patch
   tags:
       - cat2
       - medium
 
 - name: Include CAT III patches
-  ansible.builtin.import_tasks: fix-cat3.yml
-  when: ubtu18stig_cat3_patch | bool
+  ansible.builtin.import_tasks:
+      file: fix-cat3.yml
+  when: ubtu18stig_cat3_patch
   tags:
       - cat3
       - low
