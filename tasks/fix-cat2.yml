@@ -49,7 +49,8 @@
         when: ubtu_18_010003_crypttab_status.stdout | length == 0
 
       - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010003'
         when: ubtu_18_010003_crypttab_status.stdout | length == 0
@@ -62,7 +63,8 @@
         when: ubtu_18_010003_crypttab_status.stdout | length > 0
 
       - name: "MEDIUM | UBTU-18-010003 | AUDIT | Ubuntu operating systems handling data requiring data at rest protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010003'
         when: ubtu_18_010003_crypttab_status.stdout | length == 0
@@ -178,7 +180,8 @@
             - ubtu_18_mcafeetp_daemon_status.stdout | length == 0
 
       - name: "MEDIUM | UBTU-18-010021 | AUDIT | The Ubuntu operating system must deploy Endpoint Security for Linux Threat Prevention (ENSLTP). | Set warning count."
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010021'
         when:
@@ -487,7 +490,8 @@
                 - 'For example: "chage -d 0 [UserName]" or "passwd -e [UserName]"'
 
       - name: "MEDIUM | UBTU-18-010112 | AUDIT | The Ubuntu operating system must allow the use of a temporary password for system logons with an immediate change to a permanent password. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010112'
   when:
@@ -2209,7 +2213,8 @@
                 - "Please use at least one DoD certificate authority to the '/usr/local/share/ca-certificates' directory"
 
       - name: "MEDIUM | UBTU-18-010436 | AUDIT | The Ubuntu operating system must only allow the use of DoD PKI-established certificate authorities for verification of the establishment of protected sessions. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010436'
   when:
@@ -2277,7 +2282,8 @@
         when: ubtu_18_010444_duplicate_uid_users.stdout | length > 0
 
       - name: "MEDIUM | UBTU-18-010444 | AUDIT | The Ubuntu operating system must uniquely identify interactive users. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010444'
         when: ubtu_18_010444_duplicate_uid_users.stdout | length > 0
@@ -2345,7 +2351,8 @@
                 - "after creation date"
 
       - name: "MEDIUM | UBTU-18-010449 | AUDIT | The Ubuntu operating system must provision temporary user accounts with an expiration time of 72 hours or less. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010449'
   when:
@@ -2412,7 +2419,8 @@
             msg: "Warning!! Please make sure your UFW allow/deny settings conform to PPSM CAL vulnerability assessments"
 
       - name: "MEDIUM | UBTU-18-010504 | AUDIT | The Ubuntu operating system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments. | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010504'
   when:
@@ -2588,7 +2596,8 @@
             - "'nx' not in ubtu_18_010513_cpuinfo_settings.stdout or '[    0.000000] NX (Execute Disable) protection: active' not in ubtu_18_010513_nx_dmesg.stdout"
 
       - name: "MEDIUM | UBTU-18-010513 | AUDIT | The Ubuntu operating system must implement non-executable data to protect its memory from unauthorized code execution. | Warning Count."
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010513'
   when:
@@ -2658,7 +2667,8 @@
                 - "a manual check and verify it conforms policies."
 
       - name: "MEDIUM | UBTU-18-010515 | AUDIT | The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions. | Warning Out."
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         vars:
             warn_control_id: 'UBTU-18-010515'
   when:
@@ -2797,7 +2807,6 @@
       - name: "MEDIUM | UBTU-18-010451 | PATCH | All local interactive user home directories must have mode 0750 or less permissive. | Set home perms"
         ansible.builtin.file:
             path: "{{ item.0 }}"
-            recurse: true
             mode: a-st,g-w,o-rwx
         register: ubtu_18_010451_patch
         with_together:
@@ -2815,7 +2824,6 @@
             path: "{{ item.0 }}"
             default: true
             state: present
-            recursive: true
             etype: "{{ item.1.etype }}"
             permissions: "{{ item.1.mode }}"
         when: not ubtu18stig_system_is_container
