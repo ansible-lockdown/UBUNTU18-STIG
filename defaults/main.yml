@@ -249,7 +249,7 @@ ubtu18stig_kdump_needed: false
 # Password protect bootloader
 # DO NOT USE PLAIN TEXT PASSWORDS!!!!
 # The has is intended to be used with a PW management tool like Ansible Vault
-ubtu18stig_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'
+ubtu18stig_bootloader_password_hash: 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
 ubtu18stig_boot_superuser: root
 
 # UBTU-18-010037
