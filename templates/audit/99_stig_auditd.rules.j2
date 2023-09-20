@@ -125,9 +125,9 @@
 -a always,exit -F arch=b64 -S finit_module -F auid>={{ ubtu18stig_int_gid }} -F auid!=4294967295 -k module_chng
 {% endif %}
 {% if ubtu_18_010358 %}
--a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv 
--a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv 
--a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=execpriv 
+-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv
+-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv
+-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=execpriv
 -a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=execpriv
 {% endif %}
 {% if ubtu_18_010375 %}
