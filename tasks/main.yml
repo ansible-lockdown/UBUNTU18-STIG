@@ -9,7 +9,7 @@
       - always
 
 - name: Check OS version and family
-  assert:
+  ansible.builtin.assert:
       that: ansible_distribution== 'Ubuntu' and ansible_distribution_major_version is version_compare('18', '==')
       fail_msg: "This role can only be run against Ubuntu 18. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
   when:
@@ -18,7 +18,7 @@
       - always
 
 - name: Check ansible version
-  assert:
+  ansible.builtin.assert:
       that: ansible_version.full is version_compare(ubtu18stig_min_ansible_version, '>=')
       msg: You must use Ansible {{ ubtu18stig_min_ansible_version }} or greater
   tags:
