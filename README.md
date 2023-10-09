@@ -7,13 +7,13 @@
 ---
 
 ![Org Stars](https://img.shields.io/github/stars/ansible-lockdown?label=Org%20Stars&style=social)
-![Stars](https://img.shields.io/github/stars/ansible-lockdown/UBUNTU18-STIG?label=Repo%20Stars&style=social)
-![Forks](https://img.shields.io/github/forks/ansible-lockdown/UBUNTU18-STIG?style=social)
+![Stars](https://img.shields.io/github/stars/ansible-lockdown/ubuntu22-cis?label=Repo%20Stars&style=social)
+![Forks](https://img.shields.io/github/forks/ansible-lockdown/ubuntu22-cis?style=social)
 ![followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://twitter.com/AnsibleLockdown)
 
-![Ansible Galaxy Quality](https://img.shields.io/ansible/quality/61237?label=Quality&&logo=ansible)
 ![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
+
 ![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
 ![Release Tag](https://img.shields.io/github/v/release/ansible-lockdown/UBUNTU18-STIG)
 ![Release Date](https://img.shields.io/github/release-date/ansible-lockdown/UBUNTU18-STIG)
@@ -28,6 +28,7 @@
 ![Pull Requests](https://img.shields.io/github/issues-pr/ansible-lockdown/UBUNTU18-STIG?label=Pull%20Requests)
 
 ![License](https://img.shields.io/github/license/ansible-lockdown/UBUNTU18-STIG?label=License)
+
 ---
 
 ## Looking for support?
