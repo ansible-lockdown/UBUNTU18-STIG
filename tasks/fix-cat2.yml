@@ -609,7 +609,7 @@
         ansible.builtin.lineinfile:
             path: /etc/security/pwquality.conf
             regexp: '^enforcing =|^#.*enforcing ='
-            line: 'enforcing ='
+            line: 'enforcing = 1'
   when:
       - ubtu_18_010116
   tags:
